@@ -1,0 +1,28 @@
+# Build output
+target/
+build/
+out/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.classpath
+*.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Compiled
+*.class
+*.jar
+*.war
+
+# Maven / Gradle
+.gradle/
+gradle-wrapper.jar

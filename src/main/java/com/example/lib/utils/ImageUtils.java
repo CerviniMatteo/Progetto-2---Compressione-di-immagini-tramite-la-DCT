@@ -10,25 +10,33 @@ import java.io.IOException;
 import static com.example.lib.constants.UtilsConstants.*;
 
 /**
- * Utility methods for image conversion and display operations.
+ * Utility methods for image conversion, duplication, and persistence.
  * <p>
- * This class provides methods to convert between {@link BufferedImage} objects and 2D integer arrays,
- * save images to disk in BMP format, and display images in Swing windows. Images are padded to
- * multiples of 8 pixels to facilitate block-based processing (e.g., DCT compression).
+ * This class provides support for:
+ * <ul>
+ *   <li>Converting a {@link BufferedImage} to a 2D integer matrix for signal-style processing</li>
+ *   <li>Converting a 2D integer matrix back to a grayscale image</li>
+ *   <li>Creating a deep copy of an image</li>
+ *   <li>Saving an image to disk in BMP format</li>
+ * </ul>
+ * </p>
+ * <p>
+ * The conversion routine pads image dimensions to multiples of 8, which is useful
+ * for block-based algorithms such as DCT.
  * </p>
  */
 public class ImageUtils {
+
     /**
-     * Converts a {@link BufferedImage} to a 2D integer array representing pixel values.
+     * Converts a grayscale {@link BufferedImage} into a 2D integer array.
      * <p>
-     * The image is padded to the nearest multiple of 8 pixels in both dimensions. Padding is done
-     * by edge replication: pixels beyond the original bounds are set to the value of the nearest
-     * edge pixel. This is useful for block-based image processing where block sizes are multiples of 8.
+     * If image dimensions are not multiples of 8, the method pads the signal by
+     * replicating edge pixels. This avoids introducing artificial black borders and
+     * keeps boundary values coherent for block-based processing.
      * </p>
      *
-     * @param img the {@link BufferedImage} to convert (must be a grayscale image)
-     * @return a 2D integer array where {@code signal[y][x]} represents the pixel value at position {@code (x, y)};
-     *         the array dimensions are padded to multiples of 8
+     * @param img source image (expected grayscale; channel 0 is read)
+     * @return padded matrix of pixel samples where {@code signal[y][x]} is the sample at {@code (x, y)}
      */
     public static int[][] convertImageToArray(BufferedImage img){
         int origWidth = img.getWidth();
@@ -55,14 +63,14 @@ public class ImageUtils {
     }
 
     /**
-     * Converts a 2D integer array back into a {@link BufferedImage}.
+     * Converts a 2D integer matrix into a grayscale {@link BufferedImage}.
      * <p>
-     * The resulting image is created as a grayscale image with {@link BufferedImage#TYPE_BYTE_GRAY}
-     * type. Each integer value in the array is directly set as a pixel value in the image.
+     * Each matrix value is written directly into the single channel of a
+     * {@link BufferedImage#TYPE_BYTE_GRAY} image.
      * </p>
      *
-     * @param signal a 2D integer array where {@code signal[y][x]} represents the pixel value at position {@code (x, y)}
-     * @return a new {@link BufferedImage} with the same dimensions as the input array
+     * @param signal image samples matrix where {@code signal[y][x]} is the sample at {@code (x, y)}
+     * @return grayscale image with matrix width/height
      */
     public static BufferedImage convertArrayToImage(int[][] signal) {
 
@@ -80,6 +88,19 @@ public class ImageUtils {
         return img;
     }
 
+    /**
+     * Creates a deep copy of a {@link BufferedImage}.
+     * <p>
+     * The copy is rendered into a new {@link BufferedImage#TYPE_INT_RGB} buffer so that
+     * pixel data is physically independent from the source image.
+     * </p>
+     * <p>
+     * Note: alpha information is not preserved because the destination type is RGB.
+     * </p>
+     *
+     * @param bi source image to copy
+     * @return independent copied image
+     */
     public static BufferedImage copyBufferedImage(BufferedImage bi) {
         // Create a completely independent deep copy using Graphics2D for guaranteed independence
         // This approach ensures no pixel data sharing between original and copy
@@ -98,16 +119,16 @@ public class ImageUtils {
     }
 
     /**
-     * Saves a {@link BufferedImage} to disk in BMP format.
+     * Saves a {@link BufferedImage} as a BMP file on disk.
      * <p>
-     * The method writes the image to the specified file path using {@link javax.imageio.ImageIO}.
-     * The absolute path of the saved file is printed to standard output. If the write operation fails,
-     * a {@link RuntimeException} is thrown.
+     * The method appends {@code ".bmp"} to the provided path, writes the file via
+     * {@link ImageIO#write(java.awt.image.RenderedImage, String, File)}, and prints
+     * the absolute output path to standard output.
      * </p>
      *
-     * @param img the {@link BufferedImage} to save
-     * @param path the destination file path (typically includes the filename with BMP extension)
-     * @throws RuntimeException if the image cannot be written to the specified path
+     * @param img image to persist
+     * @param path destination path without extension
+     * @throws RuntimeException if the file cannot be written
      */
     public static void saveAsBMP(BufferedImage img, String path) {
         try {

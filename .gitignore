@@ -10,6 +10,8 @@ out/
 *.classpath
 *.project
 .settings/
+.github/
+.ai/
 
 # OS
 .DS_Store

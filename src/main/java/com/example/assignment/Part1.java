@@ -1,6 +1,6 @@
 package com.example.assignment;
 
-import com.example.lib.DCT;
+import com.example.lib.DCT2;
 import com.example.lib.utils.OpenCsvUtils;
 import com.example.lib.utils.PlotUtils;
 import org.ejml.simple.SimpleMatrix;
@@ -71,7 +71,7 @@ public class Part1 {
      */
     public void benchmark(int[] sizes) {
 
-        DCT dct = new DCT();
+        DCT2 dct = new DCT2();
 
         for (int n : sizes) {
 
@@ -85,14 +85,10 @@ public class Part1 {
             DoubleDCT_2D lib = new DoubleDCT_2D(n, n);
 
             // ===== MY DCT =====
-            double myTime = measure(() -> {
-                dct.DCT2(input);
-            }, 3);
+            double myTime = measure(() -> dct.DCT2(input), 3);
 
             // ===== LIB DCT =====
-            double libTime = measure(() -> {
-                lib.forward(copy2, true);
-            }, 3);
+            double libTime = measure(() -> lib.forward(copy2, true), 3);
 
             results.add(new Result(n, myTime, libTime));
 

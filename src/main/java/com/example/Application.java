@@ -37,6 +37,6 @@ public class Application {
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
-        PartChooserWindow partChoserWIndow = new PartChooserWindow();
+        new PartChooserWindow();
     }
 }

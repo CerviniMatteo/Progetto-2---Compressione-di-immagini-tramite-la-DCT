@@ -47,7 +47,13 @@ public class PartChooserWindow extends JFrame {
         part1Button.addActionListener(e -> {
             log.info("Part 1 selected");
             Part1 part1 = new Part1();
-            part1.benchmark(new int[]{8, 16, 32, 64, 128, 256, 512, 1048, 2048});
+            new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() {
+                    part1.benchmark(new int[]{8, 16, 32, 64, 128, 256, 512, 1048});
+                    return null;
+                }
+            }.execute();
         });
 
         part2Button.addActionListener(e -> {

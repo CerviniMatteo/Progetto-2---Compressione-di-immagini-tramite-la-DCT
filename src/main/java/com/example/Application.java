@@ -1,10 +1,6 @@
 package com.example;
 
-import com.example.UI.ImagePicker;
-import com.example.assignment.Part1;
-import com.example.assignment.Part2;
-
-import static com.example.lib.constants.ProjectHelperConstants.IMG_ARRIVED;
+import com.example.UI.PartChooserWindow;
 
 /**
  * Main entry point for the DCT-based image processing application.
@@ -41,17 +37,6 @@ public class Application {
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
-
-        Part1 part1 = new Part1();
-        int[] sizes = {8, 16, 32, 64, 128, 256, 512, 1048, 2048};
-        part1.benchmark(sizes);
-
-       ImagePicker picker = new ImagePicker();
-        picker.subscribe(imageInfo -> {
-            System.out.println(IMG_ARRIVED);
-            Part2 part2 = new Part2();
-            part2.compress(imageInfo);
-        });
-        picker.showUI();
+        PartChooserWindow partChoserWIndow = new PartChooserWindow();
     }
 }

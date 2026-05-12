@@ -1,0 +1,67 @@
+package com.example.UI;
+
+import com.example.assignment.Part1;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * Entry point window that allows users to select which assignment part to execute.
+ * <p>
+ * Presents two buttons:
+ * <ul>
+ *   <li><strong>Part 1:</strong> Runs DCT benchmarking across various block sizes</li>
+ *   <li><strong>Part 2:</strong> Launches the interactive image compression GUI</li>
+ * </ul>
+ */
+public class PartChooserWindow extends JFrame {
+
+    /**
+     * Logger used to track UI actions and warnings.
+     */
+    private static final Log log =
+            LogFactory.getLog(PartChooserWindow.class);
+
+    /**
+     * Constructs and displays the part chooser window.
+     * <p>
+     * Creates two buttons:
+     * <ul>
+     *   <li><strong>Part 1 Button:</strong> Invokes {@link Part1#benchmark(int[])} with predefined block sizes</li>
+     *   <li><strong>Part 2 Button:</strong> Instantiates {@link ImageCompressionWindow} for interactive compression</li>
+     * </ul>
+     */
+    public PartChooserWindow() {
+        super("Choose what assignment part to be run");
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(250, 50);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        JButton part1Button = new JButton("Part 1");
+        JButton part2Button = new JButton("Part 2");
+
+        part1Button.addActionListener(e -> {
+            log.info("Part 1 selected");
+            Part1 part1 = new Part1();
+            part1.benchmark(new int[]{8, 16, 32, 64, 128, 256, 512, 1048, 2048});
+        });
+
+        part2Button.addActionListener(e -> {
+            log.info("Part 2 selected");
+            new ImageCompressionWindow();
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.add(part1Button);
+        buttonPanel.add(part2Button);
+
+        add(buttonPanel, BorderLayout.CENTER);
+
+        setVisible(true);
+    }
+}

@@ -1,11 +1,14 @@
-package com.example.UI;
+package com.example.GUI.UI;
 
+import com.example.GUI.Style;
 import com.example.assignment.Part1;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static com.example.GUI.factory.StylingFactory.getStyledButton;
 
 /**
  * Entry point window that allows users to select which assignment part to execute.
@@ -37,12 +40,12 @@ public class PartChooserWindow extends JFrame {
         super("Choose what assignment part to be run");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(250, 50);
+        setSize(250, 100);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JButton part1Button = new JButton("Part 1");
-        JButton part2Button = new JButton("Part 2");
+        JButton part1Button = getStyledButton("Part1", Style.STYLE1);
+        JButton part2Button = getStyledButton("Part2", Style.STYLE1);
 
         part1Button.addActionListener(e -> {
             log.info("Part 1 selected");
@@ -62,6 +65,7 @@ public class PartChooserWindow extends JFrame {
         });
 
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(new Color(30, 30, 30));
         buttonPanel.setLayout(new FlowLayout());
         buttonPanel.add(part1Button);
         buttonPanel.add(part2Button);

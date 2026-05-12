@@ -1,6 +1,6 @@
-package com.example.UI;
+package com.example.GUI.UI;
 
-import com.example.lib.utils.Observable;
+import com.example.GUI.observer.Observable;
 import org.apache.commons.math3.util.Pair;
 
 import javax.imageio.ImageIO;
@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import static com.example.lib.constants.PickerConstants.*;
-import static com.example.lib.utils.ImageUtils.saveAsBMP;
 
 /**
  * A simple file/image picker UI that lets the user choose an image file and publishes
@@ -40,7 +40,7 @@ import static com.example.lib.utils.ImageUtils.saveAsBMP;
  *
  * @see javax.imageio.ImageIO
  * @see javax.swing.JFileChooser
- * @see com.example.lib.utils.Observable
+ * @see Observable
  */
 public class ImagePicker {
 
@@ -128,7 +128,21 @@ public class ImagePicker {
             BufferedImage img = ImageIO.read(file);
 
             if (img == null) return;
-            saveAsBMP(img, "output/" + file.getName().substring(0, file.getName().lastIndexOf('.')));
+
+            Path outputDir = Paths.get("output");
+
+            if (!Files.exists(outputDir)) {
+                Files.createDirectories(outputDir);
+            }
+
+            Path target = outputDir.resolve(file.getName());
+
+            Files.copy(
+                    file.toPath(),
+                    target,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+
             observable.set(new Pair<>(file.getName(), img));
 
         } catch (IOException e) {

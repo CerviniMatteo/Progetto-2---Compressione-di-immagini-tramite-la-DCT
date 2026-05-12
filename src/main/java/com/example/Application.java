@@ -1,6 +1,6 @@
 package com.example;
 
-import com.example.UI.PartChooserWindow;
+import com.example.GUI.UI.PartChooserWindow;
 
 /**
  * Main entry point for the DCT-based image processing application.

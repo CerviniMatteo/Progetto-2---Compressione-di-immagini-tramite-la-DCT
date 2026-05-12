@@ -1,6 +1,8 @@
-package com.example.UI;
+package com.example.GUI.UI;
 
+import com.example.GUI.Style;
 import com.example.assignment.Part2;
+import com.example.lib.utils.ImageUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
@@ -12,6 +14,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+import static com.example.GUI.factory.StylingFactory.getStyledButton;
 import static com.example.lib.utils.ImageUtils.saveAsBMP;
 
 /**
@@ -78,12 +81,9 @@ public class ImageCompressionWindow extends JFrame {
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setBorder(new EmptyBorder(20, 10, 20, 10));
 
-        JButton chooseImageButton = new JButton("Choose Image");
-        JButton compressButton = new JButton("Compress");
+        JButton chooseImageButton = getStyledButton("Choose Image", Style.STYLE2);
+        JButton compressButton = getStyledButton("Compress Image", Style.STYLE3);
 
-        // Apply consistent styling to the control buttons
-        styleButton(chooseImageButton);
-        styleButton(compressButton);
 
         chooseImageButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         compressButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -102,6 +102,7 @@ public class ImageCompressionWindow extends JFrame {
         rightPanel.setBackground(new Color(245, 245, 245));
         rightPanel.setLayout(new GridBagLayout());
         rightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        rightPanel.setBackground(new Color(45, 45, 45));
 
         // Two boxes to preview images before and after compression
         JPanel originalBox = createImageBox("Original");
@@ -182,10 +183,10 @@ public class ImageCompressionWindow extends JFrame {
                 log.info("Compressing with F=" + F + " d=" + d);
 
                 Part2 part2 = new Part2();
-
+                BufferedImage selectedCopy = ImageUtils.copyBufferedImage(selectedImage);
                 // Part2.compress expects a Pair<String, BufferedImage> where the first is a filename
                 BufferedImage compressed =
-                        part2.compress(new Pair<>(selectedImageName, selectedImage), F, d);
+                        part2.compress(new Pair<>(selectedImageName, selectedCopy), F, d);
 
                 // Save the compressed image with a "_compressed" suffix and display it
                 saveAsBMP(compressed, "output/" + selectedImageName + "_compressed");
@@ -280,7 +281,7 @@ public class ImageCompressionWindow extends JFrame {
         long bytes = file.length();
         double kb = bytes / 1024.0;
 
-        String sizeText = String.format("<html>%d x %d <br> %.2f kB</html>", image.getWidth(), image.getHeight(), kb);
+        String sizeText = String.format("<html>%d x %d pixel <br> %.2f kB</html>", image.getWidth(), image.getHeight(), kb);
 
         // Scale the image for the preview (maintains aspect ratio via getScaledInstance)
         Image scaled = rgb.getScaledInstance(
@@ -324,20 +325,4 @@ public class ImageCompressionWindow extends JFrame {
         return container;
     }
 
-    // =========================
-    // BUTTON STYLE
-    // =========================
-
-    /**
-     * Applies consistent styling to JButtons used in the left control panel.
-     *
-     * @param button the button to style in-place
-     */
-    private void styleButton(JButton button) {
-        button.setFocusPainted(false);
-        button.setBackground(new Color(70, 130, 180));
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 13));
-        button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-    }
 }

@@ -1,12 +1,14 @@
-package com.example.UI;
+package com.example.GUI.UI;
 
+import com.example.GUI.factory.StylingFactory;
 import com.example.lib.constants.PickerConstants;
-import com.example.lib.utils.Observable;
+import com.example.GUI.observer.Observable;
 import org.apache.commons.math3.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
 
+import static com.example.GUI.Style.STYLE1;
 import static com.example.lib.constants.PickerConstants.*;
 
 /**
@@ -15,7 +17,7 @@ import static com.example.lib.constants.PickerConstants.*;
  * This {@link javax.swing.JFrame}-based picker prompts the user to enter two integer
  * values: {@code F} (a compression factor) and {@code d} (a dependent integer constrained
  * by {@code F}). Entered values are validated and, when valid, published via an
- * {@link com.example.lib.utils.Observable} as a {@link org.apache.commons.math3.util.Pair}
+ * {@link Observable} as a {@link org.apache.commons.math3.util.Pair}
  * containing {@code (F, d)}.
  * </p>
  *
@@ -27,7 +29,7 @@ import static com.example.lib.constants.PickerConstants.*;
  * </ul>
  * </p>
  *
- * @see com.example.lib.utils.Observable
+ * @see Observable
  * @see org.apache.commons.math3.util.Pair
  * @see com.example.lib.constants.PickerConstants
  */
@@ -37,13 +39,13 @@ public class IntegersPicker extends JFrame {
      * Text field where the user enters the first integer {@code F}.
      * Constructed with a visible column count of 10.
      */
-    private final JTextField firstField = new JTextField(10);
+    private final JTextField firstField;
 
     /**
      * Text field where the user enters the second integer {@code d}.
      * Constructed with a visible column count of 10.
      */
-    private final JTextField secondField = new JTextField(10);
+    private final JTextField secondField;
 
     /**
      * Observable used to notify subscribers when the user submits valid integers.
@@ -72,13 +74,25 @@ public class IntegersPicker extends JFrame {
         setSize(300, 150);
         setLayout(new FlowLayout());
 
-        add(new JLabel(F));
+        getContentPane().setBackground(new Color(30, 30, 30));
+
+        JLabel fLabel = new JLabel(F);
+        fLabel.setForeground(Color.WHITE);
+
+        JLabel dLabel = new JLabel(D);
+        dLabel.setForeground(Color.WHITE);
+
+        add(fLabel);
+        firstField = StylingFactory.getStyledTextField(8);
         add(firstField);
 
-        add(new JLabel(D));
+        add(dLabel);
+        secondField = StylingFactory.getStyledTextField(8);
         add(secondField);
 
-        JButton submitButton = new JButton(SUBMIT);
+        JButton submitButton =
+                StylingFactory.getStyledButton(SUBMIT, STYLE1);
+
         add(submitButton);
 
         submitButton.addActionListener(e -> submit());
@@ -92,7 +106,7 @@ public class IntegersPicker extends JFrame {
      *   <li>Parses the contents of the text fields into integers</li>
      *   <li>Validates them according to the rules: {@code F} >= 0 and {@code 0 <= d <= 2*F-2}</li>
      *   <li>If validation succeeds, creates a {@link org.apache.commons.math3.util.Pair} of {@code (F, d)},
-     *       sets it on the {@link com.example.lib.utils.Observable} and disposes the window</li>
+     *       sets it on the {@link Observable} and disposes the window</li>
      *   <li>If parsing or validation fails, shows an error dialog to the user with an explanatory message</li>
      * </ol>
      * </p>

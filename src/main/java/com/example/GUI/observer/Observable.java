@@ -1,4 +1,4 @@
-package com.example.lib.utils;
+package com.example.GUI.observer;
 
 import java.util.function.Consumer;
 

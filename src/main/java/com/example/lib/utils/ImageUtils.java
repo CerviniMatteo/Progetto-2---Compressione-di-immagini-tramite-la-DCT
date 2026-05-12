@@ -2,7 +2,10 @@ package com.example.lib.utils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 
@@ -77,6 +80,24 @@ public class ImageUtils {
         }
 
         return img;
+    }
+
+    public static BufferedImage copyBufferedImage(BufferedImage bi) {
+
+        ColorModel cm = bi.getColorModel();
+
+        boolean isAlphaPremultiplied =
+                cm.isAlphaPremultiplied();
+
+        WritableRaster raster =
+                bi.copyData(null);
+
+        return new BufferedImage(
+                cm,
+                raster,
+                isAlphaPremultiplied,
+                null
+        );
     }
 
     /**

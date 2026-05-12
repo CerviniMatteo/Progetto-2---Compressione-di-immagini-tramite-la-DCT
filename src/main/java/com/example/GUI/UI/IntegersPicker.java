@@ -8,7 +8,7 @@ import org.apache.commons.math3.util.Pair;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.example.GUI.Style.STYLE1;
+import static com.example.GUI.enums.Style.STYLE1;
 import static com.example.lib.constants.PickerConstants.*;
 
 /**

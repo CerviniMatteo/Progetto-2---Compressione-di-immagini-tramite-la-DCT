@@ -1,6 +1,6 @@
 package com.example.GUI.factory;
 
-import com.example.GUI.Style;
+import com.example.GUI.enums.Style;
 
 import javax.swing.*;
 import java.awt.*;

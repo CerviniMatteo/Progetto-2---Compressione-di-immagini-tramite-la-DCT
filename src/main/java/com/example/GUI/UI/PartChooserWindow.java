@@ -1,6 +1,6 @@
 package com.example.GUI.UI;
 
-import com.example.GUI.Style;
+import com.example.GUI.enums.Style;
 import com.example.assignment.Part1;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

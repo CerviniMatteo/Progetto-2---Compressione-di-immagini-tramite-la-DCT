@@ -1,4 +1,4 @@
-package com.example.GUI;
+package com.example.GUI.enums;
 
 /**
  * Predefined button styles supported by this factory.

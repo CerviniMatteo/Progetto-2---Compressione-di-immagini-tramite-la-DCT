@@ -103,9 +103,7 @@ public class ImageCompressionWindow extends JFrame {
             showImage(originalBox, selectedImage);
         });
 
-        chooseImageButton.addActionListener(e -> {
-            imagePicker.showUI();
-        });
+        chooseImageButton.addActionListener(e -> imagePicker.showUI());
 
         // =========================
         // COMPRESSION FLOW
@@ -182,10 +180,20 @@ public class ImageCompressionWindow extends JFrame {
      */
     private void showImage(JPanel box, BufferedImage image) {
 
-        Image scaled = image.getScaledInstance(
+        BufferedImage rgb = new BufferedImage(
+                image.getWidth(),
+                image.getHeight(),
+                BufferedImage.TYPE_INT_RGB
+        );
+
+        Graphics2D g = rgb.createGraphics();
+        g.drawImage(image, 0, 0, Color.WHITE, null);
+        g.dispose();
+
+        Image scaled = rgb.getScaledInstance(
                 430,
                 280,
-                Image.SCALE_DEFAULT
+                Image.SCALE_SMOOTH
         );
 
         JLabel label = new JLabel(new ImageIcon(scaled));

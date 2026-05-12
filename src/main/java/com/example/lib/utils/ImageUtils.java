@@ -93,7 +93,7 @@ public class ImageUtils {
      */
     public static void saveAsBMP(BufferedImage img, String path) {
         try {
-            File output = new File(path);
+            File output = new File(path  + ".bmp");
 
             ImageIO.write(img, BMP, output);
 
@@ -102,33 +102,5 @@ public class ImageUtils {
         } catch (IOException e) {
             throw new RuntimeException(SAVING_ERROR, e);
         }
-    }
-
-    /**
-     * Displays an image in a new Swing window.
-     * <p>
-     * The method creates a new {@link JFrame} window with the specified title, displays the image
-     * using an {@link ImageIcon} wrapped in a {@link JLabel}, and positions the window at the
-     * specified coordinates. The window will exit the application when closed.
-     * </p>
-     *
-     * @param img the {@link BufferedImage} to display
-     * @param title the title to display in the window's title bar
-     * @param x the X coordinate (in screen pixels) where the window should be positioned
-     * @param y the Y coordinate (in screen pixels) where the window should be positioned
-     */
-    public static void showImage(BufferedImage img, String title, int x, int y) {
-        JFrame frame = new JFrame();
-        frame.setTitle(title);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        ImageIcon icon = new ImageIcon(img);
-        JLabel label = new JLabel(icon);
-
-        frame.add(label);
-        frame.pack();
-
-        frame.setLocation(x, y);
-        frame.setVisible(true);
     }
 }

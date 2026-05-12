@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.example.lib.constants.PickerConstants.*;
+import static com.example.lib.utils.ImageUtils.saveAsBMP;
 
 /**
  * A simple file/image picker UI that lets the user choose an image file and publishes
@@ -127,7 +128,7 @@ public class ImagePicker {
             BufferedImage img = ImageIO.read(file);
 
             if (img == null) return;
-
+            saveAsBMP(img, "output/" + file.getName().substring(0, file.getName().lastIndexOf('.')));
             observable.set(new Pair<>(file.getName(), img));
 
         } catch (IOException e) {

@@ -6,20 +6,28 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+
+import static com.example.lib.utils.ImageUtils.saveAsBMP;
 
 /**
- * Main Swing window for the DCT image compression demo.
+ * Main application window for the DCT image compression tool.
  * <p>
- * This frame provides:
+ * This Swing {@link JFrame} provides:
  * <ul>
- *   <li>A left control panel to choose an input image and trigger compression</li>
- *   <li>A right display area showing the original and compressed images</li>
- *   <li>Integration with {@link ImagePicker} and {@link IntegersPicker} to gather user input</li>
+ *   <li>A left control panel with buttons to choose an image and to compress it.</li>
+ *   <li>A right area showing side-by-side "Original" and "Compressed" image previews.</li>
+ *   <li>Integration with {@link ImagePicker} to select images and {@link IntegersPicker} to select
+ *       compression parameters (block size F and diagonal threshold d).</li>
  * </ul>
- * Compression is delegated to {@link Part2#compress(Pair, int, int)}.
+ * <p>
+ * Compression itself is delegated to {@link Part2#compress(Pair, int, int)}; compressed images are saved
+ * in BMP format to the project's output directory and displayed in the UI.
+ * </p>
  */
 public class ImageCompressionWindow extends JFrame {
 
@@ -30,30 +38,31 @@ public class ImageCompressionWindow extends JFrame {
             LogFactory.getLog(ImageCompressionWindow.class);
 
     /**
-     * Currently selected image to be compressed.
-     * <p>
-     * Set when the user chooses an image through {@link ImagePicker}.
+     * The currently selected image to compress. Set by the image picker callback.
      */
     private BufferedImage selectedImage;
 
     /**
-     * currently selected image name to be compressed.
-     *  <p>
-     * Set when the user chooses an image through {@link ImagePicker}.
+     * Name (base filename without extension) of the currently selected image.
+     * Used to label previews and to build the output filename.
      */
     private String selectedImageName;
 
     /**
-     * Builds and wires the full UI:
+     * Constructs and shows the Image Compression Tool window.
+     * <p>
+     * The constructor:
      * <ul>
-     *   <li>Creates left and right panels</li>
-     *   <li>Initializes buttons and picker dialogs</li>
-     *   <li>Subscribes to picker events</li>
-     *   <li>Configures compression flow and image rendering</li>
+     *   <li>Builds a left-side control panel with "Choose Image" and "Compress" buttons</li>
+     *   <li>Builds a right-side display area with "Original" and "Compressed" image boxes</li>
+     *   <li>Wires up the {@link ImagePicker} to set the selected image and update the preview</li>
+     *   <li>Wires up the {@link IntegersPicker} to obtain compression parameters F and d, then calls
+     *       {@link Part2#compress(Pair, int, int)} and displays/saves the result</li>
      * </ul>
+     * The frame is maximized on creation and made visible.
      */
     public ImageCompressionWindow() {
-        super("DCT-based Image Compression");
+        super("DCT Image Compression Tool");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -61,28 +70,76 @@ public class ImageCompressionWindow extends JFrame {
         setLayout(new BorderLayout());
 
         // =========================
-        // LEFT PANEL
+        // LEFT PANEL (CONTROL PANEL)
         // =========================
         JPanel leftPanel = new JPanel();
-        leftPanel.setPreferredSize(new Dimension(220, 1024));
-        leftPanel.setBackground(Color.BLUE);
-        leftPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20));
+        leftPanel.setPreferredSize(new Dimension(240, 1024));
+        leftPanel.setBackground(new Color(30, 30, 30));
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setBorder(new EmptyBorder(20, 10, 20, 10));
 
-        JButton chooseImageButton = new JButton("Choose image");
-        JButton compressButton = new JButton("Compress image");
+        JButton chooseImageButton = new JButton("Choose Image");
+        JButton compressButton = new JButton("Compress");
 
+        // Apply consistent styling to the control buttons
+        styleButton(chooseImageButton);
+        styleButton(compressButton);
+
+        chooseImageButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        compressButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Space the buttons vertically within the left panel
+        leftPanel.add(Box.createVerticalGlue());
         leftPanel.add(chooseImageButton);
+        leftPanel.add(Box.createVerticalStrut(15));
         leftPanel.add(compressButton);
+        leftPanel.add(Box.createVerticalGlue());
 
         // =========================
-        // RIGHT PANEL
+        // RIGHT PANEL (IMAGES)
         // =========================
         JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        rightPanel.setBackground(Color.LIGHT_GRAY);
+        rightPanel.setBackground(new Color(245, 245, 245));
+        rightPanel.setLayout(new GridBagLayout());
+        rightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
+        // Two boxes to preview images before and after compression
         JPanel originalBox = createImageBox("Original");
         JPanel compressedBox = createImageBox("Compressed");
+
+        // A vertical separator is prepared (not added between the boxes in this specific layout,
+        // but left in code if desired to add later).
+        JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
+        separator.setPreferredSize(new Dimension(3, 500));
+        separator.setBackground(new Color(180, 180, 180));
+        separator.setOpaque(true);
+
+        // GridBag constraints for left and right panes to ensure they share space evenly
+        GridBagConstraints left = new GridBagConstraints();
+        left.gridx = 0;
+        left.gridy = 0;
+        left.weightx = 1.0;
+        left.fill = GridBagConstraints.BOTH;
+        left.insets = new Insets(10, 10, 10, 10);
+        left.anchor = GridBagConstraints.CENTER;
+
+        GridBagConstraints sep = new GridBagConstraints();
+        sep.gridx = 1;
+        sep.gridy = 0;
+        sep.weightx = 0;
+        sep.fill = GridBagConstraints.VERTICAL;
+        sep.insets = new Insets(0, 20, 0, 20);
+
+        GridBagConstraints right = new GridBagConstraints();
+        right.gridx = 2;
+        right.gridy = 0;
+        right.weightx = 1.0;
+        right.fill = GridBagConstraints.BOTH;
+        right.insets = new Insets(10, 10, 10, 10);
+        right.anchor = GridBagConstraints.CENTER;
+
+        rightPanel.add(originalBox, left);
+        rightPanel.add(compressedBox, right);
 
         // =========================
         // PICKERS
@@ -90,24 +147,26 @@ public class ImageCompressionWindow extends JFrame {
         ImagePicker imagePicker = new ImagePicker();
         IntegersPicker integerPicker = new IntegersPicker();
 
-        // =========================
-        // IMAGE SELECTION
-        // =========================
+        // Subscribe to the ImagePicker: when the user selects an image, store both the
+        // image and its base filename (without extension), log the selection, and show
+        // the original image in the left preview box.
         imagePicker.subscribe(pair -> {
-
-            selectedImageName = pair.getFirst();
+            // Extract a name without its extension for display and file naming
+            selectedImageName = pair.getFirst().substring(0, pair.getFirst().lastIndexOf('.'));
             selectedImage = pair.getSecond();
 
-            log.info("Selected image: " + pair.getFirst());
+            log.info("Selected image: " + selectedImageName);
 
-            showImage(originalBox, selectedImage);
+            // Render the original image preview
+            showImage(originalBox, selectedImage, selectedImageName);
         });
 
+        // Show the image picker when the "Choose Image" button is clicked
         chooseImageButton.addActionListener(e -> imagePicker.showUI());
 
-        // =========================
-        // COMPRESSION FLOW
-        // =========================
+        // When the "Compress" button is clicked, verify an image is selected, then
+        // show the integer picker to obtain F and d. After the user confirms, compress
+        // with Part2, save the compressed BMP and update the compressed-image preview.
         compressButton.addActionListener(e -> {
 
             if (selectedImage == null) {
@@ -124,21 +183,22 @@ public class ImageCompressionWindow extends JFrame {
 
                 Part2 part2 = new Part2();
 
+                // Part2.compress expects a Pair<String, BufferedImage> where the first is a filename
                 BufferedImage compressed =
-                        part2.compress(new Pair<>(selectedImageName,selectedImage), F, d);
+                        part2.compress(new Pair<>(selectedImageName, selectedImage), F, d);
 
-                showImage(compressedBox, compressed);
+                // Save the compressed image with a "_compressed" suffix and display it
+                saveAsBMP(compressed, "output/" + selectedImageName + "_compressed");
+                showImage(compressedBox, compressed, selectedImageName + "_compressed");
             });
 
+            // Display the integer picker UI to obtain (F, d)
             integerPicker.showUI();
         });
 
         // =========================
-        // FRAME ASSEMBLY
+        // FRAME
         // =========================
-        rightPanel.add(originalBox);
-        rightPanel.add(compressedBox);
-
         add(leftPanel, BorderLayout.WEST);
         add(rightPanel, BorderLayout.CENTER);
 
@@ -146,40 +206,59 @@ public class ImageCompressionWindow extends JFrame {
     }
 
     // =========================
-    // UI HELPERS
+    // IMAGE BOX
     // =========================
 
     /**
-     * Creates a bordered panel used as an image container.
+     * Creates a stylized panel that serves as a placeholder for an image preview.
      * <p>
-     * The panel is initialized with a centered text label (typically "Original" or "Compressed")
-     * that is later replaced by an image.
+     * Each box is a white panel with a subtle rounded border and an initial centered title label.
      *
-     * @param title placeholder title shown before an image is rendered
-     * @return a configured panel ready to host an image preview
+     * @param title the placeholder title displayed before an image is rendered (e.g., "Original")
+     * @return a configured {@link JPanel} ready to receive an image preview
      */
     private JPanel createImageBox(String title) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(new LineBorder(Color.BLACK, 2));
-        panel.setPreferredSize(new Dimension(450, 300));
 
-        panel.add(new JLabel(title, SwingConstants.CENTER),
-                BorderLayout.CENTER);
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(200, 200, 200), 1, true),
+                new EmptyBorder(10, 10, 10, 10)
+        ));
+        panel.setPreferredSize(new Dimension(450, 320));
+
+        JLabel label = new JLabel(title, SwingConstants.CENTER);
+        label.setFont(new Font("Arial", Font.BOLD, 14));
+        label.setForeground(new Color(80, 80, 80));
+
+        panel.add(label, BorderLayout.CENTER);
 
         return panel;
     }
 
-    /**
-     * Renders a scaled preview of the given image inside the target box.
-     * <p>
-     * This method clears existing content, inserts a new {@link JLabel} with
-     * the scaled {@link ImageIcon}, and refreshes layout/painting.
-     *
-     * @param box   panel where the image preview should be shown
-     * @param image source image to scale and display
-     */
-    private void showImage(JPanel box, BufferedImage image) {
+    // =========================
+    // IMAGE DISPLAY
+    // =========================
 
+    /**
+     * Renders the provided image into the specified image box along with metadata (dimensions and file size).
+     * <p>
+     * This method:
+     * <ol>
+     *   <li>Ensures the image is in RGB format by drawing it on an RGB BufferedImage</li>
+     *   <li>Attempts to determine the saved BMP file size from {@code output/<name>.bmp} (in kB)</li>
+     *   <li>Scales the image to fit the preview area and places it inside a small labeled container</li>
+     * </ol>
+     *
+     * Note: The file size shown depends on the existence and contents of {@code output/<name>.bmp}.
+     *
+     * @param box  the target preview panel (one created by {@link #createImageBox})
+     * @param image the image to display
+     * @param name  base filename used for the preview title and for checking an output file
+     */
+    private void showImage(JPanel box, BufferedImage image, String name) {
+
+        // Convert the image to a TYPE_INT_RGB BufferedImage for consistent display
         BufferedImage rgb = new BufferedImage(
                 image.getWidth(),
                 image.getHeight(),
@@ -187,20 +266,78 @@ public class ImageCompressionWindow extends JFrame {
         );
 
         Graphics2D g = rgb.createGraphics();
-        g.drawImage(image, 0, 0, Color.WHITE, null);
+        // Fill background with white to avoid black/transparent borders when scaling
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, rgb.getWidth(), rgb.getHeight());
+        g.drawImage(image, 0, 0, null);
         g.dispose();
 
+        // =========================
+        // SIZE IN MEMORY (KB)
+        // =========================
+        // Attempt to obtain the file size from the saved BMP file in the output directory.
+        File file = new File("output/" + name + ".bmp");
+        long bytes = file.length();
+        double kb = bytes / 1024.0;
+
+        String sizeText = String.format("<html>%d x %d <br> %.2f kB</html>", image.getWidth(), image.getHeight(), kb);
+
+        // Scale the image for the preview (maintains aspect ratio via getScaledInstance)
         Image scaled = rgb.getScaledInstance(
-                430,
+                420,
                 280,
                 Image.SCALE_SMOOTH
         );
 
-        JLabel label = new JLabel(new ImageIcon(scaled));
+        // Build a small container with image, name, and size labels
+        JPanel container = createImageLabel(name, scaled, sizeText);
 
+        // Replace the placeholder content in the image box and refresh UI
         box.removeAll();
-        box.add(label, BorderLayout.CENTER);
+        box.add(container, BorderLayout.CENTER);
         box.revalidate();
         box.repaint();
+    }
+
+    /**
+     * Builds a container holding an image preview and two labels (name and size).
+     *
+     * @param name      the display name shown above the image
+     * @param scaled    the already scaled Image instance to embed in an {@link ImageIcon}
+     * @param sizeText  a small HTML string with width x height and file size (kB)
+     * @return a configured {@link JPanel} with the image and labels
+     */
+    private static JPanel createImageLabel(String name, Image scaled, String sizeText) {
+
+        JLabel imageLabel = new JLabel(new ImageIcon(scaled));
+
+        JLabel nameLabel = new JLabel(name, SwingConstants.CENTER);
+
+        JLabel sizeLabel = new JLabel(sizeText, SwingConstants.CENTER);
+
+        JPanel container = new JPanel(new BorderLayout());
+
+        container.add(imageLabel, BorderLayout.CENTER);
+        container.add(nameLabel, BorderLayout.NORTH);
+        container.add(sizeLabel, BorderLayout.SOUTH);
+
+        return container;
+    }
+
+    // =========================
+    // BUTTON STYLE
+    // =========================
+
+    /**
+     * Applies consistent styling to JButtons used in the left control panel.
+     *
+     * @param button the button to style in-place
+     */
+    private void styleButton(JButton button) {
+        button.setFocusPainted(false);
+        button.setBackground(new Color(70, 130, 180));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 13));
+        button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
     }
 }

@@ -15,7 +15,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import static com.example.GUI.factory.StylingFactory.getStyledButton;
-import static com.example.lib.utils.ImageUtils.saveAsBMP;
 
 /**
  * Main application window for the DCT image compression tool.
@@ -154,7 +153,8 @@ public class ImageCompressionWindow extends JFrame {
         imagePicker.subscribe(pair -> {
             // Extract a name without its extension for display and file naming
             selectedImageName = pair.getFirst().substring(0, pair.getFirst().lastIndexOf('.'));
-            selectedImage = pair.getSecond();
+            // Store a DEEP COPY of the picked image to protect it from any future modifications
+            selectedImage = ImageUtils.copyBufferedImage(pair.getSecond());
 
             log.info("Selected image: " + selectedImageName);
 
@@ -183,13 +183,12 @@ public class ImageCompressionWindow extends JFrame {
                 log.info("Compressing with F=" + F + " d=" + d);
 
                 Part2 part2 = new Part2();
+                // Create a DEEP COPY of the original image to ensure the original remains unchanged
+                // The copy will be compressed while the original stays in its pristine state
                 BufferedImage selectedCopy = ImageUtils.copyBufferedImage(selectedImage);
-                // Part2.compress expects a Pair<String, BufferedImage> where the first is a filename
-                BufferedImage compressed =
-                        part2.compress(new Pair<>(selectedImageName, selectedCopy), F, d);
-
-                // Save the compressed image with a "_compressed" suffix and display it
-                saveAsBMP(compressed, "output/" + selectedImageName + "_compressed");
+                BufferedImage compressed = part2.compress(
+                        new Pair<>(selectedImageName + "_compressed", selectedCopy), F, d
+                );
                 showImage(compressedBox, compressed, selectedImageName + "_compressed");
             });
 

@@ -55,7 +55,6 @@ public class Part2 {
         BufferedImage result = convertArrayToImage(signal);
         BufferedImage cropped = result.getSubimage(0, 0, result.getWidth() - result.getWidth() % F, result.getHeight() - result.getHeight() % F);
         saveAsBMP(cropped, OUTPUT_PATH + imageInfo.getFirst());
-
         return cropped;
     }
 

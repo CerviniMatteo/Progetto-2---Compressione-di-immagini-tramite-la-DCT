@@ -4,8 +4,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 
@@ -83,21 +81,20 @@ public class ImageUtils {
     }
 
     public static BufferedImage copyBufferedImage(BufferedImage bi) {
+        // Create a completely independent deep copy using Graphics2D for guaranteed independence
+        // This approach ensures no pixel data sharing between original and copy
+        int width = bi.getWidth();
+        int height = bi.getHeight();
 
-        ColorModel cm = bi.getColorModel();
+        // Create new BufferedImage with TYPE_INT_RGB to ensure standard pixel format
+        BufferedImage copy = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-        boolean isAlphaPremultiplied =
-                cm.isAlphaPremultiplied();
+        // Use Graphics2D to draw the original onto the copy - this ensures complete independence
+        Graphics2D g2d = copy.createGraphics();
+        g2d.drawImage(bi, 0, 0, null);
+        g2d.dispose();
 
-        WritableRaster raster =
-                bi.copyData(null);
-
-        return new BufferedImage(
-                cm,
-                raster,
-                isAlphaPremultiplied,
-                null
-        );
+        return copy;
     }
 
     /**

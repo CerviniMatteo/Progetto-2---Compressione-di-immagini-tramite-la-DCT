@@ -2,15 +2,19 @@ package com.example.GUI.UI;
 
 import com.example.GUI.factory.StylingFactory;
 import com.example.lib.constants.PickerConstants;
+import com.example.lib.constants.GuiConstants;
 import com.example.GUI.observer.Observable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 import static com.example.GUI.enums.ButtonStyle.STYLE1;
+import static com.example.GUI.factory.StylingFactory.*;
 import static com.example.lib.constants.PickerConstants.*;
 
 /**
@@ -42,10 +46,10 @@ public class CompressionCoefficientsPicker extends JFrame {
     // ========================================================
 
     /** Window width in pixels. */
-    private static final int WINDOW_WIDTH = 400;
+    private static final int WINDOW_WIDTH = 500;
 
     /** Window height in pixels. */
-    private static final int WINDOW_HEIGHT = 150;
+    private static final int WINDOW_HEIGHT = 300;
 
     /** Text field column count for integer input. */
     private static final int TEXT_FIELD_COLUMNS = 8;
@@ -96,35 +100,69 @@ public class CompressionCoefficientsPicker extends JFrame {
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        setLayout(new FlowLayout());
-        getContentPane().setBackground(FRAME_BACKGROUND);
+        setLayout(new BorderLayout(10, 10));
 
-        add(createLabel(F));
+        // Apply dark theme styling
+        styleFrame(this);
+        getContentPane().setBackground(new Color(30, 30, 30));
+
+        // Main panel with padding and title
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(new Color(30, 30, 30));
+        mainPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
+
+        // Title
+        JLabel titleLabel = getStyledHeadingLabel("Compression Parameters");
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titleLabel.setForeground(new Color(70, 130, 180));
+        mainPanel.add(titleLabel);
+        mainPanel.add(Box.createVerticalStrut(15));
+
+        // Input fields panel
+        JPanel fieldsPanel = new JPanel();
+        fieldsPanel.setLayout(new GridLayout(2, 2, 15, 12));
+        fieldsPanel.setBackground(new Color(30, 30, 30));
+        fieldsPanel.setBorder(new LineBorder(new Color(70, 70, 70), 1));
+        fieldsPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+
+        JLabel fLabel = getStyledLabel(F);
+        fLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 16));
         firstField = StylingFactory.getStyledTextField(TEXT_FIELD_COLUMNS);
-        add(firstField);
+        firstField.setFont(new Font(GuiConstants.FONT_SANS_SERIF, Font.PLAIN, 16));
 
-        add(createLabel(D));
+        JLabel dLabel = getStyledLabel(D);
+        dLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 16));
         secondField = StylingFactory.getStyledTextField(TEXT_FIELD_COLUMNS);
-        add(secondField);
+        secondField.setFont(new Font(GuiConstants.FONT_SANS_SERIF, Font.PLAIN, 16));
 
-        JButton submitButton = StylingFactory.getStyledButton(SUBMIT, STYLE1);
-        add(submitButton);
+        fieldsPanel.add(fLabel);
+        fieldsPanel.add(firstField);
+        fieldsPanel.add(dLabel);
+        fieldsPanel.add(secondField);
+
+        mainPanel.add(fieldsPanel);
+        mainPanel.add(Box.createVerticalStrut(15));
+
+        // Button panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        buttonPanel.setBackground(new Color(30, 30, 30));
+
+        JButton submitButton = StylingFactory.getStyledButton("SUBMIT", STYLE1);
+        submitButton.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 14));
+        submitButton.setPreferredSize(new Dimension(120, 40));
+
+        buttonPanel.add(submitButton);
+
+        mainPanel.add(buttonPanel);
+
+        add(mainPanel, BorderLayout.CENTER);
 
         submitButton.addActionListener(e -> submit());
         log.debug(LOG_INTEGER_PICKER_INITIALIZED);
     }
 
-    /**
-     * Creates a styled label with white text.
-     *
-     * @param text label text
-     * @return styled label
-     */
-    private JLabel createLabel(String text) {
-        JLabel label = new JLabel(text);
-        label.setForeground(LABEL_COLOR);
-        return label;
-    }
 
     /**
      * Read, validate and publish the integers entered in the UI.
@@ -190,17 +228,32 @@ public class CompressionCoefficientsPicker extends JFrame {
     }
 
     /**
-     * Displays an error dialog to the user.
+     * Displays an error dialog to the user with dark theme styling.
      *
      * @param message error message to display
      */
     private void showErrorDialog(String message) {
-        JOptionPane.showMessageDialog(
-                this,
+        JOptionPane optionPane = new JOptionPane(
                 message,
-                PickerConstants.ERROR,
-                JOptionPane.ERROR_MESSAGE
+                JOptionPane.ERROR_MESSAGE,
+                JOptionPane.DEFAULT_OPTION
         );
+
+        JDialog dialog = optionPane.createDialog(this, PickerConstants.ERROR);
+        dialog.setBackground(new Color(30, 30, 30));
+        
+        JPanel panel = (JPanel) dialog.getContentPane();
+        panel.setBackground(new Color(30, 30, 30));
+        
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JPanel) {
+                ((JPanel) comp).setBackground(new Color(30, 30, 30));
+            }
+            comp.setBackground(new Color(30, 30, 30));
+            comp.setForeground(Color.WHITE);
+        }
+        
+        dialog.setVisible(true);
     }
 
     /**

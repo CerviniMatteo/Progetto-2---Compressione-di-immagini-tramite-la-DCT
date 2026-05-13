@@ -51,6 +51,9 @@ public class StylingFactory {
     /** Border color for text fields and dark elements. */
     private static final Color COLOR_BORDER_DARK = new Color(70, 70, 70);
 
+    /** Border color for accents. */
+    private static final Color COLOR_BORDER_ACCENT = new Color(70, 130, 180);
+
     /** White text and foreground. */
     private static final Color COLOR_TEXT_LIGHT = Color.WHITE;
 
@@ -63,6 +66,16 @@ public class StylingFactory {
 
     /** Standard text field font size. */
     private static final int FONT_SIZE_TEXTFIELD = 20;
+
+    /** Title font size. */
+    private static final int FONT_SIZE_TITLE = 32;
+
+    /** Heading font size. */
+    private static final int FONT_SIZE_HEADING = 24;
+
+    /** Subheading font size. */
+    private static final int FONT_SIZE_SUBHEADING = 18;
+
 
     // ========================================================
     // PADDING CONSTANTS (top, left, bottom, right)
@@ -175,6 +188,69 @@ public class StylingFactory {
         }
 
         return panel;
+    }
+
+    /**
+     * Creates a styled {@link JLabel} for titles.
+     *
+     * @param text the label text
+     * @return a new styled title label
+     */
+    public static JLabel getStyledTitleLabel(String text) {
+        JLabel label = new JLabel(text, SwingConstants.CENTER);
+        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_TITLE));
+        label.setForeground(COLOR_TEXT_LIGHT);
+        return label;
+    }
+
+    /**
+     * Creates a styled {@link JLabel} for headings.
+     *
+     * @param text the label text
+     * @return a new styled heading label
+     */
+    public static JLabel getStyledHeadingLabel(String text) {
+        JLabel label = new JLabel(text, SwingConstants.LEFT);
+        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_HEADING));
+        label.setForeground(COLOR_TEXT_LIGHT);
+        return label;
+    }
+
+    /**
+     * Creates a styled {@link JLabel} for regular text.
+     *
+     * @param text the label text
+     * @return a new styled label
+     */
+    public static JLabel getStyledLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_SUBHEADING));
+        label.setForeground(COLOR_TEXT_LIGHT);
+        return label;
+    }
+
+    /**
+     * Creates a styled {@link JLabel} with custom alignment.
+     *
+     * @param text the label text
+     * @param horizontalAlignment the horizontal alignment (e.g., SwingConstants.CENTER)
+     * @return a new styled label
+     */
+    public static JLabel getStyledLabel(String text, int horizontalAlignment) {
+        JLabel label = new JLabel(text, horizontalAlignment);
+        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_SUBHEADING));
+        label.setForeground(COLOR_TEXT_LIGHT);
+        return label;
+    }
+
+    /**
+     * Styles a {@link JFrame} for dark theme consistency.
+     *
+     * @param frame the frame to style
+     */
+    public static void styleFrame(JFrame frame) {
+        frame.setBackground(COLOR_DARK);
+        frame.getContentPane().setBackground(COLOR_DARK);
     }
 
     // ========================================================

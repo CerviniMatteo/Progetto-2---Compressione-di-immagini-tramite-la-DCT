@@ -57,6 +57,19 @@ public class ImagePicker {
     /** File chooser window height in pixels. */
     private static final int FILE_CHOOSER_HEIGHT = 1240;
 
+    /** Dark background color for file chooser. */
+    private static final Color COLOR_DARK = new Color(30, 30, 30);
+
+    /** Medium dark background for file chooser components. */
+    private static final Color COLOR_MEDIUM_DARK = new Color(45, 45, 45);
+
+    /** Steelblue accent color for buttons and highlights. */
+    private static final Color COLOR_STEELBLUE = new Color(70, 130, 180);
+
+    /** Light text color. */
+    private static final Color COLOR_TEXT_LIGHT = Color.WHITE;
+
+
     /**
      * Logger for image picker events and errors.
      */
@@ -108,6 +121,9 @@ public class ImagePicker {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(currentDirectory.toFile());
         fileChooser.setSize(new Dimension(FILE_CHOOSER_WIDTH, FILE_CHOOSER_HEIGHT));
+
+        // Apply custom styling to the file chooser
+        applyFileChooserStyling(fileChooser);
 
         int result = fileChooser.showOpenDialog(null);
 
@@ -191,5 +207,81 @@ public class ImagePicker {
         Path target = outputDir.resolve(file.getName());
         Files.copy(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
         log.debug(String.format(LOG_FILE_COPIED, target.toAbsolutePath()));
+    }
+
+    /**
+     * Applies dark theme styling to the JFileChooser and all its components.
+     * <p>
+     * Styling includes:
+     * <ul>
+     *   <li>Dark background (COLOR_DARK) for the main panel</li>
+     *   <li>Medium dark background (COLOR_MEDIUM_DARK) for nested components</li>
+     *   <li>Steelblue accent for buttons and UI elements</li>
+     *   <li>Light text color for contrast</li>
+     *   <li>Dark borders for visual separation</li>
+     * </ul>
+     * </p>
+     *
+     * @param fileChooser the JFileChooser to style
+     */
+    private void applyFileChooserStyling(JFileChooser fileChooser) {
+        fileChooser.setBackground(COLOR_DARK);
+        fileChooser.setForeground(COLOR_TEXT_LIGHT);
+
+        // Recursively style all components in the file chooser hierarchy
+        styleComponentTree(fileChooser);
+    }
+
+    /**
+     * Recursively applies dark theme styling to a component and all its children.
+     * <p>
+     * Handles special cases for:
+     * <ul>
+     *   <li>JButton: applies steelblue background with light text</li>
+     *   <li>JTextField & JTextArea: applies medium dark background with light text</li>
+     *   <li>JList, JTree, JTable: applies medium dark background</li>
+     *   <li>JPanel, JLabel: applies foreground color</li>
+     *   <li>Containers: recursively processes children</li>
+     * </ul>
+     * </p>
+     *
+     * @param component the component to style (and all descending components)
+     */
+    private void styleComponentTree(Component component) {
+        // Style buttons with steelblue background
+        if (component instanceof JButton jbutton) {
+            jbutton.setBackground(COLOR_STEELBLUE);
+            jbutton.setForeground(COLOR_TEXT_LIGHT);
+            jbutton.setFocusPainted(false);
+            return;
+        }
+
+        // Style text input components
+        if (component instanceof JTextField || component instanceof JTextArea) {
+            component.setBackground(COLOR_MEDIUM_DARK);
+            component.setForeground(COLOR_TEXT_LIGHT);
+            return;
+        }
+
+        // Style list and tree components
+        if (component instanceof JList || component instanceof JTree || component instanceof JTable) {
+            component.setBackground(COLOR_MEDIUM_DARK);
+            component.setForeground(COLOR_TEXT_LIGHT);
+            return;
+        }
+
+        // Style labels and panels
+        if (component instanceof JLabel || component instanceof JPanel) {
+            component.setForeground(COLOR_TEXT_LIGHT);
+            component.setBackground(COLOR_DARK);
+        }
+
+        // Recursively style all child components
+        if (component instanceof Container container) {
+            Component[] children = container.getComponents();
+            for (Component child : children) {
+                styleComponentTree(child);
+            }
+        }
     }
 }

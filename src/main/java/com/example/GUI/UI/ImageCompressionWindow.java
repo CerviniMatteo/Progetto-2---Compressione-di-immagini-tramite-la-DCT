@@ -11,12 +11,12 @@ import org.apache.commons.math3.util.Pair;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import static com.example.GUI.factory.StylingFactory.getStyledButton;
-import static com.example.GUI.factory.StylingFactory.getStyledPanel;
+import static com.example.GUI.factory.StylingFactory.*;
 
 /**
  * Main Swing window for the DCT image compression workflow.
@@ -95,6 +95,16 @@ public class ImageCompressionWindow extends JFrame {
      */
     private JPanel createTopPanel() {
         JPanel topButtonsPanel = getStyledPanel(PanelContrast.HIGH);
+        topButtonsPanel.setLayout(new BorderLayout(15, 10));
+        topButtonsPanel.setBorder(new EmptyBorder(15, 20, 15, 20));
+
+        // Title label
+        JLabel titleLabel = getStyledHeadingLabel("DCT Image Compression");
+
+        // Buttons panel
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setBackground(new Color(30, 30, 30));
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
 
         JButton chooseImageButton =
                 getStyledButton(GuiConstants.BUTTON_CHOOSE_IMAGE, ButtonStyle.STYLE2);
@@ -102,9 +112,11 @@ public class ImageCompressionWindow extends JFrame {
         JButton compressButton =
                 getStyledButton(GuiConstants.BUTTON_COMPRESS_IMAGE, ButtonStyle.STYLE3);
 
-        topButtonsPanel.add(chooseImageButton);
-        topButtonsPanel.add(Box.createHorizontalStrut(20));
-        topButtonsPanel.add(compressButton);
+        buttonsPanel.add(chooseImageButton);
+        buttonsPanel.add(compressButton);
+
+        topButtonsPanel.add(titleLabel, BorderLayout.WEST);
+        topButtonsPanel.add(buttonsPanel, BorderLayout.EAST);
 
         // Wire button actions
         chooseImageButton.addActionListener(e -> handleChooseImage());
@@ -120,7 +132,8 @@ public class ImageCompressionWindow extends JFrame {
      */
     private JPanel createImagesPanel() {
         JPanel imagesPanel = getStyledPanel(PanelContrast.MEDIUM);
-        imagesPanel.setLayout(new GridLayout(1, 2, 20, 0));
+        imagesPanel.setLayout(new GridLayout(1, 2, 30, 0));
+        imagesPanel.setBorder(new EmptyBorder(20, 25, 20, 25));
 
         originalBox = createImageBox(GuiConstants.LABEL_ORIGINAL);
         compressedBox = createImageBox(GuiConstants.LABEL_COMPRESSED);
@@ -222,16 +235,27 @@ public class ImageCompressionWindow extends JFrame {
      */
     private JPanel createImageBox(String title) {
 
-        JPanel panel = getStyledPanel(PanelContrast.LOW);
-        panel.setLayout(new BorderLayout());
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout(0, 15));
+        panel.setBackground(new Color(45, 45, 45));
+        panel.setBorder(new LineBorder(new Color(70, 130, 180), 2));
 
-        JLabel label = new JLabel(title, SwingConstants.CENTER);
+        // Title label with better styling
+        JLabel titleLabel = getStyledHeadingLabel(title);
+        titleLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 22));
 
-        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 30));
+        JPanel titleContainer = new JPanel();
+        titleContainer.setBackground(new Color(30, 30, 30));
+        titleContainer.setBorder(new EmptyBorder(10, 15, 10, 15));
+        titleContainer.add(titleLabel);
 
-        label.setForeground(new Color(80, 80, 80));
+        panel.add(titleContainer, BorderLayout.NORTH);
 
-        panel.add(label, BorderLayout.CENTER);
+        JLabel placeholderLabel = new JLabel(title, SwingConstants.CENTER);
+        placeholderLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 28));
+        placeholderLabel.setForeground(new Color(120, 120, 120));
+
+        panel.add(placeholderLabel, BorderLayout.CENTER);
 
         return panel;
     }
@@ -295,32 +319,30 @@ public class ImageCompressionWindow extends JFrame {
      * @return panel containing all preview UI elements
      */
     private static JPanel createImageLabel(String name, Image scaled, String sizeText) {
-        JPanel container = new JPanel(new BorderLayout());
-        container.setBackground(Color.WHITE);
-        container.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JPanel container = new JPanel(new BorderLayout(0, 12));
+        container.setBackground(new Color(45, 45, 45));
+        container.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        container.add(createMetadataLabel(name, true), BorderLayout.NORTH);
-        container.add(new JLabel(new ImageIcon(scaled), SwingConstants.CENTER), BorderLayout.CENTER);
-        container.add(createMetadataLabel(sizeText, false), BorderLayout.SOUTH);
+        // Title at top
+        JLabel titleLabel = getStyledLabel(name, SwingConstants.CENTER);
+        titleLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 20));
+        titleLabel.setForeground(new Color(70, 130, 180));
+
+        // Image in center with white background container
+        JPanel imagePanel = new JPanel(new BorderLayout());
+        imagePanel.setBackground(Color.WHITE);
+        imagePanel.setBorder(new LineBorder(new Color(100, 100, 100), 1));
+        imagePanel.add(new JLabel(new ImageIcon(scaled), SwingConstants.CENTER), BorderLayout.CENTER);
+
+        // Size info at bottom
+        JLabel sizeLabel = getStyledLabel(sizeText, SwingConstants.CENTER);
+        sizeLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.PLAIN, 14));
+        sizeLabel.setForeground(new Color(150, 150, 150));
+
+        container.add(titleLabel, BorderLayout.NORTH);
+        container.add(imagePanel, BorderLayout.CENTER);
+        container.add(sizeLabel, BorderLayout.SOUTH);
 
         return container;
-    }
-
-    /**
-     * Creates a formatted metadata label.
-     *
-     * @param text label text
-     * @param isBold whether to apply bold font
-     * @return styled label
-     */
-    private static JLabel createMetadataLabel(String text, boolean isBold) {
-        JLabel label = new JLabel(text, SwingConstants.CENTER);
-        label.setFont(new Font(GuiConstants.FONT_ARIAL, isBold ? Font.BOLD : Font.PLAIN, isBold ? 30 : 20));
-
-        if (!isBold) {
-            label.setForeground(new Color(100, 100, 100));
-        }
-
-        return label;
     }
 }

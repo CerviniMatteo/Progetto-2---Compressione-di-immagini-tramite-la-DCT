@@ -8,10 +8,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static com.example.GUI.factory.StylingFactory.getStyledButton;
-import static com.example.GUI.factory.StylingFactory.getStyledPanel;
+import static com.example.GUI.factory.StylingFactory.*;
 
 /**
  * Entry point window that allows users to select which assignment part to execute.
@@ -29,10 +29,10 @@ public class PartChooserWindow extends JFrame {
     // ========================================================
 
     /** Window width in pixels. */
-    private static final int WINDOW_WIDTH = 550;
+    private static final int WINDOW_WIDTH = 700;
 
     /** Window height in pixels. */
-    private static final int WINDOW_HEIGHT = 100;
+    private static final int WINDOW_HEIGHT = 280;
 
     /** Block sizes to benchmark (powers of 2). */
     private static final int[] BENCHMARK_BLOCK_SIZES = {8, 16, 32, 64, 128, 256, 512, 1024, 2048};
@@ -61,12 +61,62 @@ public class PartChooserWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
 
-        JPanel buttonPanel = createButtonPanel();
-        add(buttonPanel, BorderLayout.CENTER);
+        // Apply dark theme styling
+        styleFrame(this);
+
+        JPanel mainPanel = createMainPanel();
+        add(mainPanel, BorderLayout.CENTER);
 
         setVisible(true);
+    }
+
+    /**
+     * Creates the main panel with title, description, and buttons.
+     *
+     * @return configured main panel
+     */
+    private JPanel createMainPanel() {
+        JPanel mainPanel = getStyledPanel(PanelContrast.HIGH);
+        mainPanel.setLayout(new BorderLayout(0, 20));
+        mainPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
+
+        // Title section
+        JPanel titlePanel = createTitleSection();
+        
+        // Button panel
+        JPanel buttonPanel = createButtonPanel();
+
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+        mainPanel.add(buttonPanel, BorderLayout.CENTER);
+
+        return mainPanel;
+    }
+
+    /**
+     * Creates the title and description section.
+     *
+     * @return configured title panel
+     */
+    private JPanel createTitleSection() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(30, 30, 30));
+
+        JLabel titleLabel = getStyledTitleLabel("DCT Image Compression");
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel descriptionLabel = getStyledLabel("Select an operation to begin", SwingConstants.CENTER);
+        descriptionLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.PLAIN, 16));
+        descriptionLabel.setForeground(new Color(150, 150, 150));
+        descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panel.add(titleLabel);
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(descriptionLabel);
+
+        return panel;
     }
 
     /**
@@ -75,11 +125,19 @@ public class PartChooserWindow extends JFrame {
      * @return configured button panel
      */
     private JPanel createButtonPanel() {
-        JPanel panel = getStyledPanel(PanelContrast.HIGH);
-        panel.setLayout(new FlowLayout());
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1, 2, 20, 0));
+        panel.setBackground(new Color(30, 30, 30));
 
-        JButton part1Button = getStyledButton(GuiConstants.BUTTON_PART1, BUTTON_STYLE);
-        JButton part2Button = getStyledButton(GuiConstants.BUTTON_PART2, BUTTON_STYLE);
+        JButton part1Button = getStyledButton("<html> PART 1 <br>Benchmark DCT</html>", BUTTON_STYLE);
+        JButton part2Button = getStyledButton("<html>PART 2 <br>GUI Image Compression</html>", BUTTON_STYLE);
+
+        // Increase button size
+        Dimension buttonSize = new Dimension(250, 60);
+        part1Button.setPreferredSize(buttonSize);
+        part2Button.setPreferredSize(buttonSize);
+        part1Button.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 16));
+        part2Button.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 16));
 
         part1Button.addActionListener(e -> handlePart1());
         part2Button.addActionListener(e -> handlePart2());

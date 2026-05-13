@@ -34,7 +34,7 @@ public class PartChooserWindow extends JFrame {
     private static final int WINDOW_HEIGHT = 100;
 
     /** Block sizes to benchmark (powers of 2). */
-    private static final int[] BENCHMARK_BLOCK_SIZES = {8, 16, 32, 64, 128, 256, 512, 1048};
+    private static final int[] BENCHMARK_BLOCK_SIZES = {8, 16, 32, 64, 128, 256, 512, 1024, 2048};
 
     /** Button style for part selection buttons. */
     private static final ButtonStyle BUTTON_STYLE = ButtonStyle.STYLE1;

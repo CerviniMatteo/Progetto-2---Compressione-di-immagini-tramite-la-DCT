@@ -2,6 +2,7 @@ package com.example.GUI.factory;
 
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
+import com.example.lib.constants.GuiConstants;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -56,12 +57,6 @@ public class StylingFactory {
     // ========================================================
     // FONT CONSTANTS
     // ========================================================
-
-    /** Standard font family for UI components. */
-    private static final String FONT_ARIAL = "Arial";
-
-    /** Monospace font for text fields. */
-    private static final String FONT_SANSSERIF = "SansSerif";
 
     /** Standard button font size. */
     private static final int FONT_SIZE_BUTTON = 13;
@@ -143,7 +138,7 @@ public class StylingFactory {
         field.setSelectedTextColor(COLOR_TEXT_LIGHT);
 
         // Typography
-        field.setFont(new Font(FONT_SANSSERIF, Font.PLAIN, FONT_SIZE_TEXTFIELD));
+        field.setFont(new Font(GuiConstants.FONT_SANS_SERIF, Font.PLAIN, FONT_SIZE_TEXTFIELD));
 
         // Border: subtle outline + internal padding
         field.setBorder(createTextFieldBorder());
@@ -209,7 +204,7 @@ public class StylingFactory {
     private static void applyButtonBaseStyle(JButton button) {
         button.setFocusPainted(false);
         button.setForeground(COLOR_TEXT_LIGHT);
-        button.setFont(new Font(FONT_ARIAL, Font.BOLD, FONT_SIZE_BUTTON));
+        button.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_BUTTON));
         button.setBorder(BorderFactory.createEmptyBorder(PAD_BUTTON_V, PAD_BUTTON_H, PAD_BUTTON_V, PAD_BUTTON_H));
     }
 

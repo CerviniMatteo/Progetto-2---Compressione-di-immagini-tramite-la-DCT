@@ -191,7 +191,7 @@ public class ImageUtils {
      */
     public static void saveAsBMP(BufferedImage img, String path) {
         try {
-            File output = new File(path  + ".bmp");
+            File output = new File(path + DOT_BMP);
 
             ImageIO.write(img, BMP, output);
 

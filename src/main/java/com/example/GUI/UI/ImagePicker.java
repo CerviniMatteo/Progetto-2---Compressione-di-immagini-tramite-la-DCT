@@ -1,6 +1,7 @@
 package com.example.GUI.UI;
 
 import com.example.GUI.observer.Observable;
+import com.example.lib.constants.GuiConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
@@ -56,9 +57,6 @@ public class ImagePicker {
     /** File chooser window height in pixels. */
     private static final int FILE_CHOOSER_HEIGHT = 1240;
 
-    /** Output directory name. */
-    private static final String OUTPUT_DIR = "output";
-
     /**
      * Logger for image picker events and errors.
      */
@@ -104,7 +102,7 @@ public class ImagePicker {
      * @see javax.imageio.ImageIO
      */
     public void showUI() {
-        log.debug("Opening file chooser dialog");
+        log.debug(LOG_OPEN_FILE_CHOOSER);
         Path currentDirectory = resolveInitialDirectory();
 
         JFileChooser fileChooser = new JFileChooser();
@@ -114,12 +112,12 @@ public class ImagePicker {
         int result = fileChooser.showOpenDialog(null);
 
         if (result != JFileChooser.APPROVE_OPTION) {
-            log.debug("File chooser cancelled by user");
+            log.debug(LOG_FILE_CHOOSER_CANCELLED);
             return;
         }
 
         File selectedFile = fileChooser.getSelectedFile();
-        log.debug(String.format("File selected: %s", selectedFile.getAbsolutePath()));
+        log.debug(String.format(LOG_FILE_SELECTED, selectedFile.getAbsolutePath()));
         handleImageSelection(selectedFile);
     }
 
@@ -133,19 +131,19 @@ public class ImagePicker {
      * @return the resolved directory path
      */
     private Path resolveInitialDirectory() {
-        log.debug("Resolving initial file chooser directory");
+        log.debug(LOG_RESOLVE_INITIAL_DIR);
         String home = System.getProperty(HOME_PATH);
         Path downloads = Paths.get(home, DOWNLOAD_PATH);
 
         if (!Files.exists(downloads)) {
-            log.debug(String.format("Downloads directory not found at %s, trying fallback", downloads));
+            log.debug(String.format(LOG_DOWNLOADS_NOT_FOUND, downloads));
             downloads = Paths.get(home, SCARICATI_PATH);
         }
 
         Path appImagesDir = downloads.resolve(PROJECT_DIR_PATH).resolve(IMMAGINI);
         Path resolvedDir = Files.exists(appImagesDir) ? appImagesDir : downloads;
         
-        log.debug(String.format("Using directory: %s", resolvedDir));
+        log.debug(String.format(LOG_USING_DIRECTORY, resolvedDir));
         return resolvedDir;
     }
 
@@ -156,22 +154,22 @@ public class ImagePicker {
      */
     private void handleImageSelection(File file) {
         try {
-            log.debug(String.format("Reading image from %s", file.getAbsolutePath()));
+            log.debug(String.format(LOG_READING_IMAGE, file.getAbsolutePath()));
             BufferedImage image = ImageIO.read(file);
 
             if (image == null) {
-                log.warn(String.format("File %s is not a readable image format", file.getName()));
+                log.warn(String.format(LOG_UNREADABLE_IMAGE, file.getName()));
                 return;
             }
 
-            log.debug(String.format("Image loaded successfully: %dx%d pixels", image.getWidth(), image.getHeight()));
+            log.debug(String.format(LOG_IMAGE_LOADED, image.getWidth(), image.getHeight()));
 
             copyToOutputDirectory(file);
             observable.set(new Pair<>(file.getName(), image));
-            log.info(String.format("Image published: %s", file.getName()));
+            log.info(String.format(LOG_IMAGE_PUBLISHED, file.getName()));
 
         } catch (IOException e) {
-            log.error(String.format("Failed to read image from %s: %s", file.getAbsolutePath(), e.getMessage()), e);
+            log.error(String.format(LOG_IMAGE_READ_FAILED, file.getAbsolutePath(), e.getMessage()), e);
         }
     }
 
@@ -182,16 +180,16 @@ public class ImagePicker {
      * @throws IOException if the copy operation fails
      */
     private void copyToOutputDirectory(File file) throws IOException {
-        log.debug(String.format("Copying file to output directory: %s", file.getName()));
-        Path outputDir = Paths.get(OUTPUT_DIR);
+        log.debug(String.format(LOG_COPYING_TO_OUTPUT, file.getName()));
+        Path outputDir = Paths.get(GuiConstants.OUTPUT_DIR_NAME);
 
         if (!Files.exists(outputDir)) {
-            log.debug("Creating output directory");
+            log.debug(LOG_CREATING_OUTPUT_DIR);
             Files.createDirectories(outputDir);
         }
 
         Path target = outputDir.resolve(file.getName());
         Files.copy(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
-        log.debug(String.format("File copied to: %s", target.toAbsolutePath()));
+        log.debug(String.format(LOG_FILE_COPIED, target.toAbsolutePath()));
     }
 }

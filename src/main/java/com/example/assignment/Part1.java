@@ -1,6 +1,7 @@
 package com.example.assignment;
 
 import com.example.lib.DCT2;
+import com.example.lib.constants.BenchmarkConstants;
 import com.example.lib.utils.OpenCsvUtils;
 import com.example.lib.utils.PlotUtils;
 import org.apache.commons.logging.Log;
@@ -77,12 +78,12 @@ public class Part1 {
      * @param sizes the matrix sizes to benchmark
      */
     public void benchmark(int[] sizes) {
-        log.info(String.format("DCT Benchmark started with %d sizes", sizes.length));
+        log.info(String.format(BenchmarkConstants.LOG_BENCHMARK_START, sizes.length));
 
         DCT2 dct = new DCT2();
 
         for (int n : sizes) {
-            log.debug(String.format("Benchmarking matrix size: %dx%d", n, n));
+            log.debug(String.format(BenchmarkConstants.LOG_BENCHMARK_SIZE, n, n));
 
             double[][] matrix = randomMatrix(n);
 
@@ -94,21 +95,21 @@ public class Part1 {
             DoubleDCT_2D lib = new DoubleDCT_2D(n, n);
 
             // ===== MY DCT =====
-            log.debug(String.format("Measuring custom DCT implementation for N=%d", n));
+            log.debug(String.format(BenchmarkConstants.LOG_MEASURE_CUSTOM, n));
             double myTime = measure(() -> dct.DCT2(input), 3);
 
             // ===== LIB DCT =====
-            log.debug(String.format("Measuring library DCT implementation for N=%d", n));
+            log.debug(String.format(BenchmarkConstants.LOG_MEASURE_LIBRARY, n));
             double libTime = measure(() -> lib.forward(copy2, true), 3);
 
             results.add(new Result(n, myTime, libTime));
 
             double ratio = myTime > 0 ? libTime / myTime : 0;
-            log.info(String.format("N=%d | MyDCT: %.6f s | LibDCT: %.6f s | Ratio: %.2fx",
+            log.info(String.format(BenchmarkConstants.LOG_RESULT_ROW,
                     n, myTime, libTime, ratio));
         }
 
-        log.info(String.format("Benchmark completed for all %d sizes", results.size()));
+        log.info(String.format(BenchmarkConstants.LOG_BENCHMARK_DONE, results.size()));
 
         double[] nValues = new double[results.size()];
         double[] myTimes = new double[results.size()];
@@ -123,25 +124,25 @@ public class Part1 {
             ratios[i] = r.myTime > 0 ? r.libTime / r.myTime : 0;
         }
 
-        log.debug("Generating benchmark plot...");
+        log.debug(BenchmarkConstants.LOG_GENERATING_PLOT);
         try {
             PlotUtils.plotDCTBenchmark(
                     nValues,
                     myTimes,
                     libTimes,
-                    "DCT2 Benchmark (My vs Library)"
+                    BenchmarkConstants.DCT_BENCHMARK_TITLE
             );
-            log.info("Benchmark plot saved successfully");
+            log.info(BenchmarkConstants.LOG_PLOT_SAVED);
         } catch (Exception e) {
-            log.error("Failed to generate benchmark plot: " + e.getMessage(), e);
+            log.error(BenchmarkConstants.LOG_PLOT_FAILED_PREFIX + e.getMessage(), e);
         }
 
-        log.debug("Writing benchmark results to CSV...");
+        log.debug(BenchmarkConstants.LOG_WRITING_CSV);
         try {
-            OpenCsvUtils.createCSVFile("output/times_vs_size.csv", sizes, myTimes, libTimes, ratios);
-            log.info("Benchmark CSV exported successfully to output/times_vs_size.csv");
+            OpenCsvUtils.createCSVFile(BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH, sizes, myTimes, libTimes, ratios);
+            log.info(BenchmarkConstants.LOG_CSV_SAVED);
         } catch (Exception e) {
-            log.error("Failed to export CSV file: " + e.getMessage(), e);
+            log.error(BenchmarkConstants.LOG_CSV_FAILED_PREFIX + e.getMessage(), e);
         }
     }
 

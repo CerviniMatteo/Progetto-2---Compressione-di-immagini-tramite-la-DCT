@@ -111,7 +111,7 @@ public class IntegersPicker extends JFrame {
         add(submitButton);
 
         submitButton.addActionListener(e -> submit());
-        log.debug("Integer picker initialized");
+        log.debug(LOG_INTEGER_PICKER_INITIALIZED);
     }
 
     /**
@@ -147,27 +147,27 @@ public class IntegersPicker extends JFrame {
         try {
             String fText = firstField.getText().trim();
             String dText = secondField.getText().trim();
-            
-            log.debug(String.format("Attempting to parse inputs: F='%s', d='%s'", fText, dText));
-            
+
+            log.debug(String.format(LOG_PARSE_INPUTS, fText, dText));
+
             int F = Integer.parseInt(fText);
             int d = Integer.parseInt(dText);
 
-            log.debug(String.format("Parsed integers: F=%d, d=%d", F, d));
-            
+            log.debug(String.format(LOG_PARSED_INPUTS, F, d));
+
             validateInputs(F, d);
 
-            log.info(String.format("Parameters validated successfully: F=%d, d=%d", F, d));
-            
+            log.info(String.format(LOG_VALIDATION_SUCCESS, F, d));
+
             observable.set(new Pair<>(F, d));
             dispose();
 
         } catch (NumberFormatException e) {
-            String errorMsg = "Invalid input: Please enter integers only";
+            String errorMsg = INVALID_INTEGER_INPUT_ERROR;
             log.warn(errorMsg);
             showErrorDialog(errorMsg);
         } catch (IllegalArgumentException ex) {
-            log.warn("Validation failed: " + ex.getMessage());
+            log.warn(LOG_VALIDATION_FAILED_PREFIX + ex.getMessage());
             showErrorDialog(ex.getMessage());
         }
     }
@@ -227,6 +227,6 @@ public class IntegersPicker extends JFrame {
     public void showUI() {
         setLocationRelativeTo(null);
         setVisible(true);
-        log.debug("Integer picker shown");
+        log.debug(LOG_INTEGER_PICKER_SHOWN);
     }
 }

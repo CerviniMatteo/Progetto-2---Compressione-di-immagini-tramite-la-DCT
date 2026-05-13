@@ -5,6 +5,7 @@ public class UtilsConstants {
     public final static int COMPRESSED_IMAGE_WINDOW_Y = 0;
     public final static int ORIGINAL_IMAGE_WINDOW_Y = 0;
     public final static String BMP = "bmp";
+    public final static String DOT_BMP = ".bmp";
     public final static String SAVE_IMAGE_TO = "Image saved to: ";
     public final static String SAVING_ERROR = "Failed to save image";
     public final static int CHART_WIDTH = 900;
@@ -19,5 +20,6 @@ public class UtilsConstants {
     public final static String FAILED_BUILD_DISPLAY_MESSAGE = "Failed to build or display DCT benchmark chart";
     public final static String FAILED_SAVE_MESSAGE = "Failed to save DCT benchmark chart";
     public final static String UNABLE_CREATE_OUTPUT_DIR_MESSAGE = "Unable to create output directory: ";
+    public final static String TIMED_RESULT_FORMAT = "TimedResult{result=%s, time=%.6f s}";
 }
 

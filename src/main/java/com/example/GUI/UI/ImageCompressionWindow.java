@@ -3,6 +3,7 @@ package com.example.GUI.UI;
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.Part2;
+import com.example.lib.constants.GuiConstants;
 import com.example.lib.utils.ImageUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,7 +72,7 @@ public class ImageCompressionWindow extends JFrame {
      */
     public ImageCompressionWindow() {
 
-        super("DCT Image Compression Tool");
+        super(GuiConstants.APP_TITLE);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -96,10 +97,10 @@ public class ImageCompressionWindow extends JFrame {
         JPanel topButtonsPanel = getStyledPanel(PanelContrast.HIGH);
 
         JButton chooseImageButton =
-                getStyledButton("Choose Image", ButtonStyle.STYLE2);
+                getStyledButton(GuiConstants.BUTTON_CHOOSE_IMAGE, ButtonStyle.STYLE2);
 
         JButton compressButton =
-                getStyledButton("Compress Image", ButtonStyle.STYLE3);
+                getStyledButton(GuiConstants.BUTTON_COMPRESS_IMAGE, ButtonStyle.STYLE3);
 
         topButtonsPanel.add(chooseImageButton);
         topButtonsPanel.add(Box.createHorizontalStrut(20));
@@ -121,8 +122,8 @@ public class ImageCompressionWindow extends JFrame {
         JPanel imagesPanel = getStyledPanel(PanelContrast.MEDIUM);
         imagesPanel.setLayout(new GridLayout(1, 2, 20, 0));
 
-        originalBox = createImageBox("Original");
-        compressedBox = createImageBox("Compressed");
+        originalBox = createImageBox(GuiConstants.LABEL_ORIGINAL);
+        compressedBox = createImageBox(GuiConstants.LABEL_COMPRESSED);
 
         imagesPanel.add(originalBox);
         imagesPanel.add(compressedBox);
@@ -138,14 +139,14 @@ public class ImageCompressionWindow extends JFrame {
      * </p>
      */
     private void handleChooseImage() {
-        log.debug("Opening image picker dialog");
+        log.debug(GuiConstants.LOG_OPENING_IMAGE_PICKER);
         ImagePicker imagePicker = new ImagePicker();
 
         imagePicker.subscribe(pair -> {
             selectedImageName = extractFilename(pair.getFirst());
             selectedImage = ImageUtils.copyBufferedImage(pair.getSecond());
 
-            log.info(String.format("Image selected: %s (size: %dx%d pixels)",
+            log.info(String.format(GuiConstants.LOG_IMAGE_SELECTED,
                     selectedImageName, selectedImage.getWidth(), selectedImage.getHeight()));
 
             showImage(originalBox, selectedImage, selectedImageName);
@@ -163,35 +164,35 @@ public class ImageCompressionWindow extends JFrame {
      */
     private void handleCompress() {
         if (selectedImage == null) {
-            log.warn("Compress action triggered but no image selected");
+            log.warn(GuiConstants.LOG_COMPRESS_WITHOUT_IMAGE);
             return;
         }
 
-        log.debug("Opening compression parameters picker");
+        log.debug(GuiConstants.LOG_OPENING_PARAMETERS_PICKER);
         IntegersPicker integerPicker = new IntegersPicker();
 
         integerPicker.subscribe(pair -> {
             int F = pair.getFirst();
             int d = pair.getSecond();
 
-            log.info(String.format("Compression started with parameters: F=%d, d=%d", F, d));
+            log.info(String.format(GuiConstants.LOG_COMPRESSION_START, F, d));
 
             // Compress a fresh copy to avoid mutating selectedImage
             BufferedImage selectedCopy = ImageUtils.copyBufferedImage(selectedImage);
 
             try {
                 BufferedImage compressed = new Part2().compress(
-                        new Pair<>(selectedImageName + "_compressed", selectedCopy),
+                        new Pair<>(selectedImageName + GuiConstants.COMPRESSED_SUFFIX, selectedCopy),
                         F,
                         d
                 );
 
-                log.info(String.format("Compression completed: %s (size: %dx%d pixels)",
-                        selectedImageName + "_compressed", compressed.getWidth(), compressed.getHeight()));
+                log.info(String.format(GuiConstants.LOG_COMPRESSION_DONE,
+                        selectedImageName + GuiConstants.COMPRESSED_SUFFIX, compressed.getWidth(), compressed.getHeight()));
 
-                showImage(compressedBox, compressed, selectedImageName + "_compressed");
+                showImage(compressedBox, compressed, selectedImageName + GuiConstants.COMPRESSED_SUFFIX);
             } catch (Exception e) {
-                log.error("Compression failed: " + e.getMessage(), e);
+                log.error(GuiConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(), e);
             }
         });
 
@@ -226,7 +227,7 @@ public class ImageCompressionWindow extends JFrame {
 
         JLabel label = new JLabel(title, SwingConstants.CENTER);
 
-        label.setFont(new Font("Arial", Font.BOLD, 30));
+        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 30));
 
         label.setForeground(new Color(80, 80, 80));
 
@@ -274,11 +275,11 @@ public class ImageCompressionWindow extends JFrame {
      * @return HTML-formatted metadata string
      */
     private String formatImageMetadata(BufferedImage image, String name) {
-        File file = new File("output/" + name + ".bmp");
+        File file = new File(GuiConstants.OUTPUT_DIR_NAME + File.separator + name + GuiConstants.FILE_EXTENSION_BMP);
         double kb = ImageUtils.fileSizeInKb(file);
 
         return String.format(
-                "<html>%d x %d pixel <br> %.2f kB</html>",
+                GuiConstants.IMAGE_METADATA_TEMPLATE,
                 image.getWidth(),
                 image.getHeight(),
                 kb
@@ -314,7 +315,7 @@ public class ImageCompressionWindow extends JFrame {
      */
     private static JLabel createMetadataLabel(String text, boolean isBold) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);
-        label.setFont(new Font("Arial", isBold ? Font.BOLD : Font.PLAIN, isBold ? 30 : 20));
+        label.setFont(new Font(GuiConstants.FONT_ARIAL, isBold ? Font.BOLD : Font.PLAIN, isBold ? 30 : 20));
 
         if (!isBold) {
             label.setForeground(new Color(100, 100, 100));

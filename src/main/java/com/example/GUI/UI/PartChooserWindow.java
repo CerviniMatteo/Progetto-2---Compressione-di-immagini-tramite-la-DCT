@@ -3,6 +3,7 @@ package com.example.GUI.UI;
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.Part1;
+import com.example.lib.constants.GuiConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -55,7 +56,7 @@ public class PartChooserWindow extends JFrame {
      * </ul>
      */
     public PartChooserWindow() {
-        super("Choose what assignment part to be run");
+        super(GuiConstants.PART_CHOOSER_TITLE);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -77,8 +78,8 @@ public class PartChooserWindow extends JFrame {
         JPanel panel = getStyledPanel(PanelContrast.HIGH);
         panel.setLayout(new FlowLayout());
 
-        JButton part1Button = getStyledButton("Part1", BUTTON_STYLE);
-        JButton part2Button = getStyledButton("Part2", BUTTON_STYLE);
+        JButton part1Button = getStyledButton(GuiConstants.BUTTON_PART1, BUTTON_STYLE);
+        JButton part2Button = getStyledButton(GuiConstants.BUTTON_PART2, BUTTON_STYLE);
 
         part1Button.addActionListener(e -> handlePart1());
         part2Button.addActionListener(e -> handlePart2());
@@ -96,15 +97,15 @@ public class PartChooserWindow extends JFrame {
      * </p>
      */
     private void handlePart1() {
-        log.info("Part 1 (Benchmark) selected - launching DCT benchmark");
+        log.info(GuiConstants.LOG_PART1_SELECTED);
         Part1 part1 = new Part1();
 
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                log.debug("Benchmark thread started");
+                log.debug(GuiConstants.LOG_BENCHMARK_THREAD_START);
                 part1.benchmark(BENCHMARK_BLOCK_SIZES);
-                log.debug("Benchmark thread completed");
+                log.debug(GuiConstants.LOG_BENCHMARK_THREAD_DONE);
                 return null;
             }
         }.execute();
@@ -117,7 +118,7 @@ public class PartChooserWindow extends JFrame {
      * </p>
      */
     private void handlePart2() {
-        log.info("Part 2 (Compression GUI) selected - launching image compression tool");
+        log.info(GuiConstants.LOG_PART2_SELECTED);
         new ImageCompressionWindow();
     }
 }

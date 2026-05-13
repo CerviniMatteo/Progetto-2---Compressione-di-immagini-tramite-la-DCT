@@ -1,5 +1,7 @@
 package com.example.lib.utils;
 
+import static com.example.lib.constants.UtilsConstants.TIMED_RESULT_FORMAT;
+
 /**
  * Utility class for measuring and benchmarking operation execution times.
  * <p>
@@ -19,6 +21,7 @@ public class Timer {
 
     /** Default number of repetitions for benchmarking. */
     private static final int DEFAULT_REPETITIONS = 1;
+
 
     /**
      * Functional interface for a callable operation that returns no value.
@@ -180,7 +183,7 @@ public class Timer {
          */
         @Override
         public String toString() {
-            return String.format("TimedResult{result=%s, time=%.6f s}", result, timeSeconds);
+            return String.format(TIMED_RESULT_FORMAT, result, timeSeconds);
         }
     }
 }

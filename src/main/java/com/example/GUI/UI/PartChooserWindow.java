@@ -4,6 +4,7 @@ import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.Part1;
 import com.example.lib.constants.GuiConstants;
+import com.formdev.flatlaf.FlatDarkLaf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,6 +69,12 @@ public class PartChooserWindow extends JFrame {
 
         JPanel mainPanel = createMainPanel();
         add(mainPanel, BorderLayout.CENTER);
+
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         setVisible(true);
     }

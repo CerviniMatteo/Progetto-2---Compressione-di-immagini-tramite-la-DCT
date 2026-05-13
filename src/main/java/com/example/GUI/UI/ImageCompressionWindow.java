@@ -1,6 +1,7 @@
 package com.example.GUI.UI;
 
-import com.example.GUI.enums.Style;
+import com.example.GUI.enums.ButtonStyle;
+import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.Part2;
 import com.example.lib.utils.ImageUtils;
 import org.apache.commons.logging.Log;
@@ -8,13 +9,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import static com.example.GUI.factory.StylingFactory.getStyledButton;
+import static com.example.GUI.factory.StylingFactory.getStyledPanel;
 
 /**
  * Main Swing window for the DCT image compression workflow.
@@ -73,16 +73,13 @@ public class ImageCompressionWindow extends JFrame {
         // ==================================================
         // TOP PANEL (BUTTONS)
         // ==================================================
-        JPanel topButtonsPanel = new JPanel();
-
-        topButtonsPanel.setBackground(new Color(30, 30, 30));
-        topButtonsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        JPanel topButtonsPanel = getStyledPanel(PanelContrast.HIGH);
 
         JButton chooseImageButton =
-                getStyledButton("Choose Image", Style.STYLE2);
+                getStyledButton("Choose Image", ButtonStyle.STYLE2);
 
         JButton compressButton =
-                getStyledButton("Compress Image", Style.STYLE3);
+                getStyledButton("Compress Image", ButtonStyle.STYLE3);
 
         topButtonsPanel.add(chooseImageButton);
         topButtonsPanel.add(Box.createHorizontalStrut(20));
@@ -91,15 +88,10 @@ public class ImageCompressionWindow extends JFrame {
         // ==================================================
         // BOTTOM PANEL (IMAGES SIDE BY SIDE)
         // ==================================================
-        JPanel imagesPanel = new JPanel();
-
-        imagesPanel.setBackground(new Color(45, 45, 45));
+        JPanel imagesPanel = getStyledPanel(PanelContrast.MEDIUM);
 
         // GridLayout splits available width evenly across the two preview boxes
         imagesPanel.setLayout(new GridLayout(1, 2, 20, 0));
-
-        // 20px margins around the image area
-        imagesPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         JPanel originalBox = createImageBox("Original");
 
@@ -204,28 +196,12 @@ public class ImageCompressionWindow extends JFrame {
      */
     private JPanel createImageBox(String title) {
 
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = getStyledPanel(PanelContrast.LOW);
+        panel.setLayout(new BorderLayout());
 
-        panel.setBackground(Color.WHITE);
+        JLabel label = new JLabel(title, SwingConstants.CENTER);
 
-        panel.setBorder(
-                BorderFactory.createCompoundBorder(
-                        new LineBorder(
-                                new Color(200, 200, 200),
-                                1,
-                                true
-                        ),
-                        new EmptyBorder(10, 10, 10, 10)
-                )
-        );
-
-        // No fixed preferred size: box adapts to available space.
-        JLabel label = new JLabel(
-                title,
-                SwingConstants.CENTER
-        );
-
-        label.setFont(new Font("Arial", Font.BOLD, 14));
+        label.setFont(new Font("Arial", Font.BOLD, 30));
 
         label.setForeground(new Color(80, 80, 80));
 
@@ -320,8 +296,7 @@ public class ImageCompressionWindow extends JFrame {
                 Image.SCALE_SMOOTH
         );
 
-        JPanel container =
-                createImageLabel(name, scaled, sizeText);
+        JPanel container = createImageLabel(name, scaled, sizeText);
 
         box.removeAll();
 
@@ -354,20 +329,18 @@ public class ImageCompressionWindow extends JFrame {
         JLabel nameLabel =
                 new JLabel(name, SwingConstants.CENTER);
 
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 30));
 
         JLabel sizeLabel =
                 new JLabel(sizeText, SwingConstants.CENTER);
 
-        sizeLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        sizeLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 
         sizeLabel.setForeground(new Color(100, 100, 100));
 
         JPanel container = new JPanel(new BorderLayout());
 
         container.setBackground(Color.WHITE);
-
-        container.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         container.add(nameLabel, BorderLayout.NORTH);
 

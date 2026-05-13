@@ -1,6 +1,7 @@
 package com.example.GUI.UI;
 
-import com.example.GUI.enums.Style;
+import com.example.GUI.enums.ButtonStyle;
+import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.Part1;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import static com.example.GUI.factory.StylingFactory.getStyledButton;
+import static com.example.GUI.factory.StylingFactory.getStyledPanel;
 
 /**
  * Entry point window that allows users to select which assignment part to execute.
@@ -44,8 +46,8 @@ public class PartChooserWindow extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JButton part1Button = getStyledButton("Part1", Style.STYLE1);
-        JButton part2Button = getStyledButton("Part2", Style.STYLE1);
+        JButton part1Button = getStyledButton("Part1", ButtonStyle.STYLE1);
+        JButton part2Button = getStyledButton("Part2", ButtonStyle.STYLE1);
 
         part1Button.addActionListener(e -> {
             log.info("Part 1 selected");
@@ -64,9 +66,9 @@ public class PartChooserWindow extends JFrame {
             new ImageCompressionWindow();
         });
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(new Color(30, 30, 30));
+        JPanel buttonPanel = getStyledPanel(PanelContrast.HIGH);
         buttonPanel.setLayout(new FlowLayout());
+
         buttonPanel.add(part1Button);
         buttonPanel.add(part2Button);
 

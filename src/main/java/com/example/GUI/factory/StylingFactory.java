@@ -1,28 +1,31 @@
 package com.example.GUI.factory;
 
-import com.example.GUI.enums.Style;
+import com.example.GUI.enums.ButtonStyle;
+import com.example.GUI.enums.PanelContrast;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 /**
  * Factory class responsible for creating consistently styled Swing components.
  * <p>
- * The styling options are defined by the {@link Style} enum and are applied
- * through helper methods such as {@link #getStyledButton(String, Style)} and
+ * The styling options are defined by the {@link ButtonStyle} enum and are applied
+ * through helper methods such as {@link #getStyledButton(String, ButtonStyle)} and
  * {@link #getStyledTextField(int)}.
  */
 public class StylingFactory {
 
     /**
      * Creates a Swing {@link JButton} with shared base properties and a
-     * background color selected by the provided {@link Style}.
+     * background color selected by the provided {@link ButtonStyle}.
      *
      * @param text  the label text displayed on the button
-     * @param style the visual style variant to apply
+     * @param buttonStyle the visual style variant to apply
      * @return a new styled {@link JButton}
      */
-    public static JButton getStyledButton(String text, Style style) {
+    public static JButton getStyledButton(String text, ButtonStyle buttonStyle) {
         JButton button = new JButton(text);
 
         // Base visual settings applied to all button styles.
@@ -33,7 +36,7 @@ public class StylingFactory {
         button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
         // Style-specific background color selection.
-        switch (style) {
+        switch (buttonStyle) {
             case STYLE1:
                 button.setBackground(new Color(70, 130, 180));
                 break;
@@ -84,5 +87,32 @@ public class StylingFactory {
         ));
 
         return field;
+    }
+
+    public static JPanel getStyledPanel(PanelContrast contrast) {
+        JPanel panel = new JPanel();
+        switch (contrast) {
+            case HIGH:
+                panel.setBackground(new Color(30, 30, 30));
+                break;
+            case MEDIUM:
+                panel.setBackground(new Color(45, 45, 45));
+                panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+                break;
+            case LOW:
+                panel.setBackground(new Color(170, 170, 170));
+                panel.setBorder(
+                        BorderFactory.createCompoundBorder(
+                                new LineBorder(
+                                        new Color(200, 200, 200),
+                                        1,
+                                        true
+                                ),
+                                new EmptyBorder(10, 10, 10, 10)
+                        )
+                );
+                break;
+        }
+        return panel;
     }
 }

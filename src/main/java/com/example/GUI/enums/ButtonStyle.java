@@ -3,7 +3,7 @@ package com.example.GUI.enums;
 /**
  * Predefined button styles supported by this factory.
  */
-public enum Style {
+public enum ButtonStyle {
     /** Default blue button style. */
     STYLE1,
 

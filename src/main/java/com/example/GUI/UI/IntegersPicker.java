@@ -3,6 +3,8 @@ package com.example.GUI.UI;
 import com.example.GUI.factory.StylingFactory;
 import com.example.lib.constants.PickerConstants;
 import com.example.GUI.observer.Observable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
 
 import javax.swing.*;
@@ -35,15 +37,37 @@ import static com.example.lib.constants.PickerConstants.*;
  */
 public class IntegersPicker extends JFrame {
 
+    // ========================================================
+    // CONSTANTS
+    // ========================================================
+
+    /** Window width in pixels. */
+    private static final int WINDOW_WIDTH = 300;
+
+    /** Window height in pixels. */
+    private static final int WINDOW_HEIGHT = 150;
+
+    /** Text field column count for integer input. */
+    private static final int TEXT_FIELD_COLUMNS = 8;
+
+    /** Background color for the frame (dark theme). */
+    private static final Color FRAME_BACKGROUND = new Color(30, 30, 30);
+
+    /** Foreground color for labels. */
+    private static final Color LABEL_COLOR = Color.WHITE;
+
+    /**
+     * Logger for parameter picker events and validation errors.
+     */
+    private static final Log log = LogFactory.getLog(IntegersPicker.class);
+
     /**
      * Text field where the user enters the first integer {@code F}.
-     * Constructed with a visible column count of 10.
      */
     private final JTextField firstField;
 
     /**
      * Text field where the user enters the second integer {@code d}.
-     * Constructed with a visible column count of 10.
      */
     private final JTextField secondField;
 
@@ -71,31 +95,35 @@ public class IntegersPicker extends JFrame {
         super(COMPRESSION_FACTOR_PICKER);
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(300, 150);
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setLayout(new FlowLayout());
+        getContentPane().setBackground(FRAME_BACKGROUND);
 
-        getContentPane().setBackground(new Color(30, 30, 30));
-
-        JLabel fLabel = new JLabel(F);
-        fLabel.setForeground(Color.WHITE);
-
-        JLabel dLabel = new JLabel(D);
-        dLabel.setForeground(Color.WHITE);
-
-        add(fLabel);
-        firstField = StylingFactory.getStyledTextField(8);
+        add(createLabel(F));
+        firstField = StylingFactory.getStyledTextField(TEXT_FIELD_COLUMNS);
         add(firstField);
 
-        add(dLabel);
-        secondField = StylingFactory.getStyledTextField(8);
+        add(createLabel(D));
+        secondField = StylingFactory.getStyledTextField(TEXT_FIELD_COLUMNS);
         add(secondField);
 
-        JButton submitButton =
-                StylingFactory.getStyledButton(SUBMIT, STYLE1);
-
+        JButton submitButton = StylingFactory.getStyledButton(SUBMIT, STYLE1);
         add(submitButton);
 
         submitButton.addActionListener(e -> submit());
+        log.debug("Integer picker initialized");
+    }
+
+    /**
+     * Creates a styled label with white text.
+     *
+     * @param text label text
+     * @return styled label
+     */
+    private JLabel createLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setForeground(LABEL_COLOR);
+        return label;
     }
 
     /**
@@ -117,35 +145,62 @@ public class IntegersPicker extends JFrame {
      */
     private void submit() {
         try {
-            int F = Integer.parseInt(firstField.getText().trim());
-            int d = Integer.parseInt(secondField.getText().trim());
+            String fText = firstField.getText().trim();
+            String dText = secondField.getText().trim();
+            
+            log.debug(String.format("Attempting to parse inputs: F='%s', d='%s'", fText, dText));
+            
+            int F = Integer.parseInt(fText);
+            int d = Integer.parseInt(dText);
 
-            if (F < 0) {
-                throw new IllegalArgumentException(
-                        F_POSITIVE_ERROR
-                );
-            }
+            log.debug(String.format("Parsed integers: F=%d, d=%d", F, d));
+            
+            validateInputs(F, d);
 
-            if (d < 0 || d > (2 * F) - 2) {
-                throw new IllegalArgumentException(
-                        D_VALUE_ERROR
-                );
-            }
-
-            Pair<Integer, Integer> pair = new Pair<>(F, d);
-
-            observable.set(pair);
-
+            log.info(String.format("Parameters validated successfully: F=%d, d=%d", F, d));
+            
+            observable.set(new Pair<>(F, d));
             dispose();
 
+        } catch (NumberFormatException e) {
+            String errorMsg = "Invalid input: Please enter integers only";
+            log.warn(errorMsg);
+            showErrorDialog(errorMsg);
         } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    ex.getMessage(),
-                    PickerConstants.ERROR,
-                    JOptionPane.ERROR_MESSAGE
-            );
+            log.warn("Validation failed: " + ex.getMessage());
+            showErrorDialog(ex.getMessage());
         }
+    }
+
+    /**
+     * Validates the input parameters against business rules.
+     *
+     * @param F compression factor (must be >= 0)
+     * @param d dependent parameter (must be 0 <= d <= 2*F - 2)
+     * @throws IllegalArgumentException if validation fails
+     */
+    private void validateInputs(int F, int d) {
+        if (F < 0) {
+            throw new IllegalArgumentException(F_POSITIVE_ERROR);
+        }
+
+        if (d < 0 || d > (2 * F) - 2) {
+            throw new IllegalArgumentException(D_VALUE_ERROR);
+        }
+    }
+
+    /**
+     * Displays an error dialog to the user.
+     *
+     * @param message error message to display
+     */
+    private void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                PickerConstants.ERROR,
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 
     /**
@@ -172,5 +227,6 @@ public class IntegersPicker extends JFrame {
     public void showUI() {
         setLocationRelativeTo(null);
         setVisible(true);
+        log.debug("Integer picker shown");
     }
 }

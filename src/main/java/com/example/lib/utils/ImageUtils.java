@@ -119,6 +119,65 @@ public class ImageUtils {
     }
 
     /**
+     * Converts an image to an RGB {@link BufferedImage} using a white background.
+     * <p>
+     * This is useful when a preview or export path needs a predictable RGB buffer
+     * regardless of the source image type.
+     * </p>
+     *
+     * @param image source image
+     * @return a new RGB image containing the rendered source image
+     */
+    public static BufferedImage toRgbImage(BufferedImage image) {
+        BufferedImage rgb = new BufferedImage(
+                image.getWidth(),
+                image.getHeight(),
+                BufferedImage.TYPE_INT_RGB
+        );
+
+        Graphics2D g2d = rgb.createGraphics();
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, rgb.getWidth(), rgb.getHeight());
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+
+        return rgb;
+    }
+
+    /**
+     * Scales an image to fit inside the provided bounds while preserving aspect ratio.
+     * <p>
+     * The returned image keeps the source proportions and is rendered smoothly.
+     * </p>
+     *
+     * @param image source image
+     * @param maxWidth maximum allowed width
+     * @param maxHeight maximum allowed height
+     * @return scaled image instance ready for preview rendering
+     */
+    public static Image scaleImageToFit(BufferedImage image, int maxWidth, int maxHeight) {
+        double ratio = Math.min(
+                (double) maxWidth / image.getWidth(),
+                (double) maxHeight / image.getHeight()
+        );
+
+        int scaledW = Math.max((int) (image.getWidth() * ratio), 1);
+        int scaledH = Math.max((int) (image.getHeight() * ratio), 1);
+
+        return image.getScaledInstance(scaledW, scaledH, Image.SCALE_SMOOTH);
+    }
+
+    /**
+     * Returns the size of a file in kilobytes.
+     *
+     * @param file file to inspect
+     * @return file size in kilobytes
+     */
+    public static double fileSizeInKb(File file) {
+        return file.length() / 1024.0;
+    }
+
+    /**
      * Saves a {@link BufferedImage} as a BMP file on disk.
      * <p>
      * The method appends {@code ".bmp"} to the provided path, writes the file via

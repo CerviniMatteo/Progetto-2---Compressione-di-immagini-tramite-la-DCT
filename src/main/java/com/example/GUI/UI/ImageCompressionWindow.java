@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -50,6 +51,13 @@ public class ImageCompressionWindow extends JFrame {
     private String selectedImageName;
 
     /**
+     * Holds references to the preview boxes for updating after image operations.
+     */
+    private JPanel originalBox;
+    private JPanel compressedBox;
+
+
+    /**
      * Builds and displays the image compression window.
      * <p>
      * The constructor:
@@ -70,9 +78,21 @@ public class ImageCompressionWindow extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // ==================================================
-        // TOP PANEL (BUTTONS)
-        // ==================================================
+        JPanel topButtonsPanel = createTopPanel();
+        JPanel imagesPanel = createImagesPanel();
+
+        add(topButtonsPanel, BorderLayout.NORTH);
+        add(imagesPanel, BorderLayout.CENTER);
+
+        setVisible(true);
+    }
+
+    /**
+     * Creates the top button panel with "Choose Image" and "Compress Image" controls.
+     *
+     * @return configured top panel
+     */
+    private JPanel createTopPanel() {
         JPanel topButtonsPanel = getStyledPanel(PanelContrast.HIGH);
 
         JButton chooseImageButton =
@@ -85,103 +105,108 @@ public class ImageCompressionWindow extends JFrame {
         topButtonsPanel.add(Box.createHorizontalStrut(20));
         topButtonsPanel.add(compressButton);
 
-        // ==================================================
-        // BOTTOM PANEL (IMAGES SIDE BY SIDE)
-        // ==================================================
-        JPanel imagesPanel = getStyledPanel(PanelContrast.MEDIUM);
+        // Wire button actions
+        chooseImageButton.addActionListener(e -> handleChooseImage());
+        compressButton.addActionListener(e -> handleCompress());
 
-        // GridLayout splits available width evenly across the two preview boxes
+        return topButtonsPanel;
+    }
+
+    /**
+     * Creates the bottom panel with side-by-side image preview boxes.
+     *
+     * @return configured images panel
+     */
+    private JPanel createImagesPanel() {
+        JPanel imagesPanel = getStyledPanel(PanelContrast.MEDIUM);
         imagesPanel.setLayout(new GridLayout(1, 2, 20, 0));
 
-        JPanel originalBox = createImageBox("Original");
-
-        JPanel compressedBox = createImageBox("Compressed");
+        originalBox = createImageBox("Original");
+        compressedBox = createImageBox("Compressed");
 
         imagesPanel.add(originalBox);
-
         imagesPanel.add(compressedBox);
 
-        // ==================================================
-        // PICKERS
-        // ==================================================
+        return imagesPanel;
+    }
+
+    /**
+     * Handles the "Choose Image" button action.
+     * <p>
+     * Creates an {@link ImagePicker} and subscribes to its image selection events.
+     * When an image is selected, stores a deep copy and displays it in the original box.
+     * </p>
+     */
+    private void handleChooseImage() {
+        log.debug("Opening image picker dialog");
         ImagePicker imagePicker = new ImagePicker();
 
-        IntegersPicker integerPicker = new IntegersPicker();
-
         imagePicker.subscribe(pair -> {
+            selectedImageName = extractFilename(pair.getFirst());
+            selectedImage = ImageUtils.copyBufferedImage(pair.getSecond());
 
-            selectedImageName =
-                    pair.getFirst().substring(
-                            0,
-                            pair.getFirst().lastIndexOf('.')
-                    );
+            log.info(String.format("Image selected: %s (size: %dx%d pixels)",
+                    selectedImageName, selectedImage.getWidth(), selectedImage.getHeight()));
 
-            // Keep an internal deep copy so the original selected image remains unchanged.
-            selectedImage =
-                    ImageUtils.copyBufferedImage(pair.getSecond());
-
-            log.info("Selected image: " + selectedImageName);
-
-            showImage(
-                    originalBox,
-                    selectedImage,
-                    selectedImageName
-            );
+            showImage(originalBox, selectedImage, selectedImageName);
         });
 
-        chooseImageButton.addActionListener(
-                e -> imagePicker.showUI()
-        );
+        imagePicker.showUI();
+    }
 
-        compressButton.addActionListener(e -> {
+    /**
+     * Handles the "Compress Image" button action.
+     * <p>
+     * If an image is selected, creates an {@link IntegersPicker} and waits for compression
+     * parameters. Once received, compresses a copy of the original and displays the result.
+     * </p>
+     */
+    private void handleCompress() {
+        if (selectedImage == null) {
+            log.warn("Compress action triggered but no image selected");
+            return;
+        }
 
-            if (selectedImage == null) {
+        log.debug("Opening compression parameters picker");
+        IntegersPicker integerPicker = new IntegersPicker();
 
-                log.warn("No image selected!");
-                return;
-            }
+        integerPicker.subscribe(pair -> {
+            int F = pair.getFirst();
+            int d = pair.getSecond();
 
-            integerPicker.subscribe(pair -> {
+            log.info(String.format("Compression started with parameters: F=%d, d=%d", F, d));
 
-                int F = pair.getFirst();
+            // Compress a fresh copy to avoid mutating selectedImage
+            BufferedImage selectedCopy = ImageUtils.copyBufferedImage(selectedImage);
 
-                int d = pair.getSecond();
-
-                log.info("Compressing with F=" + F + " d=" + d);
-
-                Part2 part2 = new Part2();
-
-                // Compress a fresh copy to avoid mutating selectedImage.
-                BufferedImage selectedCopy =
-                        ImageUtils.copyBufferedImage(selectedImage);
-
-                BufferedImage compressed = part2.compress(
-                        new Pair<>(
-                                selectedImageName + "_compressed",
-                                selectedCopy
-                        ),
+            try {
+                BufferedImage compressed = new Part2().compress(
+                        new Pair<>(selectedImageName + "_compressed", selectedCopy),
                         F,
                         d
                 );
 
-                showImage(
-                        compressedBox,
-                        compressed,
-                        selectedImageName + "_compressed"
-                );
-            });
+                log.info(String.format("Compression completed: %s (size: %dx%d pixels)",
+                        selectedImageName + "_compressed", compressed.getWidth(), compressed.getHeight()));
 
-            integerPicker.showUI();
+                showImage(compressedBox, compressed, selectedImageName + "_compressed");
+            } catch (Exception e) {
+                log.error("Compression failed: " + e.getMessage(), e);
+            }
         });
 
-        // ==================================================
-        // FRAME
-        // ==================================================
-        add(topButtonsPanel, BorderLayout.NORTH);
+        integerPicker.showUI();
+    }
 
-        add(imagesPanel, BorderLayout.CENTER);
-
-        setVisible(true);
+    /**
+     * Extracts the base filename without extension.
+     *
+     * @param filenameWithExtension full filename (e.g., "image.bmp")
+     * @return filename without extension (e.g., "image")
+     */
+    private String extractFilename(String filenameWithExtension) {
+        int dotIndex = filenameWithExtension.lastIndexOf('.');
+        return dotIndex > 0 ? filenameWithExtension.substring(0, dotIndex) : filenameWithExtension;
     }
 
     // ==================================================
@@ -217,94 +242,47 @@ public class ImageCompressionWindow extends JFrame {
     /**
      * Renders an image preview with metadata inside a target box.
      * <p>
-     * This method:
-     * <ul>
-     *   <li>Converts the image to RGB for consistent rendering</li>
-     *   <li>Reads output file size from {@code output/&lt;name&gt;.bmp}</li>
-     *   <li>Scales image to fit the current box size while preserving aspect ratio</li>
-     *   <li>Replaces existing box content with an updated preview container</li>
-     * </ul>
+     * Converts to RGB, scales to fit, reads file size, and displays in a styled container.
      * </p>
      *
      * @param box target panel where the preview is rendered
      * @param image source image to preview
      * @param name base image name used for label and output file lookup
      */
-    private void showImage(
-            JPanel box,
-            BufferedImage image,
-            String name
-    ) {
+    private void showImage(JPanel box, BufferedImage image, String name) {
+        BufferedImage rgb = ImageUtils.toRgbImage(image);
 
-        BufferedImage rgb = new BufferedImage(
-                image.getWidth(),
-                image.getHeight(),
-                BufferedImage.TYPE_INT_RGB
-        );
+        String sizeText = formatImageMetadata(image, name);
 
-        Graphics2D g = rgb.createGraphics();
+        int boxW = Math.max(box.getWidth() - 40, 100);
+        int boxH = Math.max(box.getHeight() - 80, 80);
+        Image scaled = ImageUtils.scaleImageToFit(rgb, boxW, boxH);
 
-        g.setColor(Color.WHITE);
+        JPanel container = createImageLabel(name, scaled, sizeText);
 
-        g.fillRect(
-                0,
-                0,
-                rgb.getWidth(),
-                rgb.getHeight()
-        );
+        box.removeAll();
+        box.add(container, BorderLayout.CENTER);
+        box.revalidate();
+        box.repaint();
+    }
 
-        g.drawImage(image, 0, 0, null);
-
-        g.dispose();
-
-        // ==================================================
-        // FILE SIZE
-        // ==================================================
+    /**
+     * Formats image metadata (dimensions and file size) as HTML.
+     *
+     * @param image the image to inspect
+     * @param name output filename (used to look up the saved BMP)
+     * @return HTML-formatted metadata string
+     */
+    private String formatImageMetadata(BufferedImage image, String name) {
         File file = new File("output/" + name + ".bmp");
+        double kb = ImageUtils.fileSizeInKb(file);
 
-        long bytes = file.length();
-
-        double kb = bytes / 1024.0;
-
-        String sizeText = String.format(
+        return String.format(
                 "<html>%d x %d pixel <br> %.2f kB</html>",
                 image.getWidth(),
                 image.getHeight(),
                 kb
         );
-
-        // ==================================================
-        // SCALE DYNAMICALLY BASED ON BOX SIZE
-        // ==================================================
-
-        // Internal padding + labels area compensation.
-        int boxW = Math.max(box.getWidth() - 40, 100);
-        int boxH = Math.max(box.getHeight() - 80, 80);
-
-        // Preserve original image aspect ratio.
-        double ratio = Math.min(
-                (double) boxW / image.getWidth(),
-                (double) boxH / image.getHeight()
-        );
-
-        int scaledW = (int) (image.getWidth() * ratio);
-        int scaledH = (int) (image.getHeight() * ratio);
-
-        Image scaled = rgb.getScaledInstance(
-                scaledW,
-                scaledH,
-                Image.SCALE_SMOOTH
-        );
-
-        JPanel container = createImageLabel(name, scaled, sizeText);
-
-        box.removeAll();
-
-        box.add(container, BorderLayout.CENTER);
-
-        box.revalidate();
-
-        box.repaint();
     }
 
     /**
@@ -315,39 +293,33 @@ public class ImageCompressionWindow extends JFrame {
      * @param sizeText HTML-formatted dimensions and file size text
      * @return panel containing all preview UI elements
      */
-    private static JPanel createImageLabel(
-            String name,
-            Image scaled,
-            String sizeText
-    ) {
-
-        JLabel imageLabel =
-                new JLabel(new ImageIcon(scaled));
-
-        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        JLabel nameLabel =
-                new JLabel(name, SwingConstants.CENTER);
-
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 30));
-
-        JLabel sizeLabel =
-                new JLabel(sizeText, SwingConstants.CENTER);
-
-        sizeLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-
-        sizeLabel.setForeground(new Color(100, 100, 100));
-
+    private static JPanel createImageLabel(String name, Image scaled, String sizeText) {
         JPanel container = new JPanel(new BorderLayout());
-
         container.setBackground(Color.WHITE);
+        container.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        container.add(nameLabel, BorderLayout.NORTH);
-
-        container.add(imageLabel, BorderLayout.CENTER);
-
-        container.add(sizeLabel, BorderLayout.SOUTH);
+        container.add(createMetadataLabel(name, true), BorderLayout.NORTH);
+        container.add(new JLabel(new ImageIcon(scaled), SwingConstants.CENTER), BorderLayout.CENTER);
+        container.add(createMetadataLabel(sizeText, false), BorderLayout.SOUTH);
 
         return container;
+    }
+
+    /**
+     * Creates a formatted metadata label.
+     *
+     * @param text label text
+     * @param isBold whether to apply bold font
+     * @return styled label
+     */
+    private static JLabel createMetadataLabel(String text, boolean isBold) {
+        JLabel label = new JLabel(text, SwingConstants.CENTER);
+        label.setFont(new Font("Arial", isBold ? Font.BOLD : Font.PLAIN, isBold ? 30 : 20));
+
+        if (!isBold) {
+            label.setForeground(new Color(100, 100, 100));
+        }
+
+        return label;
     }
 }

@@ -120,7 +120,7 @@ public class ImageCompressionWindow extends JFrame {
 
         // Wire button actions
         chooseImageButton.addActionListener(e -> handleChooseImage());
-        compressButton.addActionListener(e -> handleCompress());
+        compressButton.addActionListener(e -> handleCompression());
 
         return topButtonsPanel;
     }
@@ -175,7 +175,7 @@ public class ImageCompressionWindow extends JFrame {
      * parameters. Once received, compresses a copy of the original and displays the result.
      * </p>
      */
-    private void handleCompress() {
+    private void handleCompression() {
         if (selectedImage == null) {
             log.warn(GuiConstants.LOG_COMPRESS_WITHOUT_IMAGE);
             return;
@@ -190,23 +190,49 @@ public class ImageCompressionWindow extends JFrame {
 
             log.info(String.format(GuiConstants.LOG_COMPRESSION_START, F, d));
 
-            // Compress a fresh copy to avoid mutating selectedImage
+            // Make a defensive copy so we don't mutate the original image
             BufferedImage selectedCopy = ImageUtils.copyBufferedImage(selectedImage);
 
-            try {
-                BufferedImage compressed = new Part2().compress(
-                        new Pair<>(selectedImageName + GuiConstants.COMPRESSED_SUFFIX, selectedCopy),
-                        F,
-                        d
-                );
+            new SwingWorker<BufferedImage, Void>() {
 
-                log.info(String.format(GuiConstants.LOG_COMPRESSION_DONE,
-                        selectedImageName + GuiConstants.COMPRESSED_SUFFIX, compressed.getWidth(), compressed.getHeight()));
+                @Override
+                protected BufferedImage doInBackground() {
+                    return new Part2().compress(
+                            new Pair<>(
+                                    selectedImageName + GuiConstants.COMPRESSED_SUFFIX,
+                                    selectedCopy
+                            ),
+                            F,
+                            d
+                    );
+                }
 
-                showImage(compressedBox, compressed, selectedImageName + GuiConstants.COMPRESSED_SUFFIX);
-            } catch (Exception e) {
-                log.error(GuiConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(), e);
-            }
+                @Override
+                protected void done() {
+                    try {
+                        BufferedImage compressed = get();
+
+                        log.info(String.format(
+                                GuiConstants.LOG_COMPRESSION_DONE,
+                                selectedImageName + GuiConstants.COMPRESSED_SUFFIX,
+                                compressed.getWidth(),
+                                compressed.getHeight()
+                        ));
+
+                        showImage(
+                                compressedBox,
+                                compressed,
+                                selectedImageName + GuiConstants.COMPRESSED_SUFFIX
+                        );
+
+                    } catch (Exception e) {
+                        log.error(
+                                GuiConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(),
+                                e
+                        );
+                    }
+                }
+            }.execute();
         });
 
         integerPicker.showUI();

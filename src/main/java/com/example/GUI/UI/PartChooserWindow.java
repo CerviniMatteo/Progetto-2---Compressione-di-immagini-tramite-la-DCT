@@ -3,7 +3,7 @@ package com.example.GUI.UI;
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.Part1;
-import com.example.GUI.constants.GuiConstants;
+import com.example.GUI.constants.GUIConstants;
 import com.formdev.flatlaf.FlatDarkLaf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,7 +57,7 @@ public class PartChooserWindow extends JFrame {
      * </ul>
      */
     public PartChooserWindow() {
-        super(GuiConstants.PART_CHOOSER_TITLE);
+        super(GUIConstants.PART_CHOOSER_TITLE);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -73,7 +73,7 @@ public class PartChooserWindow extends JFrame {
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
         } catch (Exception e) {
-            log.error(GuiConstants.LOG_THEME_APPLY_FAILED, e);
+            log.error(GUIConstants.LOG_THEME_APPLY_FAILED, e);
         }
 
         setVisible(true);
@@ -111,11 +111,11 @@ public class PartChooserWindow extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(new Color(30, 30, 30));
 
-        JLabel titleLabel = getStyledTitleLabel(GuiConstants.DCT_IMAGE_COMPRESSION_TITLE);
+        JLabel titleLabel = getStyledTitleLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel descriptionLabel = getStyledLabel(GuiConstants.PART_CHOOSER_DESCRIPTION, SwingConstants.CENTER);
-        descriptionLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.PLAIN, 16));
+        JLabel descriptionLabel = getStyledLabel(GUIConstants.PART_CHOOSER_DESCRIPTION, SwingConstants.CENTER);
+        descriptionLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, 16));
         descriptionLabel.setForeground(new Color(150, 150, 150));
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -136,15 +136,15 @@ public class PartChooserWindow extends JFrame {
         panel.setLayout(new GridLayout(1, 2, 20, 0));
         panel.setBackground(new Color(30, 30, 30));
 
-        JButton part1Button = getStyledButton(GuiConstants.PART1_BUTTON_HTML, BUTTON_STYLE);
-        JButton part2Button = getStyledButton(GuiConstants.PART2_BUTTON_HTML, BUTTON_STYLE);
+        JButton part1Button = getStyledButton(GUIConstants.PART1_BUTTON_HTML, BUTTON_STYLE);
+        JButton part2Button = getStyledButton(GUIConstants.PART2_BUTTON_HTML, BUTTON_STYLE);
 
         // Increase button size
         Dimension buttonSize = new Dimension(250, 60);
         part1Button.setPreferredSize(buttonSize);
         part2Button.setPreferredSize(buttonSize);
-        part1Button.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 16));
-        part2Button.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 16));
+        part1Button.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 16));
+        part2Button.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 16));
 
         part1Button.addActionListener(e -> handlePart1());
         part2Button.addActionListener(e -> handlePart2());
@@ -162,15 +162,15 @@ public class PartChooserWindow extends JFrame {
      * </p>
      */
     private void handlePart1() {
-        log.info(GuiConstants.LOG_PART1_SELECTED);
+        log.info(GUIConstants.LOG_PART1_SELECTED);
         Part1 part1 = new Part1();
 
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                log.debug(GuiConstants.LOG_BENCHMARK_THREAD_START);
+                log.debug(GUIConstants.LOG_BENCHMARK_THREAD_START);
                 part1.benchmark(BENCHMARK_BLOCK_SIZES);
-                log.debug(GuiConstants.LOG_BENCHMARK_THREAD_DONE);
+                log.debug(GUIConstants.LOG_BENCHMARK_THREAD_DONE);
                 return null;
             }
         }.execute();
@@ -183,7 +183,7 @@ public class PartChooserWindow extends JFrame {
      * </p>
      */
     private void handlePart2() {
-        log.info(GuiConstants.LOG_PART2_SELECTED);
+        log.info(GUIConstants.LOG_PART2_SELECTED);
         new ImageCompressionWindow();
     }
 }

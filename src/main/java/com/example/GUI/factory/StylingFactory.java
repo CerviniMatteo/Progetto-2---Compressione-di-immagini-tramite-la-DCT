@@ -2,7 +2,7 @@ package com.example.GUI.factory;
 
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
-import com.example.GUI.constants.GuiConstants;
+import com.example.GUI.constants.GUIConstants;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -151,7 +151,7 @@ public class StylingFactory {
         field.setSelectedTextColor(COLOR_TEXT_LIGHT);
 
         // Typography
-        field.setFont(new Font(GuiConstants.FONT_SANS_SERIF, Font.PLAIN, FONT_SIZE_TEXTFIELD));
+        field.setFont(new Font(GUIConstants.FONT_SANS_SERIF, Font.PLAIN, FONT_SIZE_TEXTFIELD));
 
         // Border: subtle outline + internal padding
         field.setBorder(createTextFieldBorder());
@@ -198,7 +198,7 @@ public class StylingFactory {
      */
     public static JLabel getStyledTitleLabel(String text) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);
-        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_TITLE));
+        label.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_TITLE));
         label.setForeground(COLOR_TEXT_LIGHT);
         return label;
     }
@@ -211,7 +211,7 @@ public class StylingFactory {
      */
     public static JLabel getStyledHeadingLabel(String text) {
         JLabel label = new JLabel(text, SwingConstants.LEFT);
-        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_HEADING));
+        label.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_HEADING));
         label.setForeground(COLOR_TEXT_LIGHT);
         return label;
     }
@@ -224,7 +224,7 @@ public class StylingFactory {
      */
     public static JLabel getStyledLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_SUBHEADING));
+        label.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_SUBHEADING));
         label.setForeground(COLOR_TEXT_LIGHT);
         return label;
     }
@@ -238,7 +238,7 @@ public class StylingFactory {
      */
     public static JLabel getStyledLabel(String text, int horizontalAlignment) {
         JLabel label = new JLabel(text, horizontalAlignment);
-        label.setFont(new Font(GuiConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_SUBHEADING));
+        label.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_SUBHEADING));
         label.setForeground(COLOR_TEXT_LIGHT);
         return label;
     }
@@ -280,7 +280,7 @@ public class StylingFactory {
     private static void applyButtonBaseStyle(JButton button) {
         button.setFocusPainted(false);
         button.setForeground(COLOR_TEXT_LIGHT);
-        button.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_BUTTON));
+        button.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_BUTTON));
         button.setBorder(BorderFactory.createEmptyBorder(PAD_BUTTON_V, PAD_BUTTON_H, PAD_BUTTON_V, PAD_BUTTON_H));
     }
 

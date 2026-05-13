@@ -2,7 +2,7 @@ package com.example.GUI.UI;
 
 import com.example.GUI.factory.StylingFactory;
 import com.example.GUI.constants.PickerConstants;
-import com.example.GUI.constants.GuiConstants;
+import com.example.GUI.constants.GUIConstants;
 import com.example.GUI.observer.Observable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -108,7 +108,7 @@ public class CompressionCoefficientsPicker extends JFrame {
         mainPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
 
         // Title
-        JLabel titleLabel = getStyledHeadingLabel(GuiConstants.COMPRESSION_PARAMETERS_TITLE);
+        JLabel titleLabel = getStyledHeadingLabel(GUIConstants.COMPRESSION_PARAMETERS_TITLE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setForeground(new Color(70, 130, 180));
         mainPanel.add(titleLabel);
@@ -122,14 +122,14 @@ public class CompressionCoefficientsPicker extends JFrame {
         fieldsPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
 
         JLabel fLabel = getStyledLabel(F);
-        fLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 16));
+        fLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 16));
         firstField = StylingFactory.getStyledTextField(TEXT_FIELD_COLUMNS);
-        firstField.setFont(new Font(GuiConstants.FONT_SANS_SERIF, Font.PLAIN, 16));
+        firstField.setFont(new Font(GUIConstants.FONT_SANS_SERIF, Font.PLAIN, 16));
 
         JLabel dLabel = getStyledLabel(D);
-        dLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 16));
+        dLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 16));
         secondField = StylingFactory.getStyledTextField(TEXT_FIELD_COLUMNS);
-        secondField.setFont(new Font(GuiConstants.FONT_SANS_SERIF, Font.PLAIN, 16));
+        secondField.setFont(new Font(GUIConstants.FONT_SANS_SERIF, Font.PLAIN, 16));
 
         fieldsPanel.add(fLabel);
         fieldsPanel.add(firstField);
@@ -145,7 +145,7 @@ public class CompressionCoefficientsPicker extends JFrame {
         buttonPanel.setBackground(new Color(30, 30, 30));
 
         JButton submitButton = StylingFactory.getStyledButton(SUBMIT, STYLE1);
-        submitButton.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 14));
+        submitButton.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 14));
         submitButton.setPreferredSize(new Dimension(120, 40));
 
         buttonPanel.add(submitButton);

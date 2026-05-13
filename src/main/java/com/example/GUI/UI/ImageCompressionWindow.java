@@ -3,7 +3,7 @@ package com.example.GUI.UI;
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.Part2;
-import com.example.GUI.constants.GuiConstants;
+import com.example.GUI.constants.GUIConstants;
 import com.example.lib.utils.ImageUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -72,7 +72,7 @@ public class ImageCompressionWindow extends JFrame {
      */
     public ImageCompressionWindow() {
 
-        super(GuiConstants.APP_TITLE);
+        super(GUIConstants.APP_TITLE);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -99,7 +99,7 @@ public class ImageCompressionWindow extends JFrame {
         topButtonsPanel.setBorder(new EmptyBorder(15, 20, 15, 20));
 
         // Title label
-        JLabel titleLabel = getStyledHeadingLabel(GuiConstants.DCT_IMAGE_COMPRESSION_TITLE);
+        JLabel titleLabel = getStyledHeadingLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
 
         // Buttons panel
         JPanel buttonsPanel = new JPanel();
@@ -107,10 +107,10 @@ public class ImageCompressionWindow extends JFrame {
         buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
 
         JButton chooseImageButton =
-                getStyledButton(GuiConstants.BUTTON_CHOOSE_IMAGE, ButtonStyle.STYLE2);
+                getStyledButton(GUIConstants.BUTTON_CHOOSE_IMAGE, ButtonStyle.STYLE2);
 
         JButton compressButton =
-                getStyledButton(GuiConstants.BUTTON_COMPRESS_IMAGE, ButtonStyle.STYLE3);
+                getStyledButton(GUIConstants.BUTTON_COMPRESS_IMAGE, ButtonStyle.STYLE3);
 
         buttonsPanel.add(chooseImageButton);
         buttonsPanel.add(compressButton);
@@ -135,8 +135,8 @@ public class ImageCompressionWindow extends JFrame {
         imagesPanel.setLayout(new GridLayout(1, 2, 30, 0));
         imagesPanel.setBorder(new EmptyBorder(20, 25, 20, 25));
 
-        originalBox = createImageBox(GuiConstants.LABEL_ORIGINAL);
-        compressedBox = createImageBox(GuiConstants.LABEL_COMPRESSED);
+        originalBox = createImageBox(GUIConstants.LABEL_ORIGINAL);
+        compressedBox = createImageBox(GUIConstants.LABEL_COMPRESSED);
 
         imagesPanel.add(originalBox);
         imagesPanel.add(compressedBox);
@@ -152,14 +152,14 @@ public class ImageCompressionWindow extends JFrame {
      * </p>
      */
     private void handleChooseImage() {
-        log.debug(GuiConstants.LOG_OPENING_IMAGE_PICKER);
+        log.debug(GUIConstants.LOG_OPENING_IMAGE_PICKER);
         ImagePicker imagePicker = new ImagePicker();
 
         imagePicker.subscribe(pair -> {
             selectedImageName = extractFilename(pair.getFirst());
             selectedImage = ImageUtils.copyBufferedImage(pair.getSecond());
 
-            log.info(String.format(GuiConstants.LOG_IMAGE_SELECTED,
+            log.info(String.format(GUIConstants.LOG_IMAGE_SELECTED,
                     selectedImageName, selectedImage.getWidth(), selectedImage.getHeight()));
 
             showImage(originalBox, selectedImage, selectedImageName);
@@ -177,18 +177,18 @@ public class ImageCompressionWindow extends JFrame {
      */
     private void handleCompression() {
         if (selectedImage == null) {
-            log.warn(GuiConstants.LOG_COMPRESS_WITHOUT_IMAGE);
+            log.warn(GUIConstants.LOG_COMPRESS_WITHOUT_IMAGE);
             return;
         }
 
-        log.debug(GuiConstants.LOG_OPENING_PARAMETERS_PICKER);
+        log.debug(GUIConstants.LOG_OPENING_PARAMETERS_PICKER);
         CompressionCoefficientsPicker integerPicker = new CompressionCoefficientsPicker();
 
         integerPicker.subscribe(pair -> {
             int F = pair.getFirst();
             int d = pair.getSecond();
 
-            log.info(String.format(GuiConstants.LOG_COMPRESSION_START, F, d));
+            log.info(String.format(GUIConstants.LOG_COMPRESSION_START, F, d));
 
             // Make a defensive copy so we don't mutate the original image
             BufferedImage selectedCopy = ImageUtils.copyBufferedImage(selectedImage);
@@ -199,7 +199,7 @@ public class ImageCompressionWindow extends JFrame {
                 protected BufferedImage doInBackground() {
                     return new Part2().compress(
                             new Pair<>(
-                                    selectedImageName + GuiConstants.COMPRESSED_SUFFIX,
+                                    selectedImageName + GUIConstants.COMPRESSED_SUFFIX,
                                     selectedCopy
                             ),
                             F,
@@ -213,8 +213,8 @@ public class ImageCompressionWindow extends JFrame {
                         BufferedImage compressed = get();
 
                         log.info(String.format(
-                                GuiConstants.LOG_COMPRESSION_DONE,
-                                selectedImageName + GuiConstants.COMPRESSED_SUFFIX,
+                                GUIConstants.LOG_COMPRESSION_DONE,
+                                selectedImageName + GUIConstants.COMPRESSED_SUFFIX,
                                 compressed.getWidth(),
                                 compressed.getHeight()
                         ));
@@ -222,12 +222,12 @@ public class ImageCompressionWindow extends JFrame {
                         showImage(
                                 compressedBox,
                                 compressed,
-                                selectedImageName + GuiConstants.COMPRESSED_SUFFIX
+                                selectedImageName + GUIConstants.COMPRESSED_SUFFIX
                         );
 
                     } catch (Exception e) {
                         log.error(
-                                GuiConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(),
+                                GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(),
                                 e
                         );
                     }
@@ -268,7 +268,7 @@ public class ImageCompressionWindow extends JFrame {
 
         // Title label with better styling
         JLabel titleLabel = getStyledHeadingLabel(title);
-        titleLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 22));
+        titleLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 22));
 
         JPanel titleContainer = new JPanel();
         titleContainer.setBackground(new Color(30, 30, 30));
@@ -278,7 +278,7 @@ public class ImageCompressionWindow extends JFrame {
         panel.add(titleContainer, BorderLayout.NORTH);
 
         JLabel placeholderLabel = new JLabel(title, SwingConstants.CENTER);
-        placeholderLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 28));
+        placeholderLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 28));
         placeholderLabel.setForeground(new Color(120, 120, 120));
 
         panel.add(placeholderLabel, BorderLayout.CENTER);
@@ -325,11 +325,11 @@ public class ImageCompressionWindow extends JFrame {
      * @return HTML-formatted metadata string
      */
     private String formatImageMetadata(BufferedImage image, String name) {
-        File file = new File(GuiConstants.OUTPUT_DIR_NAME + File.separator + name + GuiConstants.FILE_EXTENSION_BMP);
+        File file = new File(GUIConstants.OUTPUT_DIR_NAME + File.separator + name + GUIConstants.FILE_EXTENSION_BMP);
         double kb = ImageUtils.fileSizeInKb(file);
 
         return String.format(
-                GuiConstants.IMAGE_METADATA_TEMPLATE,
+                GUIConstants.IMAGE_METADATA_TEMPLATE,
                 image.getWidth(),
                 image.getHeight(),
                 kb
@@ -351,7 +351,7 @@ public class ImageCompressionWindow extends JFrame {
 
         // Title at top
         JLabel titleLabel = getStyledLabel(name, SwingConstants.CENTER);
-        titleLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 20));
+        titleLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 20));
         titleLabel.setForeground(new Color(70, 130, 180));
 
         // Image in center with white background container
@@ -362,7 +362,7 @@ public class ImageCompressionWindow extends JFrame {
 
         // Size info at bottom
         JLabel sizeLabel = getStyledLabel(sizeText, SwingConstants.CENTER);
-        sizeLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.PLAIN, 14));
+        sizeLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, 14));
         sizeLabel.setForeground(new Color(150, 150, 150));
 
         container.add(titleLabel, BorderLayout.NORTH);

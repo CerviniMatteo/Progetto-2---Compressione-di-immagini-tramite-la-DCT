@@ -1,12 +1,14 @@
 package com.example.GUI.constants;
 
-public class GuiConstants {
+public class GUIConstants {
     public static final String APP_TITLE = "DCT Image Compression Tool";
     public static final String PART_CHOOSER_TITLE = "Choose what assignment part to be run";
     public static final String DCT_IMAGE_COMPRESSION_TITLE = "DCT Image Compression";
     public static final String PART_CHOOSER_DESCRIPTION = "Select an operation to begin";
-    public static final String PART1_BUTTON_HTML = "<html> PART 1 <br>Benchmark DCT</html>";
-    public static final String PART2_BUTTON_HTML = "<html>PART 2 <br>GUI Image Compression</html>";
+    public static final String PART1_BUTTON_HTML =
+        "<html><div style='text-align:center;'>PART 1<br>Benchmark DCT</div></html>";
+    public static final String PART2_BUTTON_HTML =
+        "<html><div style='text-align:center;'>PART 2<br>GUI Image Compression</div></html>";
     public static final String COMPRESSION_PARAMETERS_TITLE = "Compression Parameters";
 
     public static final String BUTTON_CHOOSE_IMAGE = "Choose Image";

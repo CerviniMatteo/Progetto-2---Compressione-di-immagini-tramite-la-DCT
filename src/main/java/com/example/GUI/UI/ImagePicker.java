@@ -1,7 +1,7 @@
 package com.example.GUI.UI;
 
 import com.example.GUI.observer.Observable;
-import com.example.GUI.constants.GuiConstants;
+import com.example.GUI.constants.GUIConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
@@ -181,7 +181,7 @@ public class ImagePicker {
      */
     private void copyToOutputDirectory(File file) throws IOException {
         log.debug(String.format(LOG_COPYING_TO_OUTPUT, file.getName()));
-        Path outputDir = Paths.get(GuiConstants.OUTPUT_DIR_NAME);
+        Path outputDir = Paths.get(GUIConstants.OUTPUT_DIR_NAME);
 
         if (!Files.exists(outputDir)) {
             log.debug(LOG_CREATING_OUTPUT_DIR);

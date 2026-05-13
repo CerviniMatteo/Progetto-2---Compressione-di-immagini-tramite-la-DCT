@@ -25,7 +25,7 @@ import static com.example.GUI.factory.StylingFactory.getStyledPanel;
  * <ul>
  *   <li>Controls to pick an image and trigger compression</li>
  *   <li>Side-by-side previews for original and compressed images</li>
- *   <li>Integration with {@link ImagePicker} and {@link IntegersPicker}</li>
+ *   <li>Integration with {@link ImagePicker} and {@link CompressionCoefficientsPicker}</li>
  * </ul>
  * </p>
  * <p>
@@ -158,7 +158,7 @@ public class ImageCompressionWindow extends JFrame {
     /**
      * Handles the "Compress Image" button action.
      * <p>
-     * If an image is selected, creates an {@link IntegersPicker} and waits for compression
+     * If an image is selected, creates an {@link CompressionCoefficientsPicker} and waits for compression
      * parameters. Once received, compresses a copy of the original and displays the result.
      * </p>
      */
@@ -169,7 +169,7 @@ public class ImageCompressionWindow extends JFrame {
         }
 
         log.debug(GuiConstants.LOG_OPENING_PARAMETERS_PICKER);
-        IntegersPicker integerPicker = new IntegersPicker();
+        CompressionCoefficientsPicker integerPicker = new CompressionCoefficientsPicker();
 
         integerPicker.subscribe(pair -> {
             int F = pair.getFirst();

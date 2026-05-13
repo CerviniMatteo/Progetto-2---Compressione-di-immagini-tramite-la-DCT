@@ -29,7 +29,7 @@ public class PartChooserWindow extends JFrame {
     // ========================================================
 
     /** Window width in pixels. */
-    private static final int WINDOW_WIDTH = 250;
+    private static final int WINDOW_WIDTH = 550;
 
     /** Window height in pixels. */
     private static final int WINDOW_HEIGHT = 100;

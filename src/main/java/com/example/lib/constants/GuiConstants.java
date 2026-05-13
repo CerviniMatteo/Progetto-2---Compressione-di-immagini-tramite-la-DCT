@@ -6,8 +6,8 @@ public class GuiConstants {
 
     public static final String BUTTON_CHOOSE_IMAGE = "Choose Image";
     public static final String BUTTON_COMPRESS_IMAGE = "Compress Image";
-    public static final String BUTTON_PART1 = "Part1";
-    public static final String BUTTON_PART2 = "Part2";
+    public static final String BUTTON_PART1 = "DCT II Benchmark";
+    public static final String BUTTON_PART2 = "Image Compression GUI";
 
     public static final String LABEL_ORIGINAL = "Original";
     public static final String LABEL_COMPRESSED = "Compressed";

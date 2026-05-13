@@ -35,14 +35,14 @@ import static com.example.lib.constants.PickerConstants.*;
  * @see org.apache.commons.math3.util.Pair
  * @see com.example.lib.constants.PickerConstants
  */
-public class IntegersPicker extends JFrame {
+public class CompressionCoefficientsPicker extends JFrame {
 
     // ========================================================
     // CONSTANTS
     // ========================================================
 
     /** Window width in pixels. */
-    private static final int WINDOW_WIDTH = 300;
+    private static final int WINDOW_WIDTH = 400;
 
     /** Window height in pixels. */
     private static final int WINDOW_HEIGHT = 150;
@@ -59,7 +59,7 @@ public class IntegersPicker extends JFrame {
     /**
      * Logger for parameter picker events and validation errors.
      */
-    private static final Log log = LogFactory.getLog(IntegersPicker.class);
+    private static final Log log = LogFactory.getLog(CompressionCoefficientsPicker.class);
 
     /**
      * Text field where the user enters the first integer {@code F}.
@@ -90,7 +90,7 @@ public class IntegersPicker extends JFrame {
      * @see com.example.lib.constants.PickerConstants#COMPRESSION_FACTOR_PICKER
      * @see FlowLayout
      */
-    public IntegersPicker() {
+    public CompressionCoefficientsPicker() {
 
         super(COMPRESSION_FACTOR_PICKER);
 

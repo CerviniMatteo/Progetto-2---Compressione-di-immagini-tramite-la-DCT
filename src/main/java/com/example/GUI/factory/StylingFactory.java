@@ -59,10 +59,10 @@ public class StylingFactory {
     // ========================================================
 
     /** Standard button font size. */
-    private static final int FONT_SIZE_BUTTON = 13;
+    private static final int FONT_SIZE_BUTTON = 20;
 
     /** Standard text field font size. */
-    private static final int FONT_SIZE_TEXTFIELD = 14;
+    private static final int FONT_SIZE_TEXTFIELD = 20;
 
     // ========================================================
     // PADDING CONSTANTS (top, left, bottom, right)

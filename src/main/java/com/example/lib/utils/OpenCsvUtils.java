@@ -1,6 +1,6 @@
 package com.example.lib.utils;
 
-import com.example.lib.constants.BenchmarkConstants;
+import com.example.constants.BenchmarkConstants;
 import com.opencsv.CSVWriter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

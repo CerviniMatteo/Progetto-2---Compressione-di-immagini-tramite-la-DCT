@@ -1,13 +1,12 @@
 package com.example.lib.utils;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static com.example.lib.constants.UtilsConstants.*;
+import static com.example.constants.UtilsConstants.*;
 
 /**
  * Utility methods for image conversion, duplication, and persistence.

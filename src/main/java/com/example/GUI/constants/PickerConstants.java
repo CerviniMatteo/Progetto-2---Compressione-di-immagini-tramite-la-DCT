@@ -1,4 +1,4 @@
-package com.example.lib.constants;
+package com.example.GUI.constants;
 
 public class PickerConstants {
     public final static String HOME_PATH = "user.home";

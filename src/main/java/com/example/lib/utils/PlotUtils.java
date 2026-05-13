@@ -1,6 +1,5 @@
 package com.example.lib.utils;
 
-import com.example.lib.constants.ProjectHelperConstants;
 import org.knowm.xchart.*;
 import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.style.Styler;
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.example.lib.constants.UtilsConstants.*;
+import static com.example.constants.UtilsConstants.*;
 
 /**
  * Utility methods for building and exporting benchmark plots for the DCT comparison.
@@ -77,14 +76,14 @@ public class PlotUtils {
     private static void saveChart(XYChart chart, String title) {
         try {
             String filename = title.replaceAll(WHITESPACE_REGEX, WHITESPACE_REPLACEMENT);
-            File outputDirectory = new File(ProjectHelperConstants.OUTPUT_PATH);
+            File outputDirectory = new File(OUTPUT_PATH);
             if (!outputDirectory.exists() && !outputDirectory.mkdirs()) {
                 LOGGER.warning(UNABLE_CREATE_OUTPUT_DIR_MESSAGE + outputDirectory.getAbsolutePath());
             }
 
             BitmapEncoder.saveBitmap(
                     chart,
-                    ProjectHelperConstants.OUTPUT_PATH + filename,
+                    OUTPUT_PATH + filename,
                     BitmapFormat.PNG
             );
 

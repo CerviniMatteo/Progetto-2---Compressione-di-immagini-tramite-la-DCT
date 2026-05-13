@@ -3,7 +3,7 @@ package com.example.GUI.UI;
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.Part2;
-import com.example.lib.constants.GuiConstants;
+import com.example.GUI.constants.GuiConstants;
 import com.example.lib.utils.ImageUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -99,7 +99,7 @@ public class ImageCompressionWindow extends JFrame {
         topButtonsPanel.setBorder(new EmptyBorder(15, 20, 15, 20));
 
         // Title label
-        JLabel titleLabel = getStyledHeadingLabel("DCT Image Compression");
+        JLabel titleLabel = getStyledHeadingLabel(GuiConstants.DCT_IMAGE_COMPRESSION_TITLE);
 
         // Buttons panel
         JPanel buttonsPanel = new JPanel();

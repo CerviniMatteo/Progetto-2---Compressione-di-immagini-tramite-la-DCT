@@ -1,7 +1,7 @@
 package com.example.assignment;
 
 import com.example.lib.DCT2;
-import com.example.lib.constants.BenchmarkConstants;
+import com.example.constants.BenchmarkConstants;
 import com.example.lib.utils.OpenCsvUtils;
 import com.example.lib.utils.PlotUtils;
 import org.apache.commons.logging.Log;

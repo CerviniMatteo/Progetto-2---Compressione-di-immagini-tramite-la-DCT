@@ -2,7 +2,7 @@ package com.example.GUI.factory;
 
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
-import com.example.lib.constants.GuiConstants;
+import com.example.GUI.constants.GuiConstants;
 
 import javax.swing.*;
 import javax.swing.border.Border;

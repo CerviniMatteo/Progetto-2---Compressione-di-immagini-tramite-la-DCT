@@ -3,7 +3,7 @@ package com.example.GUI.UI;
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.Part1;
-import com.example.lib.constants.GuiConstants;
+import com.example.GUI.constants.GuiConstants;
 import com.formdev.flatlaf.FlatDarkLaf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,7 +73,7 @@ public class PartChooserWindow extends JFrame {
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(GuiConstants.LOG_THEME_APPLY_FAILED, e);
         }
 
         setVisible(true);
@@ -111,10 +111,10 @@ public class PartChooserWindow extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(new Color(30, 30, 30));
 
-        JLabel titleLabel = getStyledTitleLabel("DCT Image Compression");
+        JLabel titleLabel = getStyledTitleLabel(GuiConstants.DCT_IMAGE_COMPRESSION_TITLE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel descriptionLabel = getStyledLabel("Select an operation to begin", SwingConstants.CENTER);
+        JLabel descriptionLabel = getStyledLabel(GuiConstants.PART_CHOOSER_DESCRIPTION, SwingConstants.CENTER);
         descriptionLabel.setFont(new Font(GuiConstants.FONT_ARIAL, Font.PLAIN, 16));
         descriptionLabel.setForeground(new Color(150, 150, 150));
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -136,8 +136,8 @@ public class PartChooserWindow extends JFrame {
         panel.setLayout(new GridLayout(1, 2, 20, 0));
         panel.setBackground(new Color(30, 30, 30));
 
-        JButton part1Button = getStyledButton("<html> PART 1 <br>Benchmark DCT</html>", BUTTON_STYLE);
-        JButton part2Button = getStyledButton("<html>PART 2 <br>GUI Image Compression</html>", BUTTON_STYLE);
+        JButton part1Button = getStyledButton(GuiConstants.PART1_BUTTON_HTML, BUTTON_STYLE);
+        JButton part2Button = getStyledButton(GuiConstants.PART2_BUTTON_HTML, BUTTON_STYLE);
 
         // Increase button size
         Dimension buttonSize = new Dimension(250, 60);

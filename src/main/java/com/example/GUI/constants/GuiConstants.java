@@ -1,8 +1,13 @@
-package com.example.lib.constants;
+package com.example.GUI.constants;
 
 public class GuiConstants {
     public static final String APP_TITLE = "DCT Image Compression Tool";
     public static final String PART_CHOOSER_TITLE = "Choose what assignment part to be run";
+    public static final String DCT_IMAGE_COMPRESSION_TITLE = "DCT Image Compression";
+    public static final String PART_CHOOSER_DESCRIPTION = "Select an operation to begin";
+    public static final String PART1_BUTTON_HTML = "<html> PART 1 <br>Benchmark DCT</html>";
+    public static final String PART2_BUTTON_HTML = "<html>PART 2 <br>GUI Image Compression</html>";
+    public static final String COMPRESSION_PARAMETERS_TITLE = "Compression Parameters";
 
     public static final String BUTTON_CHOOSE_IMAGE = "Choose Image";
     public static final String BUTTON_COMPRESS_IMAGE = "Compress Image";
@@ -26,6 +31,7 @@ public class GuiConstants {
     public static final String LOG_COMPRESSION_START = "Compression started with parameters: F=%d, d=%d";
     public static final String LOG_COMPRESSION_DONE = "Compression completed: %s (size: %dx%d pixels)";
     public static final String LOG_COMPRESSION_FAILED_PREFIX = "Compression failed: ";
+    public static final String LOG_THEME_APPLY_FAILED = "Failed to apply FlatDarkLaf look and feel";
 
     public static final String LOG_PART1_SELECTED = "Part 1 (Benchmark) selected - launching DCT benchmark";
     public static final String LOG_PART2_SELECTED = "Part 2 (Compression GUI) selected - launching image compression tool";

@@ -1,8 +1,8 @@
 package com.example.GUI.UI;
 
 import com.example.GUI.factory.StylingFactory;
-import com.example.lib.constants.PickerConstants;
-import com.example.lib.constants.GuiConstants;
+import com.example.GUI.constants.PickerConstants;
+import com.example.GUI.constants.GuiConstants;
 import com.example.GUI.observer.Observable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,7 +15,7 @@ import java.awt.*;
 
 import static com.example.GUI.enums.ButtonStyle.STYLE1;
 import static com.example.GUI.factory.StylingFactory.*;
-import static com.example.lib.constants.PickerConstants.*;
+import static com.example.GUI.constants.PickerConstants.*;
 
 /**
  * GUI component for collecting two integer parameters used by the application.
@@ -37,7 +37,7 @@ import static com.example.lib.constants.PickerConstants.*;
  *
  * @see Observable
  * @see org.apache.commons.math3.util.Pair
- * @see com.example.lib.constants.PickerConstants
+ * @see PickerConstants
  */
 public class CompressionCoefficientsPicker extends JFrame {
 
@@ -54,11 +54,6 @@ public class CompressionCoefficientsPicker extends JFrame {
     /** Text field column count for integer input. */
     private static final int TEXT_FIELD_COLUMNS = 8;
 
-    /** Background color for the frame (dark theme). */
-    private static final Color FRAME_BACKGROUND = new Color(30, 30, 30);
-
-    /** Foreground color for labels. */
-    private static final Color LABEL_COLOR = Color.WHITE;
 
     /**
      * Logger for parameter picker events and validation errors.
@@ -86,12 +81,12 @@ public class CompressionCoefficientsPicker extends JFrame {
     /**
      * Create a new integers picker window.
      * <p>
-     * The window title and UI text values come from {@link com.example.lib.constants.PickerConstants}.
+     * The window title and UI text values come from {@link PickerConstants}.
      * The frame is sized to 300x150 and uses a {@link FlowLayout}. A submit button triggers
      * validation and publishing of the entered values.
      * </p>
      *
-     * @see com.example.lib.constants.PickerConstants#COMPRESSION_FACTOR_PICKER
+     * @see PickerConstants#COMPRESSION_FACTOR_PICKER
      * @see FlowLayout
      */
     public CompressionCoefficientsPicker() {
@@ -113,7 +108,7 @@ public class CompressionCoefficientsPicker extends JFrame {
         mainPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
 
         // Title
-        JLabel titleLabel = getStyledHeadingLabel("Compression Parameters");
+        JLabel titleLabel = getStyledHeadingLabel(GuiConstants.COMPRESSION_PARAMETERS_TITLE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setForeground(new Color(70, 130, 180));
         mainPanel.add(titleLabel);
@@ -149,7 +144,7 @@ public class CompressionCoefficientsPicker extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         buttonPanel.setBackground(new Color(30, 30, 30));
 
-        JButton submitButton = StylingFactory.getStyledButton("SUBMIT", STYLE1);
+        JButton submitButton = StylingFactory.getStyledButton(SUBMIT, STYLE1);
         submitButton.setFont(new Font(GuiConstants.FONT_ARIAL, Font.BOLD, 14));
         submitButton.setPreferredSize(new Dimension(120, 40));
 
@@ -247,7 +242,7 @@ public class CompressionCoefficientsPicker extends JFrame {
         
         for (Component comp : panel.getComponents()) {
             if (comp instanceof JPanel) {
-                ((JPanel) comp).setBackground(new Color(30, 30, 30));
+                comp.setBackground(new Color(30, 30, 30));
             }
             comp.setBackground(new Color(30, 30, 30));
             comp.setForeground(Color.WHITE);

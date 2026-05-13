@@ -1,12 +1,12 @@
 package com.example.assignment;
 
+import com.example.constants.UtilsConstants;
 import com.example.lib.utils.ArrayUtils;
 import org.apache.commons.math3.util.Pair;
 import org.jtransforms.dct.DoubleDCT_2D;
 
 import java.awt.image.BufferedImage;
 
-import static com.example.lib.constants.ProjectHelperConstants.*;
 import static com.example.lib.utils.ArrayUtils.toDoubleArray;
 import static com.example.lib.utils.ImageUtils.*;
 
@@ -54,7 +54,7 @@ public class Part2 {
 
         BufferedImage result = convertArrayToImage(signal);
         BufferedImage cropped = result.getSubimage(0, 0, result.getWidth() - result.getWidth() % F, result.getHeight() - result.getHeight() % F);
-        saveAsBMP(cropped, OUTPUT_PATH + imageInfo.getFirst());
+        saveAsBMP(cropped, UtilsConstants.OUTPUT_PATH + imageInfo.getFirst());
         return cropped;
     }
 

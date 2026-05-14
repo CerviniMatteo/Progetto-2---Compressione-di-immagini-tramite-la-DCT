@@ -4,7 +4,6 @@ import com.example.lib.DCT2;
 import com.example.lib.utils.BenchmarkExecutor;
 import com.example.lib.utils.JmhBenchmarkExecutor;
 import com.example.lib.utils.OpenCsvUtils;
-import com.example.lib.utils.PlotUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ejml.simple.SimpleMatrix;
@@ -77,14 +76,6 @@ public class Part1 {
             myTimes[i]  = r.customTime() * 1000;
             libTimes[i] = r.libraryTime() * 1000;
             ratios[i]   = r.customTime() > 0 ? r.libraryTime() / r.customTime() : 0;
-        }
-
-        log.debug(BenchmarkConstants.LOG_GENERATING_PLOT);
-        try {
-            PlotUtils.plotDCTBenchmark(nValues, myTimes, libTimes, BenchmarkConstants.DCT_BENCHMARK_TITLE);
-            log.info(BenchmarkConstants.LOG_PLOT_SAVED);
-        } catch (Exception e) {
-            log.error(BenchmarkConstants.LOG_PLOT_FAILED_PREFIX + e.getMessage(), e);
         }
 
         log.debug(BenchmarkConstants.LOG_WRITING_CSV);

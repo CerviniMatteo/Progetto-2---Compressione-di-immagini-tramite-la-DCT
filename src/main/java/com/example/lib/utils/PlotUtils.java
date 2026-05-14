@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.example.constants.UtilsConstants.*;
+import static com.example.lib.utils.UtilsConstants.*;
 
 /**
  * Utility methods for building and exporting benchmark plots for the DCT comparison.

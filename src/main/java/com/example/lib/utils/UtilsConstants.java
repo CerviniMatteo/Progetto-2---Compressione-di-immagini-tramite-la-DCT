@@ -1,4 +1,4 @@
-package com.example.constants;
+package com.example.lib.utils;
 
 public class UtilsConstants {
     public final static String BMP = "bmp";

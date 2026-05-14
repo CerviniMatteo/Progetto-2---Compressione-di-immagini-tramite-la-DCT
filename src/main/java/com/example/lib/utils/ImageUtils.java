@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static com.example.constants.UtilsConstants.*;
+import static com.example.lib.utils.UtilsConstants.*;
 
 /**
  * Utility methods for image conversion, duplication, and persistence.
@@ -37,14 +37,14 @@ public class ImageUtils {
      * @param img source image (expected grayscale; channel 0 is read)
      * @return padded matrix of pixel samples where {@code signal[y][x]} is the sample at {@code (x, y)}
      */
-    public static int[][] convertImageToArray(BufferedImage img){
+    public static double[][] convertImageToArray(BufferedImage img){
         int origWidth = img.getWidth();
         int origHeight = img.getHeight();
 
         int width = (origWidth % 8 == 0) ? origWidth : (origWidth / 8 + 1) * 8;
         int height = (origHeight % 8 == 0) ? origHeight : (origHeight / 8 + 1) * 8;
 
-        int[][] signal = new int[height][width];
+        double[][] signal = new double[height][width];
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -71,7 +71,7 @@ public class ImageUtils {
      * @param signal image samples matrix where {@code signal[y][x]} is the sample at {@code (x, y)}
      * @return grayscale image with matrix width/height
      */
-    public static BufferedImage convertArrayToImage(int[][] signal) {
+    public static BufferedImage convertArrayToImage(double[][] signal) {
 
         int height = signal.length;
         int width = signal[0].length;
@@ -180,7 +180,7 @@ public class ImageUtils {
      * Saves a {@link BufferedImage} as a BMP file on disk.
      * <p>
      * The method appends {@code ".bmp"} to the provided path, writes the file via
-     * {@link ImageIO#write(java.awt.image.RenderedImage, String, File)}, and prints
+     * {@link ImageIO#write(java.awt.image.ReintnderedImage, String, File)}, and prints
      * the absolute output path to standard output.
      * </p>
      *

@@ -1,13 +1,9 @@
 package com.example.assignment;
 
-import com.example.constants.UtilsConstants;
-import com.example.lib.utils.ArrayUtils;
+import com.example.lib.utils.UtilsConstants;
 import org.apache.commons.math3.util.Pair;
 import org.jtransforms.dct.DoubleDCT_2D;
-
 import java.awt.image.BufferedImage;
-
-import static com.example.lib.utils.ArrayUtils.toDoubleArray;
 import static com.example.lib.utils.ImageUtils.*;
 
 /**
@@ -41,7 +37,7 @@ public class Part2 {
      */
     public BufferedImage compress(Pair<String, BufferedImage> imageInfo, int F, int d) {
         BufferedImage image = imageInfo.getSecond();
-        int[][] signal = convertImageToArray(image);
+        double[][] signal = convertImageToArray(image);
 
         int rows = signal.length - signal.length % F;
         int cols = signal[0].length - signal[0].length % F;
@@ -76,18 +72,15 @@ public class Part2 {
      * @param F      block size
      * @param d      frequency cutoff parameter
      */
-    private static void compressBlock(int[][] signal, int i, int j, int F, int d) {
+    private static void compressBlock(double[][] signal, int i, int j, int F, int d) {
 
-        double[][] block;
-        int[][] integerBlock = new int[F][F];
+        double[][] block = new double[F][F];
 
         DoubleDCT_2D dct = new DoubleDCT_2D(F, F);
 
         for (int k = 0; k < F; k++) {
-            System.arraycopy(signal[i + k], j, integerBlock[k], 0, F);
+            System.arraycopy(signal[i + k], j, block[k], 0, F);
         }
-
-        block = toDoubleArray(integerBlock);
 
         dct.forward(block, true);
 
@@ -101,12 +94,27 @@ public class Part2 {
 
         dct.inverse(block, true);
 
-        int[][] rounded = ArrayUtils.toIntArray(block);
-
-        ArrayUtils.shiftBlockBy255(rounded);
+        shiftBlockBy255(block);
 
         for (int k = 0; k < F; k++) {
-            System.arraycopy(rounded[k], 0, signal[i + k], j, F);
+            System.arraycopy(block[k], 0, signal[i + k], j, F);
+        }
+    }
+
+    /**
+     * Clamps all values in a 2D integer array to the range {@code [0, 255]}.
+     * <p>
+     * This method is typically used to ensure pixel values remain within the valid
+     * byte range after image processing operations.
+     * </p>
+     *
+     * @param block the 2D integer array to clamp; modified in-place
+     */
+    public static void shiftBlockBy255(double[][] block) {
+        for (int y = 0; y < block.length; y++) {
+            for (int x = 0; x < block[0].length; x++) {
+                block[y][x] = Math.round(Math.max(0, Math.min(255, block[y][x])));
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.constants;
+package com.example.assignment;
 
 public class BenchmarkConstants {
     public static final String DCT_BENCHMARK_TITLE = "DCT2 Benchmark (My vs Library)";

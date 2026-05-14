@@ -1,6 +1,6 @@
 package com.example.lib.utils;
 
-import static com.example.constants.UtilsConstants.TIMED_RESULT_FORMAT;
+import static com.example.lib.utils.UtilsConstants.TIMED_RESULT_FORMAT;
 
 /**
  * Utility class for measuring and benchmarking operation execution times.

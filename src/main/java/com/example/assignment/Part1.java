@@ -1,7 +1,6 @@
 package com.example.assignment;
 
 import com.example.lib.DCT2;
-import com.example.constants.BenchmarkConstants;
 import com.example.lib.utils.OpenCsvUtils;
 import com.example.lib.utils.PlotUtils;
 import org.apache.commons.logging.Log;
@@ -11,8 +10,6 @@ import org.jtransforms.dct.DoubleDCT_2D;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.lib.utils.ArrayUtils.*;
 import static com.example.lib.utils.Timer.measure;
 
 /**
@@ -87,8 +84,8 @@ public class Part1 {
 
             double[][] matrix = randomMatrix(n);
 
-            double[][] copy1 = deepCopy(matrix);
-            double[][] copy2 = deepCopy(matrix);
+            double[][] copy1 = matrix.clone();
+            double[][] copy2 = matrix.clone();
 
             SimpleMatrix input = new SimpleMatrix(copy1);
 

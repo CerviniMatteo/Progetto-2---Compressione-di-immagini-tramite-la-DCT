@@ -134,8 +134,8 @@ public class Part1 {
         for (int i = 0; i < results.size(); i++) {
             BenchmarkMeasurement r = results.get(i);
             nValues[i]  = r.size();
-            myTimes[i]  = r.customTime() * 1000;
-            libTimes[i] = r.libraryTime() * 1000;
+            myTimes[i]  = r.customTime();
+            libTimes[i] = r.libraryTime();
             ratios[i]   = r.customTime() > 0 ? r.libraryTime() / r.customTime() : 0;
         }
 

@@ -59,11 +59,11 @@ public class DCT2 {
      * @return a new {@link SimpleMatrix} containing the DCT coefficients; the matrix has the same
      *         dimensions as the input signal
      */
-    public SimpleMatrix DCT2(SimpleMatrix signal) {
+    public SimpleMatrix forward(SimpleMatrix signal) {
         SimpleMatrix Dn = computeDMatrix(signal.getNumRows());
         SimpleMatrix Dm = computeDMatrix(signal.getNumCols());
         // For forward DCT we want: Dn * signal * Dm^T
-        return coreTransform(signal, Dn, Dm);
+        return DCTII(signal, Dn, Dm);
     }
 
     // =========================================================
@@ -78,16 +78,16 @@ public class DCT2 {
      * reconstructs a spatial-domain signal from its frequency-domain DCT coefficients.
      * </p>
      *
-     * @param signal the input signal in the frequency domain (typically the result of {@link #DCT2})
+     * @param signal the input signal in the frequency domain (typically the result of {@link #forward})
      * @return a new {@link SimpleMatrix} containing the reconstructed spatial-domain signal; the matrix has the same
      *         dimensions as the input signal
      */
-    public SimpleMatrix IDCT2(SimpleMatrix signal) {
+    public SimpleMatrix inverse(SimpleMatrix signal) {
         SimpleMatrix Dn = computeDMatrix(signal.getNumRows());
         SimpleMatrix Dm = computeDMatrix(signal.getNumCols());
         // For inverse DCT we want: Dn^T * signal * Dm
         // Passing Dn.transpose() and Dm.transpose() to coreTransform yields this result
-        return coreTransform(signal, Dn.transpose(), Dm.transpose());
+        return DCTII(signal, Dn.transpose(), Dm.transpose());
     }
 
     /**
@@ -116,7 +116,7 @@ public class DCT2 {
      * @param Dm     transform matrix to apply to columns (or its transpose depending on forward/inverse choice)
      * @return the transformed matrix (same dimensions as {@code signal})
      */
-    private SimpleMatrix coreTransform(SimpleMatrix signal, SimpleMatrix Dn, SimpleMatrix Dm){
+    private SimpleMatrix DCTII(SimpleMatrix signal, SimpleMatrix Dn, SimpleMatrix Dm){
         // Work on a copy to avoid mutating the caller-supplied matrix
         SimpleMatrix result = signal.copy();
 

@@ -180,7 +180,7 @@ public class ImageUtils {
      * Saves a {@link BufferedImage} as a BMP file on disk.
      * <p>
      * The method appends {@code ".bmp"} to the provided path, writes the file via
-     * {@link ImageIO#write(java.awt.image.ReintnderedImage, String, File)}, and prints
+     * and prints
      * the absolute output path to standard output.
      * </p>
      *

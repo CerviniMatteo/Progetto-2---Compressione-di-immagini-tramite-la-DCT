@@ -77,6 +77,7 @@ public class Part2 {
         double[][] block = new double[F][F];
 
         DoubleDCT_2D dct = new DoubleDCT_2D(F, F);
+        //DCT2 dct = new DCT2();
 
         for (int k = 0; k < F; k++) {
             System.arraycopy(signal[i + k], j, block[k], 0, F);

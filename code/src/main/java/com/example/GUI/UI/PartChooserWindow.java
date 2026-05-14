@@ -167,7 +167,7 @@ public class PartChooserWindow extends JFrame {
 
         new SwingWorker<Void, Void>() {
             @Override
-            protected Void doInBackground() {
+            protected Void doInBackground() throws Exception {
                 log.debug(GUIConstants.LOG_BENCHMARK_THREAD_START);
                 part1.benchmark(BENCHMARK_BLOCK_SIZES);
                 log.debug(GUIConstants.LOG_BENCHMARK_THREAD_DONE);

@@ -1,8 +1,8 @@
 package com.example.assignment;
 
 public class BenchmarkConstants {
-    public static final String DCT_BENCHMARK_TITLE = "DCT2 Benchmark (My vs Library)";
     public static final String TIMES_VS_SIZE_CSV_PATH = "output/times_vs_size.csv";
+    public static final String TIMES_VS_SIZE_CSV_PATH_WITH_WARMUP = "output/times_vs_size_with_JIT_warm_up.csv";
 
     public static final String LOG_BENCHMARK_START = "DCT Benchmark started with %d sizes";
     public static final String LOG_BENCHMARK_SIZE = "Benchmarking matrix size: %dx%d";
@@ -10,9 +10,6 @@ public class BenchmarkConstants {
     public static final String LOG_MEASURE_LIBRARY = "Measuring library DCT implementation for N=%d";
     public static final String LOG_RESULT_ROW = "N=%d | MyDCT: %.6f s | LibDCT: %.6f s | Ratio: %.2fx";
     public static final String LOG_BENCHMARK_DONE = "Benchmark completed for all %d sizes";
-    public static final String LOG_GENERATING_PLOT = "Generating benchmark plot...";
-    public static final String LOG_PLOT_SAVED = "Benchmark plot saved successfully";
-    public static final String LOG_PLOT_FAILED_PREFIX = "Failed to generate benchmark plot: ";
     public static final String LOG_WRITING_CSV = "Writing benchmark results to CSV...";
     public static final String LOG_CSV_SAVED = "Benchmark CSV exported successfully to output/times_vs_size.csv";
     public static final String LOG_CSV_FAILED_PREFIX = "Failed to export CSV file: ";

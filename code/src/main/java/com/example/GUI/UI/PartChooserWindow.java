@@ -52,7 +52,7 @@ public class PartChooserWindow extends JFrame {
      * <p>
      * Creates two buttons:
      * <ul>
-     *   <li><strong>Part 1 Button:</strong> Invokes {@link Part1#benchmark(int[])} with predefined block sizes</li>
+     *   <li><strong>Part 1 Button:</strong> Invokes {@link Part1#benchmark(int[], boolean)} with predefined block sizes</li>
      *   <li><strong>Part 2 Button:</strong> Instantiates {@link ImageCompressionWindow} for interactive compression</li>
      * </ul>
      */
@@ -159,6 +159,7 @@ public class PartChooserWindow extends JFrame {
      * Handles the Part 1 button action.
      * <p>
      * Runs the DCT benchmark in a background worker thread to avoid blocking the UI.
+     * Warmup iterations are enabled to ensure stable JIT-optimized measurements.
      * </p>
      */
     private void handlePart1() {
@@ -169,7 +170,8 @@ public class PartChooserWindow extends JFrame {
             @Override
             protected Void doInBackground() throws Exception {
                 log.debug(GUIConstants.LOG_BENCHMARK_THREAD_START);
-                part1.benchmark(BENCHMARK_BLOCK_SIZES);
+                part1.benchmark(BENCHMARK_BLOCK_SIZES, false);
+                part1.benchmark(BENCHMARK_BLOCK_SIZES, true);
                 log.debug(GUIConstants.LOG_BENCHMARK_THREAD_DONE);
                 return null;
             }

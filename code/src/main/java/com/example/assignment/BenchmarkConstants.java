@@ -15,8 +15,8 @@ public class BenchmarkConstants {
     public static final String LOG_CSV_FAILED_PREFIX = "Failed to export CSV file: ";
 
     public static final String CSV_HEADER_SIZE = "Size";
-    public static final String CSV_HEADER_MY_DCT_MS = "MyDCTTime (ms)";
-    public static final String CSV_HEADER_LIB_DCT_MS = "LibDCTTime (ms)";
+    public static final String CSV_HEADER_MY_DCT_MS = "MyDCTTime (s)";
+    public static final String CSV_HEADER_LIB_DCT_MS = "LibDCTTime (s)";
     public static final String CSV_HEADER_RATIO = "Ratio (Lib/My)";
 
     public static final String LOG_CSV_CREATE = "Creating CSV file at: %s with %d entries";

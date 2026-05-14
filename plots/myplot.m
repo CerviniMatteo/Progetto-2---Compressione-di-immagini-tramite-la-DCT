@@ -31,11 +31,11 @@ for k = 1:length(datasets)
 
     CSV.Properties.VariableNames = ...
         strrep(CSV.Properties.VariableNames, ...
-        'MyDCTTime_ms_', 'my_time');
+        'MyDCTTime_s_', 'my_time');
 
     CSV.Properties.VariableNames = ...
         strrep(CSV.Properties.VariableNames, ...
-        'LibDCTTime_ms_', 'lib_time');
+        'LibDCTTime_s_', 'lib_time');
 
     CSV.Properties.VariableNames = ...
         strrep(CSV.Properties.VariableNames, ...
@@ -62,10 +62,9 @@ for k = 1:length(datasets)
     semilogy(n, CSV.my_time, '-o', 'LineWidth', 1.5);
     hold on
     semilogy(n, CSV.lib_time, '-s', 'LineWidth', 1.5);
-    hold off
 
     xlabel('Matrix size n');
-    ylabel('Execution time (ms, log-scale)');
+    ylabel('Execution time (s, log-scale)');
 
     title(['Experimental execution time - ', dataset_name]);
 
@@ -82,10 +81,9 @@ for k = 1:length(datasets)
     plot(n, CSV.my_time, '-o', 'LineWidth', 1.5);
     hold on
     plot(n, CSV.lib_time, '-s', 'LineWidth', 1.5);
-    hold off
 
     xlabel('Matrix size n');
-    ylabel('Execution time (ms)');
+    ylabel('Execution time (s)');
 
     title(['Linear execution time - ', dataset_name]);
 
@@ -111,10 +109,8 @@ for k = 1:length(datasets)
     semilogy(n, theory_n2log, '--', 'LineWidth', 1.2);
     semilogy(n, theory_n3, '--', 'LineWidth', 1.2);
 
-    hold off
-
     xlabel('Matrix size n');
-    ylabel('Execution time (ms, log-scale)');
+    ylabel('Execution time (s, log-scale)');
 
     title(['Experimental vs theoretical - ', dataset_name]);
 
@@ -145,7 +141,7 @@ for k = 1:length(datasets)
     hold off
 
     xlabel('Matrix size n');
-    ylabel('Execution time (ms)');
+    ylabel('Execution time (s)');
 
     title(['Linear normalized comparison - ', dataset_name]);
 

@@ -105,17 +105,18 @@ public class Part1 {
             // ===== MY DCT =====
             log.debug(String.format(BenchmarkConstants.LOG_MEASURE_CUSTOM, n));
 
-            double myTime = benchmarkExecutor.run(() -> () -> dct.forward(new SimpleMatrix(matrix.clone())), doWarmUp);
+            double myTime = benchmarkExecutor.run(() -> () ->{
+            dct.forward(new SimpleMatrix(matrix.clone()));
+            return null;
+        }, doWarmUp);
 
             // ===== LIB DCT =====
             log.debug(String.format(BenchmarkConstants.LOG_MEASURE_LIBRARY, n));
 
-            double libTime = benchmarkExecutor.run(() -> {
-                DoubleDCT_2D libLocal = new DoubleDCT_2D(n, n);
-                return () -> {
-                    libLocal.forward(matrix.clone(), true);
-                    return null;
-                };
+            DoubleDCT_2D libLocal = new DoubleDCT_2D(n, n);
+            double libTime = benchmarkExecutor.run(() -> () -> {
+                libLocal.forward(matrix.clone(), true);
+                return null;
             }, doWarmUp);
 
             results.add(new BenchmarkMeasurement(n, myTime, libTime));

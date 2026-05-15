@@ -2,6 +2,7 @@ package com.example.GUI.UI;
 
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
+import com.example.assignment.BenchmarkConstants;
 import com.example.assignment.Part1;
 import com.example.GUI.constants.GUIConstants;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -11,10 +12,13 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.GUI.factory.StylingFactory.*;
+import static com.example.assignment.BenchmarkConstants.BENCHMARK_ERROR;
 
 /**
  * Entry point window that allows users to select which assignment part to execute.
@@ -30,17 +34,35 @@ public class PartChooserWindow extends JFrame {
     // CONSTANTS
     // ========================================================
 
-    /** Window width in pixels. */
+    /**
+     * Window width in pixels.
+     */
     private static final int WINDOW_WIDTH = 700;
 
-    /** Window height in pixels. */
+    /**
+     * Window height in pixels.
+     */
     private static final int WINDOW_HEIGHT = 280;
 
-    /** Block sizes to benchmark (powers of 2). */
+    /**
+     * Block sizes to benchmark (powers of 2).
+     */
     private static final int[] BENCHMARK_BLOCK_SIZES = {8, 16, 32, 64, 128, 256, 512, 1024, 2048};
 
-    /** Button style for part selection buttons. */
+    /**
+     * Button style for part selection buttons.
+     */
     private static final ButtonStyle BUTTON_STYLE = ButtonStyle.STYLE1;
+
+    /**
+     * Button for launching Part 1 benchmark.
+     */
+    private JButton part1Button = null;
+
+    /**
+     * Button for launching Part 2 GUI.
+     */
+    private JButton part2Button = null;
 
     /**
      * Logger used to track UI actions and warnings.
@@ -91,7 +113,7 @@ public class PartChooserWindow extends JFrame {
 
         // Title section
         JPanel titlePanel = createTitleSection();
-        
+
         // Button panel
         JPanel buttonPanel = createButtonPanel();
 
@@ -136,8 +158,8 @@ public class PartChooserWindow extends JFrame {
         panel.setLayout(new GridLayout(1, 2, 20, 0));
         panel.setBackground(new Color(30, 30, 30));
 
-        JButton part1Button = getStyledButton(GUIConstants.PART1_BUTTON_HTML, BUTTON_STYLE);
-        JButton part2Button = getStyledButton(GUIConstants.PART2_BUTTON_HTML, BUTTON_STYLE);
+        part1Button = getStyledButton(GUIConstants.PART1_BUTTON_HTML, BUTTON_STYLE);
+        part2Button = getStyledButton(GUIConstants.PART2_BUTTON_HTML, BUTTON_STYLE);
 
         // Increase button size
         Dimension buttonSize = new Dimension(250, 60);
@@ -164,24 +186,60 @@ public class PartChooserWindow extends JFrame {
      */
     private void handlePart1() {
         log.info(GUIConstants.LOG_PART1_SELECTED);
-        Part1 part1 = new Part1();
+        enableButtons(false);
 
-        new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                log.debug(GUIConstants.LOG_BENCHMARK_THREAD_START);
-                List<Object> matrices = new ArrayList<>();
-                for(int n : BENCHMARK_BLOCK_SIZES){
-                    matrices.add(randomMatrix(n));
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+
+                @Override
+                protected Void doInBackground() throws Exception {
+                    Part1 part1 = new Part1();
+                    log.debug(GUIConstants.LOG_BENCHMARK_THREAD_START);
+                    List<Object> matrices = new ArrayList<>();
+                    for (int n : BENCHMARK_BLOCK_SIZES) {
+                        matrices.add(randomMatrix(n));
+                    }
+                    part1.benchmark(BENCHMARK_BLOCK_SIZES, matrices, false);
+                    log.debug(GUIConstants.LOG_BENCHMARK_THREAD_DONE);
+                    return null;
                 }
-                part1.benchmark(BENCHMARK_BLOCK_SIZES, matrices,false);
-                part1.benchmark(BENCHMARK_BLOCK_SIZES, matrices, true);
-                log.debug(GUIConstants.LOG_BENCHMARK_THREAD_DONE);
-                return null;
-            }
-        }.execute();
+
+                @Override
+                protected void done() {
+                    try {
+                        get();
+                        enableButtons(true);
+                    } catch (Exception e) {
+
+                        log.error(BENCHMARK_ERROR, e);
+                    }
+                }
+            };
+        worker.execute();
     }
 
+    /**
+     * Handles the Part 2 button action.
+     * <p>
+     * Launches the interactive image compression window.
+     * </p>
+     */
+    private void handlePart2() {
+
+        enableButtons(false);
+
+        ImageCompressionWindow window = new ImageCompressionWindow();
+
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+                PartChooserWindow.this.setEnabled(true);
+                PartChooserWindow.this.toFront();
+
+                enableButtons(true);
+            }
+        });
+    }
 
     // ==================== UTILITIES ====================
 
@@ -203,14 +261,8 @@ public class PartChooserWindow extends JFrame {
         return m;
     }
 
-    /**
-     * Handles the Part 2 button action.
-     * <p>
-     * Launches the interactive image compression window.
-     * </p>
-     */
-    private void handlePart2() {
-        log.info(GUIConstants.LOG_PART2_SELECTED);
-        new ImageCompressionWindow();
+    public  void enableButtons(boolean enable){
+        part1Button.setEnabled(enable);
+        part2Button.setEnabled(enable);
     }
 }

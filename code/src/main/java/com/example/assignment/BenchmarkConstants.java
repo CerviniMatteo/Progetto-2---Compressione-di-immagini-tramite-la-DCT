@@ -1,6 +1,8 @@
 // src/main/java/com/example/assignment/BenchmarkConstants.java
 package com.example.assignment;
 
+import javax.swing.plaf.PanelUI;
+
 /**
  * Centralized constants used by the DCT benchmark workflow.
  * <p>This class groups together:</p>
@@ -17,6 +19,8 @@ package com.example.assignment;
  * </p>
  */
 public class BenchmarkConstants {
+
+    public static final String BENCHMARK_ERROR = "Benchmark error";
 
     /**
      * CSV path used when the benchmark is executed without JIT warmup.

@@ -39,7 +39,7 @@ jobs:
       - name: Upload JavaDoc
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./code/target/site/apidocs
+          path: ./code/target/reports/apidocs
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 jobs:
@@ -28,13 +28,10 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # Maven
       - name: Generate JavaDoc
-        run: mvn javadoc:javadoc
-
-      # Gradle (usa questo invece del precedente se usi Gradle)
-      # - name: Generate JavaDoc
-      #   run: ./gradlew javadoc
+        run: |
+          cd code
+          mvn javadoc:javadoc
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -42,10 +39,7 @@ jobs:
       - name: Upload JavaDoc
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./target/site/apidocs
-
-          # Gradle:
-          # path: ./build/docs/javadoc
+          path: ./code/target/site/apidocs
 
       - name: Deploy to GitHub Pages
         id: deployment

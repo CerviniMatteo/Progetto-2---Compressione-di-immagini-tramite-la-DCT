@@ -11,6 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.GUI.factory.StylingFactory.*;
 
@@ -52,7 +54,7 @@ public class PartChooserWindow extends JFrame {
      * <p>
      * Creates two buttons:
      * <ul>
-     *   <li><strong>Part 1 Button:</strong> Invokes {@link Part1#benchmark(int[], boolean)} with predefined block sizes</li>
+     *   <li><strong>Part 1 Button:</strong> Invokes {@link Part1#benchmark(int[], List, boolean)}  with predefined block sizes</li>
      *   <li><strong>Part 2 Button:</strong> Instantiates {@link ImageCompressionWindow} for interactive compression</li>
      * </ul>
      */
@@ -170,12 +172,37 @@ public class PartChooserWindow extends JFrame {
             @Override
             protected Void doInBackground() throws Exception {
                 log.debug(GUIConstants.LOG_BENCHMARK_THREAD_START);
-                part1.benchmark(BENCHMARK_BLOCK_SIZES, false);
-                part1.benchmark(BENCHMARK_BLOCK_SIZES, true);
+                List<Object> matrices = new ArrayList<>();
+                for(int n : BENCHMARK_BLOCK_SIZES){
+                    matrices.add(randomMatrix(n));
+                }
+                part1.benchmark(BENCHMARK_BLOCK_SIZES, matrices,false);
+                part1.benchmark(BENCHMARK_BLOCK_SIZES, matrices, true);
                 log.debug(GUIConstants.LOG_BENCHMARK_THREAD_DONE);
                 return null;
             }
         }.execute();
+    }
+
+
+    // ==================== UTILITIES ====================
+
+    /**
+     * Generates a random matrix filled with random double values.
+     * <p>
+     * This utility is used to create test matrices for the benchmark. Each element
+     * is filled with a random value in the range [0.0, 1.0).
+     * </p>
+     *
+     * @param n the size of the square matrix (n × n)
+     * @return a randomly populated n×n matrix
+     */
+    public static double[][] randomMatrix(int n) {
+        double[][] m = new double[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                m[i][j] = Math.random();
+        return m;
     }
 
     /**

@@ -11,6 +11,7 @@ import org.jtransforms.dct.DoubleDCT_2D;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,10 +26,16 @@ import java.util.List;
  * <ul>
  * <li>Execute benchmarks on multiple matrix sizes</li>
  * <li>Measure execution time of custom DCT vs. library DCT</li>
- * <li>Control warmup iterations to optimize JIT compilation (optional)</li>
+ * <li>Control warmup iterations to optimize JIT compilation</li>
  * <li>Record and export benchmark results to CSV</li>
  * <li>Calculate performance ratios between implementations</li>
  * </ul>
+ * </p>
+ *
+ * <p>
+ * <strong>Important:</strong> Each benchmark is run twice (typically with and without warmup).
+ * To ensure fair comparison, the library DCT always operates on a deep copy of the original
+ * matrix to avoid state pollution between runs.
  * </p>
  *
  * @see BenchmarkExecutor
@@ -70,54 +77,50 @@ public class Part1 {
      * <p>
      * This method:
      * <ol>
-     * <li>Generates random matrices of specified sizes</li>
-     * <li>Benchmarks the custom DCT implementation on each matrix</li>
-     * <li>Benchmarks the JTransforms DCT implementation on the same matrices</li>
+     * <li>Iterates through each specified matrix size</li>
+     * <li>Benchmarks the custom DCT implementation using EJML's SimpleMatrix representation</li>
+     * <li>Benchmarks the JTransforms DCT implementation using a deep copy of the original matrix</li>
      * <li>Records execution times and calculates performance ratios</li>
-     * <li>Exports results to a CSV file for analysis</li>
+     * <li>Aggregates all results and exports them to a CSV file for analysis</li>
      * </ol>
      * </p>
      * <p>
-     * Warmup iterations are important for stabilizing measurements because they allow
-     * the Java JIT compiler to optimize hot code paths. Skipping warmup (by setting
-     * {@code doWarmUp} to {@code false}) may be useful for quick tests or to measure
-     * cold-start performance.
+     * <strong>Matrix Handling:</strong> Since benchmarks may be executed multiple times,
+     * the library DCT receives a complete deep copy of the input matrix for each run.
+     * This ensures the transformation results do not affect subsequent comparisons.
+     * </p>
+     * <p>
+     * <strong>Warmup Effect:</strong> Warmup iterations are important for stabilizing measurements
+     * because they allow the Java JIT compiler to optimize hot code paths. Skipping warmup (by setting
+     * {@code doWarmUp} to {@code false}) may be useful for quick tests or to measure cold-start performance,
+     * though results may be less stable.
      * </p>
      *
-     * @param sizes   array of matrix dimensions to benchmark (e.g., [8, 16, 32, 64, 128, 256])
+     * @param sizes    array of matrix dimensions to benchmark (e.g., [8, 16, 32, 64, 128, 256])
+     * @param matrices list of pre-generated matrices matching the sizes array; each matrix
+     *                 will be used to benchmark both implementations
      * @param doWarmUp if {@code true}, allows JMH to run warmup iterations before measurements;
-     *                if {@code false}, skips warmup for faster execution but less stable results
+     *                if {@code false}, skips warmup for faster execution but with potentially less stable results
      * @throws Exception if benchmark execution or CSV export fails
      *
      * @see BenchmarkMeasurement
      * @see JmhBenchmarkExecutor
      */
-    public void benchmark(int[] sizes, boolean doWarmUp) throws Exception {
+    public void benchmark(int[] sizes, List<Object> matrices, boolean doWarmUp) throws Exception {
         results.clear();
         log.info(String.format(BenchmarkConstants.LOG_BENCHMARK_START, sizes.length));
 
         DCT2 dct = new DCT2();
+        int iterator = 0;
         for (int n : sizes) {
             log.debug(String.format(BenchmarkConstants.LOG_BENCHMARK_SIZE, n, n));
+            double[][] matrix = (double[][]) matrices.get(iterator++);
 
-            double[][] matrix = randomMatrix(n);
+            // Benchmark custom DCT implementation
+            double myTime = benchmarkCustomDCT(dct, matrix, doWarmUp);
 
-            // ===== MY DCT =====
-            log.debug(String.format(BenchmarkConstants.LOG_MEASURE_CUSTOM, n));
-
-            double myTime = benchmarkExecutor.run(() -> () ->{
-            dct.forward(new SimpleMatrix(matrix.clone()));
-            return null;
-        }, doWarmUp);
-
-            // ===== LIB DCT =====
-            log.debug(String.format(BenchmarkConstants.LOG_MEASURE_LIBRARY, n));
-
-            DoubleDCT_2D libLocal = new DoubleDCT_2D(n, n);
-            double libTime = benchmarkExecutor.run(() -> () -> {
-                libLocal.forward(matrix.clone(), true);
-                return null;
-            }, doWarmUp);
+            // Benchmark library DCT implementation with deep copy
+            double libTime = benchmarkLibraryDCT(n, matrix, doWarmUp);
 
             results.add(new BenchmarkMeasurement(n, myTime, libTime));
 
@@ -126,53 +129,120 @@ public class Part1 {
         }
 
         log.info(String.format(BenchmarkConstants.LOG_BENCHMARK_DONE, results.size()));
+        exportResultsToCSV(sizes, doWarmUp);
+    }
 
-        double[] nValues  = new double[results.size()];
+    /**
+     * Benchmarks the custom DCT implementation on a given matrix.
+     * <p>
+     * The matrix is converted to an EJML SimpleMatrix for processing and the forward
+     * DCT transformation is measured.
+     * </p>
+     *
+     * @param dct      the custom DCT2 implementation
+     * @param matrix   the input matrix to transform
+     * @param doWarmUp whether to include JIT warmup iterations
+     * @return execution time in seconds
+     * @throws Exception if benchmark execution fails
+     */
+    private double benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp) throws Exception {
+        log.debug(String.format(BenchmarkConstants.LOG_MEASURE_CUSTOM, matrix.length));
+        SimpleMatrix simpleMatrix = new SimpleMatrix(matrix);
+        return benchmarkExecutor.run(() -> () -> {
+            dct.forward(simpleMatrix);
+            return null;
+        }, doWarmUp);
+    }
+
+    /**
+     * Benchmarks the JTransforms library DCT implementation on a deep copy of the given matrix.
+     * <p>
+     * <strong>Deep Copy Strategy:</strong> A complete deep copy of the input matrix is created
+     * to ensure that the in-place forward transformation does not affect subsequent benchmark runs.
+     * Since benchmarks may be executed multiple times, this isolation is critical for fair
+     * performance measurement.
+     * </p>
+     * <p>
+     * The deep copy is performed row-by-row using {@code Arrays.stream().map(double[]::clone)},
+     * ensuring each row array is independently copied.
+     * </p>
+     *
+     * @param n        the matrix dimension (n x n)
+     * @param matrix   the original input matrix (not modified)
+     * @param doWarmUp whether to include JIT warmup iterations
+     * @return execution time in seconds
+     * @throws Exception if benchmark execution fails
+     */
+    private double benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp) throws Exception {
+        log.debug(String.format(BenchmarkConstants.LOG_MEASURE_LIBRARY, n));
+
+        DoubleDCT_2D libLocal = new DoubleDCT_2D(n, n);
+
+        // Create deep copy of matrix to prevent state pollution between benchmark runs
+        double[][] matrixCopy = deepCopyMatrix(matrix);
+
+        return benchmarkExecutor.run(() -> () -> {
+            libLocal.forward(matrixCopy, true);
+            return null;
+        }, doWarmUp);
+    }
+
+    /**
+     * Creates a complete deep copy of a 2D double array.
+     * <p>
+     * This method ensures that each row of the original matrix is independently cloned,
+     * producing a fully independent copy suitable for in-place transformations.
+     * </p>
+     *
+     * @param matrix the original matrix to copy
+     * @return a new matrix with independent row copies
+     */
+    private double[][] deepCopyMatrix(double[][] matrix) {
+        return Arrays.stream(matrix)
+                .map(double[]::clone)
+                .toArray(double[][]::new);
+    }
+
+    /**
+     * Collects benchmark results into arrays and exports them to a CSV file.
+     * <p>
+     * <strong>File Output:</strong>
+     * <ul>
+     * <li>With warmup: {@code output/times_vs_size_with_JIT_warm_up.csv}</li>
+     * <li>Without warmup: {@code output/times_vs_size.csv}</li>
+     * </ul>
+     * Each CSV file contains the matrix sizes, custom implementation times, library times,
+     * and computed performance ratios (library time / custom time).
+     * </p>
+     *
+     * @param sizes    array of matrix dimensions used in the benchmark
+     * @param doWarmUp whether warmup was enabled (determines output filename)
+     */
+    private void exportResultsToCSV(int[] sizes, boolean doWarmUp) {
         double[] myTimes  = new double[results.size()];
         double[] libTimes = new double[results.size()];
         double[] ratios   = new double[results.size()];
 
         for (int i = 0; i < results.size(); i++) {
             BenchmarkMeasurement r = results.get(i);
-            nValues[i]  = r.size();
             myTimes[i]  = r.customTime();
             libTimes[i] = r.libraryTime();
             ratios[i]   = r.customTime() > 0 ? r.libraryTime() / r.customTime() : 0;
         }
 
-        File file = new File("output/");
-        file.mkdirs();
+        File outputDir = new File("output/");
+        outputDir.mkdirs();
 
         log.debug(BenchmarkConstants.LOG_WRITING_CSV);
         try {
-            if (doWarmUp) {
-                OpenCsvUtils.createCSVFile(BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH_WITH_WARMUP, sizes, myTimes, libTimes, ratios);
-            } else {
-                OpenCsvUtils.createCSVFile(BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH, sizes, myTimes, libTimes, ratios);
-            }
+            String outputPath = doWarmUp
+                    ? BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH_WITH_WARMUP
+                    : BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH;
+
+            OpenCsvUtils.createCSVFile(outputPath, sizes, myTimes, libTimes, ratios);
             log.info(BenchmarkConstants.LOG_CSV_SAVED);
         } catch (Exception e) {
             log.error(BenchmarkConstants.LOG_CSV_FAILED_PREFIX + e.getMessage(), e);
         }
-    }
-
-    // ==================== UTILITIES ====================
-
-    /**
-     * Generates a random matrix filled with random double values.
-     * <p>
-     * This utility is used to create test matrices for the benchmark. Each element
-     * is filled with a random value in the range [0.0, 1.0).
-     * </p>
-     *
-     * @param n the size of the square matrix (n × n)
-     * @return a randomly populated n×n matrix
-     */
-    public static double[][] randomMatrix(int n) {
-        double[][] m = new double[n][n];
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                m[i][j] = Math.random();
-        return m;
     }
 }

@@ -21,7 +21,7 @@ import java.util.List;
  * against the JTransforms library implementation. The benchmark measures performance
  * across different matrix sizes and generates results for analysis.
  * </p>
- * <p>Key responsibilities:<p>
+ * <p>Key responsibilities:</p>
  * <ul>
  * <li>Execute benchmarks on multiple matrix sizes</li>
  * <li>Measure execution time of custom DCT vs. library DCT</li>
@@ -72,7 +72,7 @@ public class Part1 {
 
     /**
      * Executes the DCT benchmark across multiple matrix sizes with optional warmup control.
-     * <p>This method:</p
+     * <p>This method:</p>
      * <ol>
      * <li>Iterates through each specified matrix size</li>
      * <li>Benchmarks the custom DCT implementation using EJML's SimpleMatrix representation</li>
@@ -152,7 +152,157 @@ public class Part1 {
 
     /**
      * Benchmarks the JTransforms library DCT implementation on a deep copy of the given matrix.
-     * <p>
+     * <p>Error:  Failed to execute goal org.apache.maven.plugins:maven-javadoc-plugin:3.12.0:javadoc (default-cli) on project matrix-library: An error has occurred in Javadoc report generation:
+4583
+Error:  Exit code: 1
+4584
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/assignment/Part1.java:24: warning: empty <p> tag
+4585
+Error:   * <p>Key responsibilities:<p>
+4586
+Error:                             ^
+4587
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/GUI/UI/CompressionCoefficientsPicker.java:33: error: malformed HTML
+4588
+Error:   *   <li>{@code d} d must satisfy: 0 <= d <= 2*F - 2</li>
+4589
+Error:                                       ^
+4590
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/GUI/UI/CompressionCoefficientsPicker.java:33: error: malformed HTML
+4591
+Error:   *   <li>{@code d} d must satisfy: 0 <= d <= 2*F - 2</li>
+4592
+Error:                                            ^
+4593
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/Application.java:19: warning: use of default constructor, which does not provide a comment
+4594
+Error:  public class Application {
+4595
+Error:         ^
+4596
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/assignment/BenchmarkConstants.java:19: warning: use of default constructor, which does not provide a comment
+4597
+Error:  public class BenchmarkConstants {
+4598
+Error:         ^
+4599
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/lib/DCT2.java:26: warning: use of default constructor, which does not provide a comment
+4600
+Error:      public class DCT2 {
+4601
+Error:             ^
+4602
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/GUI/constants/GUIConstants.java:16: warning: use of default constructor, which does not provide a comment
+4603
+Error:  public class GUIConstants {
+4604
+Error:         ^
+4605
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/GUI/UI/ImagePicker.java:48: warning: use of default constructor, which does not provide a comment
+4606
+Error:  public class ImagePicker {
+4607
+Error:         ^
+4608
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/lib/utils/ImageUtils.java:25: warning: use of default constructor, which does not provide a comment
+4609
+Error:  public class ImageUtils {
+4610
+Error:         ^
+4611
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/lib/utils/JmhBenchmarkExecutor.java:31: warning: use of default constructor, which does not provide a comment
+4612
+Error:  public class JmhBenchmarkExecutor implements BenchmarkExecutor {
+4613
+Error:         ^
+4614
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/lib/utils/JmhBenchmarkExecutor.java:66: warning: use of default constructor, which does not provide a comment
+4615
+Error:      public static class BenchmarkRunner {
+4616
+Error:                    ^
+4617
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/lib/utils/JmhBenchmarkExecutor.java:45: warning: use of default constructor, which does not provide a comment
+4618
+Error:      public static class BenchState {
+4619
+Error:                    ^
+4620
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/GUI/observer/Observable.java:18: warning: use of default constructor, which does not provide a comment
+4621
+Error:  public class Observable<T> {
+4622
+Error:         ^
+4623
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/lib/utils/OpenCsvUtils.java:14: warning: use of default constructor, which does not provide a comment
+4624
+Error:  public class OpenCsvUtils {
+4625
+Error:         ^
+4626
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/assignment/Part1.java:75: error: malformed HTML
+4627
+Error:       * <p>This method:</p
+4628
+Error:                        ^
+4629
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/assignment/Part2.java:20: warning: use of default constructor, which does not provide a comment
+4630
+Error:  public class Part2 {
+4631
+Error:         ^
+4632
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/GUI/constants/PickerConstants.java:13: warning: use of default constructor, which does not provide a comment
+4633
+Error:  public class PickerConstants {
+4634
+Error:         ^
+4635
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/GUI/factory/StylingFactory.java:24: warning: use of default constructor, which does not provide a comment
+4636
+Error:  public class StylingFactory {
+4637
+Error:         ^
+4638
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/lib/utils/UtilsConstants.java:11: warning: use of default constructor, which does not provide a comment
+4639
+Error:  public class UtilsConstants {
+4640
+Error:         ^
+4641
+Error:  /home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/src/main/java/com/example/GUI/UI/ImageCompressionWindow.java:56: warning: no comment
+4642
+Error:      private JPanel compressedBox;
+4643
+Error:                     ^
+4644
+Error: [ERROR] 3 errors
+4645
+Error:  17 warnings
+4646
+Error:  Command line was: /usr/lib/jvm/temurin-21-jdk-amd64/bin/javadoc -J-Duser.language= -J-Duser.country= @options @packages
+4647
+Error:
+4648
+Error:  Refer to the generated Javadoc files in '/home/runner/work/Progetto-2---Compressione-di-immagini-tramite-la-DCT/Progetto-2---Compressione-di-immagini-tramite-la-DCT/code/target/reports/apidocs' dir.
+4649
+Error:
+4650
+Error:  -> [Help 1]
+4651
+Error:
+4652
+Error:  To see the full stack trace of the errors, re-run Maven with the -e switch.
+4653
+Error:  Re-run Maven using the -X switch to enable full debug logging.
+4654
+Error:
+4655
+Error:  For more information about the errors and possible solutions, please read the following articles:
+4656
+Error:  [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+4657
+Error: Process completed with exit code 1.
      * <strong>Deep Copy Strategy:</strong> A complete deep copy of the input matrix is created
      * to ensure that the in-place forward transformation does not affect subsequent benchmark runs.
      * Since benchmarks may be executed multiple times, this isolation is critical for fair

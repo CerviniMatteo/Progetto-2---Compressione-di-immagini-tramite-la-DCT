@@ -30,7 +30,7 @@ import static com.example.GUI.constants.PickerConstants.*;
  * <p>Validation rules:</p>
  * <ul>
  *   <li>{@code F} must be non-negative (F >= 0)</li>
- *   <li>{@code d} d must satisfy: 0 <= d <= 2*F - 2</li>
+ *   <li>{@code d} d must satisfy: 0 $le d $le 2*F - 2</li>
  * </ul>
  *
  * @see Observable
@@ -162,7 +162,7 @@ public class CompressionCoefficientsPicker extends JFrame {
      * <p>This method:</p>
      * <ol>
      *   <li>Parses the contents of the text fields into integers</li>
-     *   <li>Validates them according to the rules: {@code F}{@code F >= 0} and {@code 0 <= d && d <= 2*F - 2}</li>
+     *   <li>Validates them according to the rules: {@code F}{@code F >= 0} and {@code 0 $le d && d $le 2*F - 2}</li>
      *   <li>If validation succeeds, creates a {@link org.apache.commons.math3.util.Pair} of {@code (F, d)},
      *       sets it on the {@link Observable} and disposes the window</li>
      *   <li>If parsing or validation fails, shows an error dialog to the user with an explanatory message</li>
@@ -205,7 +205,7 @@ public class CompressionCoefficientsPicker extends JFrame {
      * Validates the input parameters against business rules.
      *
      * @param F compression factor (must be >= 0)
-     * @param d dependent parameter (must be 0 <= d <= 2*F - 2)
+     * @param d dependent parameter (must be 0 $le d $le 2*F - 2)
      * @throws IllegalArgumentException if validation fails
      */
     private void validateInputs(int F, int d) {

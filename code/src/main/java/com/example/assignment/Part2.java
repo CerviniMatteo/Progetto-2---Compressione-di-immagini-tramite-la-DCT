@@ -23,7 +23,7 @@ public class Part2 {
      * Compresses an image using block DCT with frequency truncation.
      * <p>
      * Only the largest region whose dimensions are multiples of {@code F} is processed.
-     * Any border pixels outside this region are left unchanged.
+     * Any border pixels outside this region is cropped out.
      * </p>
      *
      * @param imageInfo pair containing:
@@ -42,16 +42,21 @@ public class Part2 {
         int rows = signal.length - signal.length % F;
         int cols = signal[0].length - signal[0].length % F;
 
+        double[][] compressedImage = new double[rows][cols];
+
+        for (int i = 0; i < rows; i ++) {
+            System.arraycopy(signal[i], 0, compressedImage[i], 0, cols);
+        }
+
         for (int i = 0; i < rows; i += F) {
             for (int j = 0; j < cols; j += F) {
-                compressBlock(signal, i, j, F, d);
+                compressBlock(compressedImage, i, j, F, d);
             }
         }
 
-        BufferedImage result = convertArrayToImage(signal);
-        BufferedImage cropped = result.getSubimage(0, 0, result.getWidth() - result.getWidth() % F, result.getHeight() - result.getHeight() % F);
-        saveAsBMP(cropped, UtilsConstants.OUTPUT_PATH + imageInfo.getFirst());
-        return cropped;
+        BufferedImage result = convertArrayToImage(compressedImage);
+        saveAsBMP(result, UtilsConstants.OUTPUT_PATH + imageInfo.getFirst());
+        return result;
     }
 
     /**

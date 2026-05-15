@@ -36,24 +36,14 @@ public class ImageUtils {
      * @return padded matrix of pixel samples where {@code signal[y][x]} is the sample at {@code (x, y)}
      */
     public static double[][] convertImageToArray(BufferedImage img){
-        int origWidth = img.getWidth();
-        int origHeight = img.getHeight();
-
-        int width = (origWidth % 8 == 0) ? origWidth : (origWidth / 8 + 1) * 8;
-        int height = (origHeight % 8 == 0) ? origHeight : (origHeight / 8 + 1) * 8;
+        int width = img.getWidth();
+        int height = img.getHeight();
 
         double[][] signal = new double[height][width];
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-
-                if (x < origWidth && y < origHeight) {
                     signal[y][x] = img.getRaster().getSample(x, y, 0);
-                } else {
-                    int px = Math.min(x, origWidth - 1);
-                    int py = Math.min(y, origHeight - 1);
-                    signal[y][x] = img.getRaster().getSample(px, py, 0);
-                }
             }
         }
         return signal;

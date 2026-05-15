@@ -178,7 +178,7 @@ public class ImageCompressionWindow extends JFrame {
         }
 
         log.debug(GUIConstants.LOG_OPENING_PARAMETERS_PICKER);
-        CompressionCoefficientsPicker integerPicker = new CompressionCoefficientsPicker();
+        CompressionCoefficientsPicker integerPicker = new CompressionCoefficientsPicker(selectedImage.getWidth(), selectedImage.getHeight());
 
         integerPicker.subscribe(pair -> {
             int F = pair.getFirst();

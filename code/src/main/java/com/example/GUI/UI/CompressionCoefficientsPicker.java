@@ -87,7 +87,7 @@ public class CompressionCoefficientsPicker extends JFrame {
      * @see PickerConstants#COMPRESSION_FACTOR_PICKER
      * @see FlowLayout
      */
-    public CompressionCoefficientsPicker() {
+    public CompressionCoefficientsPicker(int rows, int cols) {
 
         super(COMPRESSION_FACTOR_PICKER);
 
@@ -152,7 +152,7 @@ public class CompressionCoefficientsPicker extends JFrame {
 
         add(mainPanel, BorderLayout.CENTER);
 
-        submitButton.addActionListener(e -> submit());
+        submitButton.addActionListener(e -> submit(rows, cols));
         log.debug(LOG_INTEGER_PICKER_INITIALIZED);
     }
 
@@ -172,7 +172,7 @@ public class CompressionCoefficientsPicker extends JFrame {
      *                                  Note: this exception is caught within the method and presented to the user
      *                                  as an error dialog (see {@link javax.swing.JOptionPane}).
      */
-    private void submit() {
+    private void submit(int cols, int rows) {
         try {
             String fText = firstField.getText().trim();
             String dText = secondField.getText().trim();
@@ -184,7 +184,7 @@ public class CompressionCoefficientsPicker extends JFrame {
 
             log.debug(String.format(LOG_PARSED_INPUTS, F, d));
 
-            validateInputs(F, d);
+            validateInputs(F, d, rows, cols);
 
             log.info(String.format(LOG_VALIDATION_SUCCESS, F, d));
 
@@ -208,13 +208,17 @@ public class CompressionCoefficientsPicker extends JFrame {
      * @param d dependent parameter (must be 0 $le d $le 2*F - 2)
      * @throws IllegalArgumentException if validation fails
      */
-    private void validateInputs(int F, int d) {
+    private void validateInputs(int F, int d, int rows, int cols) {
         if (F < 0) {
             throw new IllegalArgumentException(F_POSITIVE_ERROR);
         }
 
         if (d < 0 || d > (2 * F) - 2) {
             throw new IllegalArgumentException(D_VALUE_ERROR);
+        }
+
+        if(rows < F || cols < F){
+            throw new IllegalArgumentException(F_ROWS_COLS_ERROR);
         }
     }
 

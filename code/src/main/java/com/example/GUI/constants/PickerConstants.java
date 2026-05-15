@@ -72,6 +72,8 @@ public class PickerConstants {
      */
     public static final String D_VALUE_ERROR = D + " must be >= 0 and <= (2" + F + "- 2)";
 
+    public static final String F_ROWS_COLS_ERROR = "F must be less than the number of rows and columns";
+
     /**
      * Error message shown when the user enters non-integer values.
      */

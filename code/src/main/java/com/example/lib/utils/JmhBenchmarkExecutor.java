@@ -18,15 +18,13 @@ import java.util.function.Supplier;
  * the average execution time of a task by running it multiple times with configurable warmup
  * and measurement iterations.
  * </p>
- * <p>
- * Key features:
+ * <p>Key features:</p>
  * <ul>
  * <li>Configurable warmup iterations to let the JIT compiler optimize code</li>
  * <li>Multiple measurement iterations to reduce noise and improve accuracy</li>
  * <li>No forking to keep measurements in-process for faster execution</li>
  * <li>Time measurement in microseconds for fine-grained precision</li>
  * </ul>
- * </p>
  *
  * @see BenchmarkExecutor
  */
@@ -87,13 +85,13 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
      * <p>
      * This method allows dynamic control over warmup iterations. Setting {@code doWarmUp} to
      * {@code false} skips the warmup phase, which can be useful for:
+     * </p>
      * <ul>
      * <li>Quick testing or development-time measurements</li>
      * <li>Comparing cold-start vs. warmed-up performance</li>
      * <li>Reducing total benchmark execution time</li>
      * </ul>
      * However, skipping warmup may result in less stable measurements due to JIT compilation variance.
-     * </p>
      *
      * @param taskFactory builds the task to be benchmarked
      * @param doWarmUp    if {@code true}, runs {@value #DEFAULT_WARMUP_ITERATIONS} warmup iterations;

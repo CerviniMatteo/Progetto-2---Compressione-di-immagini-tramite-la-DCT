@@ -21,8 +21,7 @@ import java.util.List;
  * against the JTransforms library implementation. The benchmark measures performance
  * across different matrix sizes and generates results for analysis.
  * </p>
- * <p>
- * Key responsibilities:
+ * <p>Key responsibilities:<p>
  * <ul>
  * <li>Execute benchmarks on multiple matrix sizes</li>
  * <li>Measure execution time of custom DCT vs. library DCT</li>
@@ -30,7 +29,6 @@ import java.util.List;
  * <li>Record and export benchmark results to CSV</li>
  * <li>Calculate performance ratios between implementations</li>
  * </ul>
- * </p>
  *
  * <p>
  * <strong>Important:</strong> Each benchmark is run twice (typically with and without warmup).
@@ -74,8 +72,7 @@ public class Part1 {
 
     /**
      * Executes the DCT benchmark across multiple matrix sizes with optional warmup control.
-     * <p>
-     * This method:
+     * <p>This method:</p
      * <ol>
      * <li>Iterates through each specified matrix size</li>
      * <li>Benchmarks the custom DCT implementation using EJML's SimpleMatrix representation</li>
@@ -83,7 +80,6 @@ public class Part1 {
      * <li>Records execution times and calculates performance ratios</li>
      * <li>Aggregates all results and exports them to a CSV file for analysis</li>
      * </ol>
-     * </p>
      * <p>
      * <strong>Matrix Handling:</strong> Since benchmarks may be executed multiple times,
      * the library DCT receives a complete deep copy of the input matrix for each run.
@@ -205,15 +201,13 @@ public class Part1 {
 
     /**
      * Collects benchmark results into arrays and exports them to a CSV file.
-     * <p>
-     * <strong>File Output:</strong>
+     * <p><strong>File Output:</strong></p>
      * <ul>
      * <li>With warmup: {@code output/times_vs_size_with_JIT_warm_up.csv}</li>
      * <li>Without warmup: {@code output/times_vs_size.csv}</li>
      * </ul>
      * Each CSV file contains the matrix sizes, custom implementation times, library times,
      * and computed performance ratios (library time / custom time).
-     * </p>
      *
      * @param sizes    array of matrix dimensions used in the benchmark
      * @param doWarmUp whether warmup was enabled (determines output filename)

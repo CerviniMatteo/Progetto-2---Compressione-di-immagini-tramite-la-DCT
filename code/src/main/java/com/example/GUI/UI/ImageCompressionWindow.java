@@ -20,14 +20,12 @@ import static com.example.GUI.factory.StylingFactory.*;
 
 /**
  * Main Swing window for the DCT image compression workflow.
- * <p>
- * This frame provides:
+ * <p>This frame provides:</p>
  * <ul>
  *   <li>Controls to pick an image and trigger compression</li>
  *   <li>Side-by-side previews for original and compressed images</li>
  *   <li>Integration with {@link ImagePicker} and {@link CompressionCoefficientsPicker}</li>
  * </ul>
- * </p>
  * <p>
  * Compression is delegated to {@link Part2#compress(Pair, int, int)}.
  * The original selected image is preserved by compressing a deep copy.
@@ -60,15 +58,13 @@ public class ImageCompressionWindow extends JFrame {
 
     /**
      * Builds and displays the image compression window.
-     * <p>
-     * The constructor:
+     * <p>The constructor:</p>
      * <ol>
      *   <li>Creates top controls ("Choose Image" and "Compress Image")</li>
      *   <li>Creates side-by-side preview boxes ("Original" and "Compressed")</li>
      *   <li>Subscribes to image/parameter pickers</li>
      *   <li>Wires compression action and UI updates</li>
      * </ol>
-     * </p>
      */
     public ImageCompressionWindow() {
 

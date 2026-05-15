@@ -18,8 +18,7 @@ import static com.example.GUI.factory.StylingFactory.*;
 
 /**
  * Entry point window that allows users to select which assignment part to execute.
- * <p>
- * Presents two buttons:
+ * <p>Presents two buttons:</p>
  * <ul>
  *   <li><strong>Part 1:</strong> Runs DCT benchmarking across various block sizes</li>
  *   <li><strong>Part 2:</strong> Launches the interactive image compression GUI</li>
@@ -51,8 +50,7 @@ public class PartChooserWindow extends JFrame {
 
     /**
      * Constructs and displays the part chooser window.
-     * <p>
-     * Creates two buttons:
+     * <p>Creates two buttons:</p>
      * <ul>
      *   <li><strong>Part 1 Button:</strong> Invokes {@link Part1#benchmark(int[], List, boolean)}  with predefined block sizes</li>
      *   <li><strong>Part 2 Button:</strong> Instantiates {@link ImageCompressionWindow} for interactive compression</li>

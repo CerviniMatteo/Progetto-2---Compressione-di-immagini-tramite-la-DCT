@@ -8,8 +8,7 @@ import static com.example.lib.utils.ImageUtils.*;
 
 /**
  * Implements block-based grayscale image compression using the 2D Discrete Cosine Transform (DCT).
- * <p>
- * Compression strategy:
+ * <p>Compression strategy:</p>
  * <ul>
  *   <li>Split the image into non-overlapping {@code F x F} blocks</li>
  *   <li>Apply forward DCT to each block</li>
@@ -25,6 +24,7 @@ public class Part2 {
      * <p>
      * Only the largest region whose dimensions are multiples of {@code F} is processed.
      * Any border pixels outside this region are left unchanged.
+     * </p>
      *
      * @param imageInfo pair containing:
      *                  <ul>
@@ -56,8 +56,7 @@ public class Part2 {
 
     /**
      * Compresses a single {@code F x F} block of the image signal in place.
-     * <p>
-     * Steps:
+     * <p>Steps:</p>
      * <ol>
      *   <li>Copy block from {@code signal} to a temporary matrix</li>
      *   <li>Convert to {@code double[][]} and apply forward DCT</li>

@@ -29,11 +29,11 @@ import static com.example.GUI.constants.PickerConstants.*;
  * current directory accordingly. The file chooser is shown modally; when the user approves
  * a file, the picker reads it via {@link ImageIO#read(File)} and, if successful, publishes
  * a {@link org.apache.commons.math3.util.Pair} where:
+ * </p>
  * <ul>
  *   <li>{@code getFirst()} is the file name (String)</li>
  *   <li>{@code getSecond()} is the {@link BufferedImage}</li>
  * </ul>
- * </p>
  *
  * <p>
  * Errors reading the file are printed to standard error (stack trace). If the selected file
@@ -86,8 +86,7 @@ public class ImagePicker {
 
     /**
      * Show the file chooser UI and publish the selected image to subscribers.
-     * <p>
-     * Behavior and steps:
+     * <p>Behavior and steps:</p>
      * <ol>
      *   <li>Resolve the user's home directory and downloads folder</li>
      *   <li>Resolve the application-specific image directory</li>
@@ -95,7 +94,6 @@ public class ImagePicker {
      *   <li>Read the selected image and copy to output directory</li>
      *   <li>Publish to subscribers</li>
      * </ol>
-     * </p>
      *
      * @see java.lang.System#getProperty(String)
      * @see javax.swing.JFileChooser

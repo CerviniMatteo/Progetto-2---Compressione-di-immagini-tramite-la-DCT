@@ -27,13 +27,11 @@ import static com.example.GUI.constants.PickerConstants.*;
  * containing {@code (F, d)}.
  * </p>
  *
- * <p>
- * Validation rules:
+ * <p>Validation rules:</p>
  * <ul>
  *   <li>{@code F} must be non-negative (F >= 0)</li>
  *   <li>{@code d} must satisfy 0 <= d <= 2*F - 2</li>
  * </ul>
- * </p>
  *
  * @see Observable
  * @see org.apache.commons.math3.util.Pair
@@ -161,8 +159,7 @@ public class CompressionCoefficientsPicker extends JFrame {
 
     /**
      * Read, validate and publish the integers entered in the UI.
-     * <p>
-     * This method:
+     * <p>This method:</p>
      * <ol>
      *   <li>Parses the contents of the text fields into integers</li>
      *   <li>Validates them according to the rules: {@code F} >= 0 and {@code 0 <= d <= 2*F-2}</li>
@@ -170,7 +167,6 @@ public class CompressionCoefficientsPicker extends JFrame {
      *       sets it on the {@link Observable} and disposes the window</li>
      *   <li>If parsing or validation fails, shows an error dialog to the user with an explanatory message</li>
      * </ol>
-     * </p>
      *
      * @throws IllegalArgumentException if parsing fails (e.g. non-numeric input) or if validation rules are not met.
      *                                  Note: this exception is caught within the method and presented to the user

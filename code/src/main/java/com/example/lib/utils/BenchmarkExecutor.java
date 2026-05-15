@@ -4,13 +4,11 @@ import java.util.function.Supplier;
 
 /**
  * Abstraction for executing a benchmark task using a benchmarking framework (e.g., JMH).
- * <p>
- * This interface provides two methods for running benchmarks:
+ * <p>This interface provides two methods for running benchmarks:</p>
  * <ul>
  * <li>{@code run(Supplier)} - runs a benchmark with default warmup settings</li>
  * <li>{@code run(Supplier, boolean)} - runs a benchmark with optional warmup control</li>
  * </ul>
- * </p>
  */
 public interface BenchmarkExecutor {
     /**

@@ -10,15 +10,13 @@ import static com.example.lib.utils.UtilsConstants.*;
 
 /**
  * Utility methods for image conversion, duplication, and persistence.
- * <p>
- * This class provides support for:
+ * <p>This class provides support for:</p>
  * <ul>
  *   <li>Converting a {@link BufferedImage} to a 2D integer matrix for signal-style processing</li>
  *   <li>Converting a 2D integer matrix back to a grayscale image</li>
  *   <li>Creating a deep copy of an image</li>
  *   <li>Saving an image to disk in BMP format</li>
  * </ul>
- * </p>
  * <p>
  * The conversion routine pads image dimensions to multiples of 8, which is useful
  * for block-based algorithms such as DCT.

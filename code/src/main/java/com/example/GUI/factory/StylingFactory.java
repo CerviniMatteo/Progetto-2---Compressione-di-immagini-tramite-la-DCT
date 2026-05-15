@@ -127,15 +127,13 @@ public class StylingFactory {
 
     /**
      * Creates a styled {@link JTextField} configured for a dark theme UI.
-     * <p>
-     * The method applies:
+     * <p>The method applies:</p>
      * <ul>
      *   <li>dark background and white foreground for contrast,</li>
      *   <li>custom caret and selection colors for readability,</li>
      *   <li>a consistent font,</li>
      *   <li>a compound border with outer line and inner padding.</li>
      * </ul>
-     * </p>
      *
      * @param dimension the number of columns used to size the text field
      * @return a new styled {@link JTextField}

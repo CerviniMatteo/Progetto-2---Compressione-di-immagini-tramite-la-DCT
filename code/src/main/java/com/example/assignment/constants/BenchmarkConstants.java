@@ -1,7 +1,5 @@
 // src/main/java/com/example/assignment/BenchmarkConstants.java
-package com.example.assignment;
-
-import javax.swing.plaf.PanelUI;
+package com.example.assignment.constants;
 
 /**
  * Centralized constants used by the DCT benchmark workflow.
@@ -133,4 +131,5 @@ public class BenchmarkConstants {
      * Formatting pattern for ratio values written to CSV.
      */
     public static final String CSV_RATIO_FORMAT = "%.4f";
+    public static final String LOG_BENCHMARK_CANCELLED = "Benchmark has been cancelled";
 }

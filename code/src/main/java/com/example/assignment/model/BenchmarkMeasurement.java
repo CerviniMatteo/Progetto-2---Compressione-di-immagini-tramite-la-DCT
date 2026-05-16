@@ -1,4 +1,4 @@
-package com.example.assignment;
+package com.example.assignment.model;
 
 /**
  * Immutable benchmark sample for a single matrix size.

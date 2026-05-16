@@ -36,6 +36,9 @@ public class StylingFactory {
     /** Gold/orange accent color for tertiary buttons. */
     private static final Color COLOR_GOLD = new Color(220, 150, 20);
 
+    /** Red accent color for tertiary buttons. */
+    private static final Color COLOR_RED = new Color(188, 4, 4);
+
     /** Dark background for high-contrast panels. */
     private static final Color COLOR_DARK = new Color(30, 30, 30);
 
@@ -266,6 +269,7 @@ public class StylingFactory {
             case STYLE1 -> COLOR_STEELBLUE;
             case STYLE2 -> COLOR_PURPLE;
             case STYLE3 -> COLOR_GOLD;
+            case STYLE4 -> COLOR_RED;
             default -> COLOR_STEELBLUE;
         };
     }
@@ -280,6 +284,7 @@ public class StylingFactory {
         button.setForeground(COLOR_TEXT_LIGHT);
         button.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_BUTTON));
         button.setBorder(BorderFactory.createEmptyBorder(PAD_BUTTON_V, PAD_BUTTON_H, PAD_BUTTON_V, PAD_BUTTON_H));
+        button.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 16));
     }
 
     /**

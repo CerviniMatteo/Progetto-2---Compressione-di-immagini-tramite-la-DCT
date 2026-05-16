@@ -48,6 +48,12 @@ public class GUIConstants {
             "<html><div style='text-align:center;'>PART 2<br>GUI Image Compression</div></html>";
 
     /**
+     * HTML label used for the stop Benchmark button.
+     */
+    public static final String STOP_BENCHMARK_BUTTON_HTML =
+            "<html><div style='text-align:center;'>PART 1<br>Stop benchmark</div></html>";
+
+    /**
      * Title for the panel that contains compression parameters.
      */
     public static final String COMPRESSION_PARAMETERS_TITLE = "Compression Parameters";
@@ -161,7 +167,13 @@ public class GUIConstants {
     public static final String LOG_BENCHMARK_THREAD_START = "Benchmark thread started";
 
     /**
+     *
      * Log message printed when the benchmark background thread ends.
      */
     public static final String LOG_BENCHMARK_THREAD_DONE = "Benchmark thread completed";
+
+    /**
+     * Log message printed when the benchmark background thread gets canceled.
+     */
+    public static final String LOG_BENCHMARK_THREAD_CANCELED = "Benchmark thread canceled by user";
 }

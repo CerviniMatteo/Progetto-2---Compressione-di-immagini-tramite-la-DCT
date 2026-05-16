@@ -12,4 +12,7 @@ public enum ButtonStyle {
 
     /** Orange button style. */
     STYLE3,
+
+    /** Red button style. */
+    STYLE4,
 }

@@ -1,5 +1,7 @@
 package com.example.assignment;
 
+import com.example.assignment.constants.BenchmarkConstants;
+import com.example.assignment.model.BenchmarkMeasurement;
 import com.example.lib.DCT2;
 import com.example.lib.utils.BenchmarkExecutor;
 import com.example.lib.utils.JmhBenchmarkExecutor;
@@ -13,6 +15,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.function.Supplier;
+
+import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_CANCELLED;
 
 /**
  * Part 1 - DCT Benchmark Comparison.
@@ -71,15 +77,23 @@ public class Part1 {
     private final List<BenchmarkMeasurement> results = new ArrayList<>();
 
     /**
-     * Executes the DCT benchmark across multiple matrix sizes with optional warmup control.
+     * Executes the DCT benchmark across multiple matrix sizes with optional warmup control
+     * and cooperative cancellation support.
      * <p>This method:</p>
      * <ol>
      * <li>Iterates through each specified matrix size</li>
+     * <li>Checks for cancellation before each block and between custom/library runs</li>
      * <li>Benchmarks the custom DCT implementation using EJML's SimpleMatrix representation</li>
      * <li>Benchmarks the JTransforms DCT implementation using a deep copy of the original matrix</li>
      * <li>Records execution times and calculates performance ratios</li>
      * <li>Aggregates all results and exports them to a CSV file for analysis</li>
      * </ol>
+     * <p>
+     * <strong>Cancellation:</strong> The {@code isCancelled} supplier is checked at the start
+     * of each size iteration and between the two benchmark calls. Inside each JMH session,
+     * the same supplier is polled at every iteration boundary, so cancellation takes effect
+     * within one iteration rather than requiring the full session to finish.
+     * </p>
      * <p>
      * <strong>Matrix Handling:</strong> Since benchmarks may be executed multiple times,
      * the library DCT receives a complete deep copy of the input matrix for each run.
@@ -92,59 +106,88 @@ public class Part1 {
      * though results may be less stable.
      * </p>
      *
-     * @param sizes    array of matrix dimensions to benchmark (e.g., [8, 16, 32, 64, 128, 256])
-     * @param matrices list of pre-generated matrices matching the sizes array; each matrix
-     *                 will be used to benchmark both implementations
-     * @param doWarmUp if {@code true}, allows JMH to run warmup iterations before measurements;
-     *                if {@code false}, skips warmup for faster execution but with potentially less stable results
+     * @param sizes       array of matrix dimensions to benchmark (e.g., [8, 16, 32, 64, 128, 256])
+     * @param matrices    list of pre-generated matrices matching the sizes array; each matrix
+     *                    will be used to benchmark both implementations
+     * @param doWarmUp    if {@code true}, allows JMH to run warmup iterations before measurements;
+     *                    if {@code false}, skips warmup for faster execution but with potentially less stable results
+     * @param isCancelled a {@link Supplier} returning {@code true} when the benchmark should stop early;
+     *                    use {@code () -> false} to run without cancellation support
      * @throws Exception if benchmark execution or CSV export fails
      *
      * @see BenchmarkMeasurement
      * @see JmhBenchmarkExecutor
      */
-    public void benchmark(int[] sizes, List<Object> matrices, boolean doWarmUp) throws Exception {
+    public void benchmark(int[] sizes, List<Object> matrices, boolean doWarmUp,
+                          Supplier<Boolean> isCancelled) throws Exception {
         results.clear();
         log.info(String.format(BenchmarkConstants.LOG_BENCHMARK_START, sizes.length));
 
         DCT2 dct = new DCT2();
         int iterator = 0;
-        for (int n : sizes) {
-            log.debug(String.format(BenchmarkConstants.LOG_BENCHMARK_SIZE, n, n));
-            double[][] matrix = (double[][]) matrices.get(iterator++);
 
-            // Benchmark custom DCT implementation
-            double myTime = benchmarkCustomDCT(dct, matrix, doWarmUp);
+        try {
+            for (int n : sizes) {
 
-            // Benchmark library DCT implementation with deep copy
-            double libTime = benchmarkLibraryDCT(n, matrix, doWarmUp);
+                if (isCancelled.get()) {
+                    log.info(LOG_BENCHMARK_CANCELLED);
+                    return;
+                }
 
-            results.add(new BenchmarkMeasurement(n, myTime, libTime));
+                log.debug(String.format(BenchmarkConstants.LOG_BENCHMARK_SIZE, n, n));
+                double[][] matrix = (double[][]) matrices.get(iterator++);
 
-            double ratio = myTime > 0 ? libTime / myTime : 0;
-            log.info(String.format(BenchmarkConstants.LOG_RESULT_ROW, n, myTime, libTime, ratio));
+                double myTime = benchmarkCustomDCT(dct, matrix, doWarmUp, isCancelled);
+
+                if (isCancelled.get()) {
+                    log.info(LOG_BENCHMARK_CANCELLED);
+                    return;
+                }
+
+                double libTime = benchmarkLibraryDCT(n, matrix, doWarmUp, isCancelled);
+
+                results.add(new BenchmarkMeasurement(n, myTime, libTime));
+
+                double ratio = myTime > 0 ? libTime / myTime : 0;
+                log.info(String.format(BenchmarkConstants.LOG_RESULT_ROW, n, myTime, libTime, ratio));
+            }
+
+            log.info(String.format(BenchmarkConstants.LOG_BENCHMARK_DONE, results.size()));
+            exportResultsToCSV(sizes, doWarmUp);
+
+        } catch (CancellationException e) {
+            log.error(LOG_BENCHMARK_CANCELLED, null);
+        } catch (InterruptedException e) {
+            log.error(LOG_BENCHMARK_CANCELLED, null);
+            Thread.currentThread().interrupt();
         }
-
-        log.info(String.format(BenchmarkConstants.LOG_BENCHMARK_DONE, results.size()));
-        exportResultsToCSV(sizes, doWarmUp);
     }
 
     /**
      * Benchmarks the custom DCT implementation on a given matrix.
      * <p>
      * The matrix is converted to an EJML SimpleMatrix for processing and the forward
-     * DCT transformation is measured.
+     * DCT transformation is measured. The {@code isCancelled} supplier is checked at the
+     * start of each JMH iteration boundary — if cancellation is requested, a
+     * {@link CancellationException} is thrown from within the workload, causing JMH to
+     * abort the current session.
      * </p>
      *
-     * @param dct      the custom DCT2 implementation
-     * @param matrix   the input matrix to transform
-     * @param doWarmUp whether to include JIT warmup iterations
+     * @param dct         the custom DCT2 implementation
+     * @param matrix      the input matrix to transform
+     * @param doWarmUp    whether to include JIT warmup iterations
+     * @param isCancelled supplier polled at each iteration boundary
      * @return execution time in seconds
-     * @throws Exception if benchmark execution fails
+     * @throws Exception if benchmark execution fails or is cancelled
      */
-    private double benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp) throws Exception {
+    private double benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp,
+                                      Supplier<Boolean> isCancelled) throws Exception {
         log.debug(String.format(BenchmarkConstants.LOG_MEASURE_CUSTOM, matrix.length));
         SimpleMatrix simpleMatrix = new SimpleMatrix(matrix);
         return benchmarkExecutor.run(() -> () -> {
+            if (isCancelled.get()) {
+                throw new CancellationException("Benchmark cancelled by user.");
+            }
             dct.forward(simpleMatrix);
             return null;
         }, doWarmUp);
@@ -152,7 +195,7 @@ public class Part1 {
 
     /**
      * Benchmarks the JTransforms library DCT implementation on a deep copy of the given matrix.
-     * <p>Error:  Failed to execute goal org.apache.maven.plugins:maven-javadoc-plugin:3.12.0:javadoc (default-cli) on project matrix-library: An error has occurred in Javadoc report generation:
+     * <p>
      * <strong>Deep Copy Strategy:</strong> A complete deep copy of the input matrix is created
      * to ensure that the in-place forward transformation does not affect subsequent benchmark runs.
      * Since benchmarks may be executed multiple times, this isolation is critical for fair
@@ -162,22 +205,28 @@ public class Part1 {
      * The deep copy is performed row-by-row using {@code Arrays.stream().map(double[]::clone)},
      * ensuring each row array is independently copied.
      * </p>
+     * <p>
+     * The {@code isCancelled} supplier is checked at each JMH iteration boundary. If cancellation
+     * is requested, a {@link CancellationException} is thrown from within the workload lambda,
+     * causing JMH to abort the current benchmark session.
+     * </p>
      *
-     * @param n        the matrix dimension (n x n)
-     * @param matrix   the original input matrix (not modified)
-     * @param doWarmUp whether to include JIT warmup iterations
+     * @param n           the matrix dimension (n x n)
+     * @param matrix      the original input matrix (not modified)
+     * @param doWarmUp    whether to include JIT warmup iterations
+     * @param isCancelled supplier polled at each iteration boundary
      * @return execution time in seconds
-     * @throws Exception if benchmark execution fails
+     * @throws Exception if benchmark execution fails or is cancelled
      */
-    private double benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp) throws Exception {
+    private double benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp,
+                                       Supplier<Boolean> isCancelled) throws Exception {
         log.debug(String.format(BenchmarkConstants.LOG_MEASURE_LIBRARY, n));
-
         DoubleDCT_2D libLocal = new DoubleDCT_2D(n, n);
-
-        // Create deep copy of matrix to prevent state pollution between benchmark runs
         double[][] matrixCopy = deepCopyMatrix(matrix);
-
         return benchmarkExecutor.run(() -> () -> {
+            if (isCancelled.get()) {
+                throw new CancellationException("Benchmark cancelled by user.");
+            }
             libLocal.forward(matrixCopy, true);
             return null;
         }, doWarmUp);

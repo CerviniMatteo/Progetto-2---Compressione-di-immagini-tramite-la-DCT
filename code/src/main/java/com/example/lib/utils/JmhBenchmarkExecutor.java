@@ -8,6 +8,7 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.Collection;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -36,6 +37,16 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
     /** Default number of measurement iterations */
     private static final int DEFAULT_MEASUREMENT_ITERATIONS = 5;
 
+    /**
+     * Shared static volatile field used to pass the task factory to JMH worker threads.
+     * <p>
+     * A ThreadLocal cannot be used here because JMH's @Setup methods run on internal
+     * worker threads that are different from the thread that calls {@code run()}.
+     * Since benchmarks are executed sequentially (one at a time), a static volatile
+     * field is safe and visible across all threads without race conditions.
+     * Always cleared in a finally block after each run.
+     * </p>
+     */
     private static volatile Supplier<Supplier<?>> pendingFactory;
 
     /**
@@ -48,7 +59,7 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
 
         /**
          * JMH setup method called at the beginning of each benchmark trial.
-         * Initializes the task from the pending factory.
+         * Initializes the task from the shared pending factory.
          */
         @Setup(Level.Trial)
         public void setup() {
@@ -83,25 +94,22 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
     /**
      * Executes a benchmark with optional warmup control.
      * <p>
-     * This method allows dynamic control over warmup iterations. Setting {@code doWarmUp} to
-     * {@code false} skips the warmup phase, which can be useful for:
+     * The task factory is stored in a shared {@code static volatile} field for the duration
+     * of the run and cleared in a {@code finally} block to prevent stale state from affecting
+     * subsequent runs. If JMH returns no results (e.g. because the workload threw a
+     * {@link CancellationException}), this method re-throws a {@link CancellationException}
+     * so callers can handle cancellation uniformly.
      * </p>
-     * <ul>
-     * <li>Quick testing or development-time measurements</li>
-     * <li>Comparing cold-start vs. warmed-up performance</li>
-     * <li>Reducing total benchmark execution time</li>
-     * </ul>
-     * However, skipping warmup may result in less stable measurements due to JIT compilation variance.
      *
      * @param taskFactory builds the task to be benchmarked
      * @param doWarmUp    if {@code true}, runs {@value #DEFAULT_WARMUP_ITERATIONS} warmup iterations;
      *                    if {@code false}, skips warmup entirely
      * @return average execution time in seconds
-     * @throws Exception if the benchmark execution fails
+     * @throws CancellationException if the benchmark was aborted and produced no results
+     * @throws Exception             if the benchmark execution fails for another reason
      */
     @Override
     public double run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception {
-        pendingFactory = taskFactory;
 
         Options opt = new OptionsBuilder()
                 .include(".*" + BenchmarkRunner.class.getSimpleName() + "\\.run")
@@ -110,11 +118,20 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
                 .measurementIterations(DEFAULT_MEASUREMENT_ITERATIONS)
                 .build();
 
-        Collection<RunResult> results = new Runner(opt).run();
+        Collection<RunResult> results;
+        try {
+            pendingFactory = taskFactory;
+            results = new Runner(opt).run();
+        } finally {
+            pendingFactory = null; // always clear to prevent stale lambda on reuse
+        }
+
+        if (results.isEmpty()) {
+            throw new CancellationException("Benchmark aborted: no results collected.");
+        }
 
         // JMH score is in microseconds (per @OutputTimeUnit(TimeUnit.MICROSECONDS))
         // Convert to seconds for consistency
         return results.iterator().next().getPrimaryResult().getScore() / 1_000_000.0;
     }
 }
-

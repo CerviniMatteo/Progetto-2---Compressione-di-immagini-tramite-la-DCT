@@ -1,5 +1,8 @@
 package com.example.lib.utils;
 
+import com.example.assignment.constants.BenchmarkConstants;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.results.RunResult;
@@ -49,6 +52,9 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
      */
     private static volatile Supplier<Supplier<?>> pendingFactory;
 
+    /** Logger used to track benchmarks */
+    private static final Log log = LogFactory.getLog(JmhBenchmarkExecutor.class);
+
     /**
      * JMH benchmark state holder that stores the task to be benchmarked.
      */
@@ -77,6 +83,17 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
     public static class BenchmarkRunner {
         /**
          * The benchmark method that executes the task and consumes its result.
+         * <p>
+         * Any exception thrown by the task (including {@link CancellationException}) is
+         * intentionally left to propagate. JMH will treat the iteration as a failure and
+         * stop the benchmark session, returning no results. The caller's {@code run()} method
+         * detects the empty result set and re-throws {@link CancellationException} for uniform
+         * handling upstream.
+         * </p>
+         * <p>
+         * <strong>Do not catch exceptions here.</strong> Catching them would cause JMH to
+         * silently retry the failed iteration indefinitely, flooding the log.
+         * </p>
          *
          * @param state the benchmark state containing the task
          * @param bh    the Blackhole used to consume results and prevent dead code elimination

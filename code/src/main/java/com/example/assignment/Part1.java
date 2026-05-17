@@ -178,7 +178,7 @@ public class Part1 {
      * @param doWarmUp    whether to include JIT warmup iterations
      * @param isCancelled supplier polled at each iteration boundary
      * @return execution time in seconds
-     * @throws Exception if benchmark execution fails or is cancelled
+     * @throws Exception if benchmark execution fails or is canceled
      */
     private double benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp,
                                       Supplier<Boolean> isCancelled) throws Exception {
@@ -216,7 +216,7 @@ public class Part1 {
      * @param doWarmUp    whether to include JIT warmup iterations
      * @param isCancelled supplier polled at each iteration boundary
      * @return execution time in seconds
-     * @throws Exception if benchmark execution fails or is cancelled
+     * @throws Exception if benchmark execution fails or is canceled
      */
     private double benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp,
                                        Supplier<Boolean> isCancelled) throws Exception {

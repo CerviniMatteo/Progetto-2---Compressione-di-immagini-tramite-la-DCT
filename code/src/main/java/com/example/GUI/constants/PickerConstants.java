@@ -1,4 +1,3 @@
-// src/main/java/com/example/GUI/constants/PickerConstants.java
 package com.example.GUI.constants;
 
 /**

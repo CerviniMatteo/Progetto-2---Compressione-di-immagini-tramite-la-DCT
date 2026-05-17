@@ -142,6 +142,11 @@ public class GUIConstants {
     public static final String LOG_COMPRESSION_DONE = "Compression completed: %s (size: %dx%d pixels)";
 
     /**
+     * Prefix used when image preview rendering fails.
+     */
+    public static final String LOG_PREVIEW_FAILED_PREFIX = "Failed to render image preview: ";
+
+    /**
      * Prefix used when logging a compression failure.
      */
     public static final String LOG_COMPRESSION_FAILED_PREFIX = "Compression failed: ";

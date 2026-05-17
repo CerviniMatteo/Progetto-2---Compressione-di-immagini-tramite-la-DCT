@@ -1,4 +1,3 @@
-// src/main/java/com/example/assignment/BenchmarkConstants.java
 package com.example.assignment.constants;
 
 /**
@@ -21,14 +20,20 @@ public class BenchmarkConstants {
     public static final String BENCHMARK_ERROR = "Benchmark error";
 
     /**
+     * CSV prefix path
+     */
+    public static final String OUTPUT_PATH = "../plots/";
+
+
+    /**
      * CSV path used when the benchmark is executed without JIT warmup.
      */
-    public static final String TIMES_VS_SIZE_CSV_PATH = "output/times_vs_size.csv";
+    public static final String TIMES_VS_SIZE_CSV_PATH = OUTPUT_PATH  + "times_vs_size.csv";
 
     /**
      * CSV path used when the benchmark is executed with JIT warmup enabled.
      */
-    public static final String TIMES_VS_SIZE_CSV_PATH_WITH_WARMUP = "output/times_vs_size_with_JIT_warm_up.csv";
+    public static final String TIMES_VS_SIZE_CSV_PATH_WITH_WARMUP = OUTPUT_PATH + "times_vs_size_with_JIT_warm_up.csv";
 
     /**
      * Log message printed when the benchmark starts.
@@ -77,7 +82,7 @@ public class BenchmarkConstants {
     /**
      * Log message printed when CSV export succeeds.
      */
-    public static final String LOG_CSV_SAVED = "Benchmark CSV exported successfully to " + TIMES_VS_SIZE_CSV_PATH;
+    public static final String LOG_CSV_SAVED = "Benchmark CSV exported successfully to " +      TIMES_VS_SIZE_CSV_PATH;
 
     /**
      * Log message printed when the benchmark is canceled by the user.

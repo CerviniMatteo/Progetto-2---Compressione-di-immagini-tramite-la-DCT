@@ -2,27 +2,22 @@ package com.example.GUI.UI;
 
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
-import com.example.assignment.Part1;
 import com.example.GUI.constants.GUIConstants;
+import com.example.launcher.Part1Launcher;
 import com.formdev.flatlaf.FlatDarkLaf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import static com.example.GUI.constants.GUIConstants.LOG_PART1_SELECTED;
 import static com.example.GUI.constants.GUIConstants.LOG_PART2_SELECTED;
 import static com.example.GUI.factory.StylingFactory.*;
 import static com.example.assignment.constants.BenchmarkConstants.BENCHMARK_ERROR;
-import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_CANCELLED;
 
 /**
  * Entry point window that allows users to select which assignment part to execute.
@@ -43,11 +38,6 @@ public class PartChooserWindow extends JFrame {
 
     /** Window height in pixels. */
     private static final int WINDOW_HEIGHT = 280;
-
-    /** Block sizes to benchmark (powers of 2). */
-    private static final int[] BENCHMARK_BLOCK_SIZES = {
-            8, 16, 32, 64, 128, 256, 512, 1024, 2048
-    };
 
     /** Button style for part selection buttons. */
     private static final ButtonStyle BUTTON_STYLE = ButtonStyle.STYLE1;
@@ -112,7 +102,6 @@ public class PartChooserWindow extends JFrame {
         JPanel mainPanel = getStyledPanel(PanelContrast.HIGH);
         mainPanel.setLayout(new BorderLayout(0, 20));
         mainPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
-
         mainPanel.add(createTitleSection(), BorderLayout.NORTH);
         mainPanel.add(createButtonPanel(), BorderLayout.CENTER);
 
@@ -133,8 +122,7 @@ public class PartChooserWindow extends JFrame {
         JLabel titleLabel = getStyledTitleLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel descriptionLabel = getStyledLabel(
-                GUIConstants.PART_CHOOSER_DESCRIPTION, SwingConstants.CENTER);
+        JLabel descriptionLabel = getStyledLabel(GUIConstants.PART_CHOOSER_DESCRIPTION, SwingConstants.CENTER);
         descriptionLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, 16));
         descriptionLabel.setForeground(new Color(150, 150, 150));
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -211,30 +199,8 @@ public class PartChooserWindow extends JFrame {
 
             @Override
             protected Void doInBackground() throws Exception {
-
-                // Reset cancellation flag so a fresh run is not immediately cancelled
-                benchmarkCancelled.set(false);
-
-                Part1 part1 = new Part1();
-                log.debug(GUIConstants.LOG_BENCHMARK_THREAD_START);
-
-                List<Object> matrices = new ArrayList<>();
-                for (int n : BENCHMARK_BLOCK_SIZES) {
-                    matrices.add(randomMatrix(n));
-                }
-
-                // Pass the shared benchmarkCancelled flag — the stop button sets this same flag
-                part1.benchmark(BENCHMARK_BLOCK_SIZES, matrices, false, benchmarkCancelled::get);
-
-                if (benchmarkCancelled.get()) {
-                    log.info(LOG_BENCHMARK_CANCELLED);
-                    return null;
-                }
-
-                part1.benchmark(BENCHMARK_BLOCK_SIZES, matrices, true, benchmarkCancelled::get);
-
-                log.debug(GUIConstants.LOG_BENCHMARK_THREAD_DONE);
-                return null;
+                Part1Launcher part1Launcher = new  Part1Launcher(benchmarkCancelled);
+                return part1Launcher.launchAndHandlePart1();
             }
 
             @Override
@@ -242,11 +208,10 @@ public class PartChooserWindow extends JFrame {
                 try {
                     get();
                 } catch (CancellationException ignored) {
-                    // Expected when the user cancels the benchmark.
+                     // Cancellation is expected if the user stops the benchmark, so we ignore it here
                 } catch (Exception e) {
                     log.error(BENCHMARK_ERROR, e);
                 }
-
                 leftPanel.remove(endBenchmarkButton);
                 leftPanel.revalidate();
                 leftPanel.repaint();
@@ -277,21 +242,6 @@ public class PartChooserWindow extends JFrame {
     }
 
     // ==================== UTILITIES ====================
-
-    /**
-     * Generates a random matrix filled with random double values.
-     *
-     * @param n the size of the square matrix (n x n)
-     * @return a randomly populated matrix
-     */
-    public static double[][] randomMatrix(int n) {
-
-        double[][] m = new double[n][n];
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                m[i][j] = Math.random();
-        return m;
-    }
 
     /**
      * Enables or disables the main buttons.

@@ -1,7 +1,6 @@
-package com.example.GUI.UI;
+package com.example.GUI.utils;
 
 import com.example.GUI.constants.GUIConstants;
-import com.example.GUI.model.PreviewData;
 import com.example.lib.utils.ImageUtils;
 import org.apache.commons.logging.Log;
 
@@ -16,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 import static com.example.GUI.factory.StylingFactory.getStyledLabel;
 
 /**
- * Utility responsible for rendering image previews in Swing panels.
+ * Singleton utility responsible for rendering image previews in Swing panels.
  * <p>
  * The heavy work is performed in a {@link SwingWorker} so image conversion,
  * scaling, and metadata lookup do not block the Event Dispatch Thread.
@@ -24,8 +23,14 @@ import static com.example.GUI.factory.StylingFactory.getStyledLabel;
  */
 public final class ImagePreviewRenderer {
 
+    private static final ImagePreviewRenderer INSTANCE = new ImagePreviewRenderer();
+
     private ImagePreviewRenderer() {
-        // Utility class
+        // Singleton - prevent external instantiation
+    }
+
+    public static ImagePreviewRenderer getInstance() {
+        return INSTANCE;
     }
 
     /**
@@ -36,7 +41,7 @@ public final class ImagePreviewRenderer {
      * @param name base image name used for label and output file lookup
      * @param log logger used to report preview failures
      */
-    public static void showImageAsync(JPanel box, BufferedImage image, String name, Log log) {
+    public void showImageAsync(JPanel box, BufferedImage image, String name, Log log) {
         int boxW = Math.max(box.getWidth() - 40, 100);
         int boxH = Math.max(box.getHeight() - 80, 80);
 
@@ -53,7 +58,7 @@ public final class ImagePreviewRenderer {
             protected void done() {
                 try {
                     PreviewData previewData = get();
-                    JPanel container = createImageLabel(name, previewData.scaled(), previewData.sizeText());
+                    JPanel container = createImageLabel(name, previewData.scaled, previewData.sizeText);
 
                     box.removeAll();
                     box.add(container, BorderLayout.CENTER);
@@ -70,14 +75,7 @@ public final class ImagePreviewRenderer {
         }.execute();
     }
 
-    /**
-     * Formats image metadata (dimensions and file size) as HTML.
-     *
-     * @param image the image to inspect
-     * @param name output filename (used to look up the saved BMP)
-     * @return HTML-formatted metadata string
-     */
-    private static String formatImageMetadata(BufferedImage image, String name) {
+    private String formatImageMetadata(BufferedImage image, String name) {
         File file = new File(GUIConstants.OUTPUT_DIR_NAME + File.separator + name + GUIConstants.FILE_EXTENSION_BMP);
         double kb = ImageUtils.fileSizeInKb(file);
 
@@ -89,14 +87,6 @@ public final class ImagePreviewRenderer {
         );
     }
 
-    /**
-     * Creates a preview container with image name, scaled image, and size information.
-     *
-     * @param name display name shown at the top
-     * @param scaled scaled image used for preview
-     * @param sizeText HTML-formatted dimensions and file size text
-     * @return panel containing all preview UI elements
-     */
     private static JPanel createImageLabel(String name, Image scaled, String sizeText) {
         JPanel container = new JPanel(new BorderLayout(0, 12));
         container.setBackground(new Color(45, 45, 45));
@@ -120,6 +110,16 @@ public final class ImagePreviewRenderer {
         container.add(sizeLabel, BorderLayout.SOUTH);
 
         return container;
+    }
+
+    private static final class PreviewData {
+        private final Image scaled;
+        private final String sizeText;
+
+        private PreviewData(Image scaled, String sizeText) {
+            this.scaled = scaled;
+            this.sizeText = sizeText;
+        }
     }
 }
 

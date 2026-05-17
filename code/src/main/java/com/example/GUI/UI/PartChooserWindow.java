@@ -3,7 +3,7 @@ package com.example.GUI.UI;
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
 import com.example.GUI.constants.GUIConstants;
-import com.example.launcher.Part1Launcher;
+import com.example.assignment.launcher.PartLauncher;
 import com.formdev.flatlaf.FlatDarkLaf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -199,8 +199,8 @@ public class PartChooserWindow extends JFrame {
 
             @Override
             protected Void doInBackground() throws Exception {
-                Part1Launcher part1Launcher = new  Part1Launcher(benchmarkCancelled);
-                return part1Launcher.launchAndHandlePart1();
+                PartLauncher partLauncher = PartLauncher.getInstance(benchmarkCancelled);
+                return partLauncher.launchAndHandlePart1();
             }
 
             @Override

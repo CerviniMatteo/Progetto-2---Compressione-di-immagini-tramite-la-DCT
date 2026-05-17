@@ -2,8 +2,10 @@ package com.example.GUI.UI;
 
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
+import com.example.GUI.utils.ImagePreviewRenderer;
 import com.example.assignment.Part2;
 import com.example.GUI.constants.GUIConstants;
+import com.example.assignment.launcher.PartLauncher;
 import com.example.lib.utils.ImageUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -169,7 +171,7 @@ public class ImageCompressionWindow extends JFrame {
                         log.info(String.format(GUIConstants.LOG_IMAGE_SELECTED,
                                 selectedImageName, selectedImage.getWidth(), selectedImage.getHeight()));
 
-                        ImagePreviewRenderer.showImageAsync(originalBox, selectedImage, selectedImageName, log);
+                        ImagePreviewRenderer.getInstance().showImageAsync(originalBox, selectedImage, selectedImageName, log);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(), e);
@@ -213,14 +215,7 @@ public class ImageCompressionWindow extends JFrame {
                 @Override
                 protected BufferedImage doInBackground() {
                     BufferedImage selectedCopy = ImageUtils.copyBufferedImage(sourceImage);
-                    return new Part2().compress(
-                            new Pair<>(
-                                    outputName,
-                                    selectedCopy
-                            ),
-                            F,
-                            d
-                    );
+                    return PartLauncher.getInstance().launchPart2(F, d, new Pair<>(outputName, selectedCopy));
                 }
 
                 @Override
@@ -235,7 +230,7 @@ public class ImageCompressionWindow extends JFrame {
                                 compressed.getHeight()
                         ));
 
-                        ImagePreviewRenderer.showImageAsync(
+                        ImagePreviewRenderer.getInstance().showImageAsync(
                                 compressedBox,
                                 compressed,
                                 outputName,

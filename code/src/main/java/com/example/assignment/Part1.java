@@ -19,6 +19,8 @@ import java.util.concurrent.CancellationException;
 import java.util.function.Supplier;
 
 import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_CANCELLED;
+import static com.example.assignment.constants.BenchmarkConstants.BENCHMARK_CANCELLED_BY_USER;
+import static com.example.lib.utils.UtilsConstants.OUTPUT_PATH;
 
 /**
  * Part 1 - DCT Benchmark Comparison.
@@ -186,7 +188,7 @@ public class Part1 {
         SimpleMatrix simpleMatrix = new SimpleMatrix(matrix);
         return benchmarkExecutor.run(() -> () -> {
             if (isCancelled.get()) {
-                throw new CancellationException("Benchmark cancelled by user.");
+                throw new CancellationException(BENCHMARK_CANCELLED_BY_USER);
             }
             dct.forward(simpleMatrix);
             return null;
@@ -225,7 +227,7 @@ public class Part1 {
         double[][] matrixCopy = deepCopyMatrix(matrix);
         return benchmarkExecutor.run(() -> () -> {
             if (isCancelled.get()) {
-                throw new CancellationException("Benchmark cancelled by user.");
+                throw new CancellationException(BENCHMARK_CANCELLED_BY_USER);
             }
             libLocal.forward(matrixCopy, true);
             return null;
@@ -273,8 +275,10 @@ public class Part1 {
             ratios[i]   = r.customTime() > 0 ? r.libraryTime() / r.customTime() : 0;
         }
 
-        File outputDir = new File("output/");
-        outputDir.mkdirs();
+        File outputDir = new File(OUTPUT_PATH);
+        if (!outputDir.exists() && !outputDir.mkdirs()) {
+            log.warn(BenchmarkConstants.LOG_CSV_CREATE_FAILED + OUTPUT_PATH);
+        }
 
         log.debug(BenchmarkConstants.LOG_WRITING_CSV);
         try {

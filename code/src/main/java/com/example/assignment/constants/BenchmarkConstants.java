@@ -77,7 +77,22 @@ public class BenchmarkConstants {
     /**
      * Log message printed when CSV export succeeds.
      */
-    public static final String LOG_CSV_SAVED = "Benchmark CSV exported successfully to output/times_vs_size.csv";
+    public static final String LOG_CSV_SAVED = "Benchmark CSV exported successfully to " + TIMES_VS_SIZE_CSV_PATH;
+
+    /**
+     * Log message printed when the benchmark is canceled by the user.
+     */
+    public static final String LOG_BENCHMARK_CANCELLED = "Benchmark has been cancelled";
+
+    /**
+     * Exception message used when a benchmark run is interrupted by user cancellation.
+     */
+    public static final String BENCHMARK_CANCELLED_BY_USER = "Benchmark cancelled by user.";
+
+    /**
+     * Exception message used when JMH aborts without producing any results.
+     */
+    public static final String BENCHMARK_ABORTED_NO_RESULTS = "Benchmark aborted: no results collected.";
 
     /**
      * Prefix used when logging a CSV export failure.
@@ -111,6 +126,11 @@ public class BenchmarkConstants {
     public static final String LOG_CSV_CREATE = "Creating CSV file at: %s with %d entries";
 
     /**
+     * Pattern used by JMH to select the benchmark runner method.
+     */
+    public static final String JMH_BENCHMARK_INCLUDE_TEMPLATE = ".*%s\\.run";
+
+    /**
      * Log message used when a CSV file is created successfully.
      * The placeholder represents the number of rows written.
      */
@@ -131,5 +151,4 @@ public class BenchmarkConstants {
      * Formatting pattern for ratio values written to CSV.
      */
     public static final String CSV_RATIO_FORMAT = "%.4f";
-    public static final String LOG_BENCHMARK_CANCELLED = "Benchmark has been cancelled";
 }

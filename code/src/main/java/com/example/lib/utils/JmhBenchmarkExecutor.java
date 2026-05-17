@@ -1,8 +1,6 @@
 package com.example.lib.utils;
 
 import com.example.assignment.constants.BenchmarkConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.results.RunResult;
@@ -51,9 +49,6 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
      * </p>
      */
     private static volatile Supplier<Supplier<?>> pendingFactory;
-
-    /** Logger used to track benchmarks */
-    private static final Log log = LogFactory.getLog(JmhBenchmarkExecutor.class);
 
     /**
      * JMH benchmark state holder that stores the task to be benchmarked.
@@ -129,7 +124,7 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
     public double run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception {
 
         Options opt = new OptionsBuilder()
-                .include(".*" + BenchmarkRunner.class.getSimpleName() + "\\.run")
+                .include(String.format(BenchmarkConstants.JMH_BENCHMARK_INCLUDE_TEMPLATE, BenchmarkRunner.class.getSimpleName()))
                 .forks(0)
                 .warmupIterations(doWarmUp ? DEFAULT_WARMUP_ITERATIONS : 0)
                 .measurementIterations(DEFAULT_MEASUREMENT_ITERATIONS)
@@ -144,7 +139,7 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
         }
 
         if (results.isEmpty()) {
-            throw new CancellationException("Benchmark aborted: no results collected.");
+            throw new CancellationException(BenchmarkConstants.BENCHMARK_ABORTED_NO_RESULTS);
         }
 
         // JMH score is in microseconds (per @OutputTimeUnit(TimeUnit.MICROSECONDS))

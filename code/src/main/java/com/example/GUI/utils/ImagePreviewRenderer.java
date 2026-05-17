@@ -1,6 +1,7 @@
 package com.example.GUI.utils;
 
 import com.example.GUI.constants.GUIConstants;
+import com.example.GUI.model.PreviewData;
 import com.example.lib.utils.ImageUtils;
 import org.apache.commons.logging.Log;
 
@@ -23,13 +24,19 @@ import static com.example.GUI.factory.StylingFactory.getStyledLabel;
  */
 public final class ImagePreviewRenderer {
 
-    private static final ImagePreviewRenderer INSTANCE = new ImagePreviewRenderer();
+    private static volatile ImagePreviewRenderer INSTANCE;
 
     private ImagePreviewRenderer() {
-        // Singleton - prevent external instantiation
     }
 
     public static ImagePreviewRenderer getInstance() {
+        if (INSTANCE == null) {
+            synchronized (ImagePreviewRenderer.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ImagePreviewRenderer();
+                }
+            }
+        }
         return INSTANCE;
     }
 
@@ -58,7 +65,7 @@ public final class ImagePreviewRenderer {
             protected void done() {
                 try {
                     PreviewData previewData = get();
-                    JPanel container = createImageLabel(name, previewData.scaled, previewData.sizeText);
+                    JPanel container = createImageLabel(name, previewData.scaled(), previewData.sizeText());
 
                     box.removeAll();
                     box.add(container, BorderLayout.CENTER);
@@ -110,16 +117,6 @@ public final class ImagePreviewRenderer {
         container.add(sizeLabel, BorderLayout.SOUTH);
 
         return container;
-    }
-
-    private static final class PreviewData {
-        private final Image scaled;
-        private final String sizeText;
-
-        private PreviewData(Image scaled, String sizeText) {
-            this.scaled = scaled;
-            this.sizeText = sizeText;
-        }
     }
 }
 

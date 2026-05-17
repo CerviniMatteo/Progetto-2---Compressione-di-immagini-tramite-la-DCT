@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.ExecutionException;
 
 import static com.example.GUI.constants.PickerConstants.*;
 
@@ -116,7 +117,7 @@ public class ImagePicker {
 
         File selectedFile = fileChooser.getSelectedFile();
         log.debug(String.format(LOG_FILE_SELECTED, selectedFile.getAbsolutePath()));
-        handleImageSelection(selectedFile);
+        handleImageSelectionAsync(selectedFile);
     }
 
     /**
@@ -150,25 +151,45 @@ public class ImagePicker {
      *
      * @param file the selected image file
      */
-    private void handleImageSelection(File file) {
-        try {
-            log.debug(String.format(LOG_READING_IMAGE, file.getAbsolutePath()));
-            BufferedImage image = ImageIO.read(file);
+    private void handleImageSelectionAsync(File file) {
+        new SwingWorker<Pair<String, BufferedImage>, Void>() {
 
-            if (image == null) {
-                log.warn(String.format(LOG_UNREADABLE_IMAGE, file.getName()));
-                return;
+            @Override
+            protected Pair<String, BufferedImage> doInBackground() throws Exception {
+                log.debug(String.format(LOG_READING_IMAGE, file.getAbsolutePath()));
+                BufferedImage image = ImageIO.read(file);
+
+                if (image == null) {
+                    return null;
+                }
+
+                log.debug(String.format(LOG_IMAGE_LOADED, image.getWidth(), image.getHeight()));
+                copyToOutputDirectory(file);
+                return new Pair<>(file.getName(), image);
             }
 
-            log.debug(String.format(LOG_IMAGE_LOADED, image.getWidth(), image.getHeight()));
+            @Override
+            protected void done() {
+                try {
+                    Pair<String, BufferedImage> result = get();
 
-            copyToOutputDirectory(file);
-            observable.set(new Pair<>(file.getName(), image));
-            log.info(String.format(LOG_IMAGE_PUBLISHED, file.getName()));
+                    if (result == null) {
+                        log.warn(String.format(LOG_UNREADABLE_IMAGE, file.getName()));
+                        return;
+                    }
 
-        } catch (IOException e) {
-            log.error(String.format(LOG_IMAGE_READ_FAILED, file.getAbsolutePath(), e.getMessage()), e);
-        }
+                    observable.set(result);
+                    log.info(String.format(LOG_IMAGE_PUBLISHED, file.getName()));
+
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.error(String.format(LOG_IMAGE_READ_FAILED, file.getAbsolutePath(), e.getMessage()), e);
+                } catch (ExecutionException e) {
+                    Throwable cause = e.getCause() != null ? e.getCause() : e;
+                    log.error(String.format(LOG_IMAGE_READ_FAILED, file.getAbsolutePath(), cause.getMessage()), cause);
+                }
+            }
+        }.execute();
     }
 
     /**

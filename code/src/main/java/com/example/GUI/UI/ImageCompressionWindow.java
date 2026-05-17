@@ -15,6 +15,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import static com.example.GUI.factory.StylingFactory.*;
 
@@ -54,6 +55,19 @@ public class ImageCompressionWindow extends JFrame {
      */
     private JPanel originalBox;
     private JPanel compressedBox;
+
+    /**
+     * Lightweight container for precomputed preview data.
+     */
+    private static final class PreviewData {
+        private final Image scaled;
+        private final String sizeText;
+
+        private PreviewData(Image scaled, String sizeText) {
+            this.scaled = scaled;
+            this.sizeText = sizeText;
+        }
+    }
 
 
     /**
@@ -152,13 +166,33 @@ public class ImageCompressionWindow extends JFrame {
         ImagePicker imagePicker = new ImagePicker();
 
         imagePicker.subscribe(pair -> {
-            selectedImageName = extractFilename(pair.getFirst());
-            selectedImage = ImageUtils.copyBufferedImage(pair.getSecond());
+            String imageName = extractFilename(pair.getFirst());
+            new SwingWorker<BufferedImage, Void>() {
 
-            log.info(String.format(GUIConstants.LOG_IMAGE_SELECTED,
-                    selectedImageName, selectedImage.getWidth(), selectedImage.getHeight()));
+                @Override
+                protected BufferedImage doInBackground() {
+                    return ImageUtils.copyBufferedImage(pair.getSecond());
+                }
 
-            showImage(originalBox, selectedImage, selectedImageName);
+                @Override
+                protected void done() {
+                    try {
+                        selectedImageName = imageName;
+                        selectedImage = get();
+
+                        log.info(String.format(GUIConstants.LOG_IMAGE_SELECTED,
+                                selectedImageName, selectedImage.getWidth(), selectedImage.getHeight()));
+
+                        showImageAsync(originalBox, selectedImage, selectedImageName);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(), e);
+                    } catch (ExecutionException e) {
+                        Throwable cause = e.getCause() != null ? e.getCause() : e;
+                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + cause.getMessage(), cause);
+                    }
+                }
+            }.execute();
         });
 
         imagePicker.showUI();
@@ -185,17 +219,17 @@ public class ImageCompressionWindow extends JFrame {
             int d = pair.getSecond();
 
             log.info(String.format(GUIConstants.LOG_COMPRESSION_START, F, d));
-
-            // Make a defensive copy so we don't mutate the original image
-            BufferedImage selectedCopy = ImageUtils.copyBufferedImage(selectedImage);
+            BufferedImage sourceImage = selectedImage;
+            String outputName = selectedImageName + GUIConstants.COMPRESSED_SUFFIX;
 
             new SwingWorker<BufferedImage, Void>() {
 
                 @Override
                 protected BufferedImage doInBackground() {
+                    BufferedImage selectedCopy = ImageUtils.copyBufferedImage(sourceImage);
                     return new Part2().compress(
                             new Pair<>(
-                                    selectedImageName + GUIConstants.COMPRESSED_SUFFIX,
+                                    outputName,
                                     selectedCopy
                             ),
                             F,
@@ -210,15 +244,15 @@ public class ImageCompressionWindow extends JFrame {
 
                         log.info(String.format(
                                 GUIConstants.LOG_COMPRESSION_DONE,
-                                selectedImageName + GUIConstants.COMPRESSED_SUFFIX,
+                                outputName,
                                 compressed.getWidth(),
                                 compressed.getHeight()
                         ));
 
-                        showImage(
+                        showImageAsync(
                                 compressedBox,
                                 compressed,
-                                selectedImageName + GUIConstants.COMPRESSED_SUFFIX
+                                outputName
                         );
 
                     } catch (Exception e) {
@@ -282,35 +316,45 @@ public class ImageCompressionWindow extends JFrame {
         return panel;
     }
 
-    // ==================================================
-    // IMAGE DISPLAY
-    // ==================================================
-
     /**
-     * Renders an image preview with metadata inside a target box.
-     * <p>
-     * Converts to RGB, scales to fit, reads file size, and displays in a styled container.
-     * </p>
+     * Precomputes image preview data off the EDT and updates the target box on completion.
      *
      * @param box target panel where the preview is rendered
      * @param image source image to preview
      * @param name base image name used for label and output file lookup
      */
-    private void showImage(JPanel box, BufferedImage image, String name) {
-        BufferedImage rgb = ImageUtils.toRgbImage(image);
-
-        String sizeText = formatImageMetadata(image, name);
-
+    private void showImageAsync(JPanel box, BufferedImage image, String name) {
         int boxW = Math.max(box.getWidth() - 40, 100);
         int boxH = Math.max(box.getHeight() - 80, 80);
-        Image scaled = ImageUtils.scaleImageToFit(rgb, boxW, boxH);
 
-        JPanel container = createImageLabel(name, scaled, sizeText);
+        new SwingWorker<PreviewData, Void>() {
+            @Override
+            protected PreviewData doInBackground() {
+                BufferedImage rgb = ImageUtils.toRgbImage(image);
+                String sizeText = formatImageMetadata(image, name);
+                Image scaled = ImageUtils.scaleImageToFit(rgb, boxW, boxH);
+                return new PreviewData(scaled, sizeText);
+            }
 
-        box.removeAll();
-        box.add(container, BorderLayout.CENTER);
-        box.revalidate();
-        box.repaint();
+            @Override
+            protected void done() {
+                try {
+                    PreviewData previewData = get();
+                    JPanel container = createImageLabel(name, previewData.scaled, previewData.sizeText);
+
+                    box.removeAll();
+                    box.add(container, BorderLayout.CENTER);
+                    box.revalidate();
+                    box.repaint();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(), e);
+                } catch (ExecutionException e) {
+                    Throwable cause = e.getCause() != null ? e.getCause() : e;
+                    log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + cause.getMessage(), cause);
+                }
+            }
+        }.execute();
     }
 
     /**

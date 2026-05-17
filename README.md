@@ -220,6 +220,124 @@ mvn exec:java
 
 In alternativa, puoi eseguire direttamente `com.example.Application` dal tuo IDE.
 
+## Esecuzione headless (batch) — senza UI
+
+Se vuoi eseguire le parti del progetto senza aprire la UI (ad es. per eseguire il benchmark in batch o per chiamare direttamente la compressione da script), il progetto espone classi di avvio e API che implementano i workflow principali.
+
+- Launcher batch condiviso: `src/main/java/com/example/assignment/launcher/PartLauncher.java`
+  - Metodo per avviare il benchmark (cooperativamente cancellabile): `launchAndHandlePart1()`
+  - Metodo per avviare la compressione (sincrono): `launchPart2(int F, int d, Pair<String, BufferedImage> imagePair)`
+
+Esempio minimo (headless) — avvia il benchmark e/o comprimi un'immagine programmaticamente:
+
+```java
+import com.example.assignment.launcher.PartLauncher;
+import org.apache.commons.math3.util.Pair;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public class BatchRunner {
+    public static void main(String[] args) throws Exception {
+        // --- Run benchmark (with cancellation support)
+        AtomicBoolean cancel = new AtomicBoolean(false);
+        PartLauncher launcher = PartLauncher.getInstance(cancel);
+        // this call runs warmup + actual benchmark and writes CSV/plots to output/
+        launcher.launchAndHandlePart1();
+
+        // --- Run compression on a specific image
+        BufferedImage img = ImageIO.read(new File("/path/to/image.png"));
+        Pair<String, BufferedImage> pair = new Pair<>("image_compressed.bmp", img);
+        // choose F and d according to validation rules (e.g. F=8, d=6)
+        launcher.launchPart2(8, 6, pair);
+    }
+}
+```
+
+Puoi compilare ed eseguire il runner usando il plugin exec di Maven (dopo aver aggiunto il file sopra in `src/main/java`):
+
+```bash
+mvn clean package
+mvn exec:java -Dexec.mainClass="com.example.BatchRunner"
+```
+
+Nota: `launchPart2(...)` salva già l'immagine compressa in `output/` usando le utility del progetto (vedi `UtilsConstants.OUTPUT_PATH`).
+
+## File principali e librerie rilevanti (per sviluppatori)
+
+Questi sono i file e i pacchetti più importanti per capire l'implementazione non-UI del progetto:
+
+- Implementazione DCT custom:
+  - `src/main/java/com/example/lib/DCT2.java`
+
+- Workflow e orchestrazione batch:
+  - `src/main/java/com/example/assignment/Part1.java` — benchmark DCT (logica, misurazioni, esportazione CSV)
+  - `src/main/java/com/example/assignment/Part2.java` — compressione immagine (logica di blocco e DCT)
+  - `src/main/java/com/example/assignment/launcher/PartLauncher.java` — entrypoint per i workflow batch usato anche dalla UI
+
+- Utility e supporto I/O/CSV/benchmark:
+  - `src/main/java/com/example/lib/utils/BenchmarkExecutor.java`
+  - `src/main/java/com/example/lib/utils/JmhBenchmarkExecutor.java`
+  - `src/main/java/com/example/lib/utils/OpenCsvUtils.java`
+  - `src/main/java/com/example/lib/utils/ImageUtils.java`
+  - `src/main/java/com/example/lib/utils/UtilsConstants.java`
+
+Questi file contengono l'implementazione delle funzionalità core (misurazione, scrittura CSV, conversione immagine <-> matrici, salvataggio BMP, ecc.).
+
+## Riferimenti esatti alla DCT (package `com.example.lib`)
+
+Per trovare l'implementazione della DCT custom e i punti in cui viene confrontata/usanata la libreria JTransforms, vedi i seguenti file e simboli:
+
+- Implementazione custom DCT (EJML-based):
+  - `src/main/java/com/example/lib/DCT2.java`
+    - Metodi pubblici principali:
+      - `SimpleMatrix forward(SimpleMatrix signal)` — calcola la DCT 2D (forward)
+      - `SimpleMatrix inverse(SimpleMatrix signal)` — calcola la IDCT 2D (inverse)
+    - Metodi helper interni utili per la comprensione:
+      - `private SimpleMatrix DCTII(SimpleMatrix signal, SimpleMatrix Dn, SimpleMatrix Dm)` — applica la trasformazione separabile (colonne -> righe)
+      - `private SimpleMatrix computeDMatrix(int size)` — costruisce la matrice delle basi DCT-II (scalatura ortonormale)
+    - Note: l'implementazione usa `org.ejml.simple.SimpleMatrix` e costruisce esplicitamente le matrici base Dn/Dm per applicare la trasformazione come moltiplicazioni matriciali.
+
+- Uso di JTransforms (implementazione library DCT):
+  - `src/main/java/com/example/assignment/Part1.java`
+    - Metodo `benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp, Supplier<Boolean> isCancelled)` crea `new DoubleDCT_2D(n, n)` e chiama `forward(matrixCopy, true)` per misurare la libreria.
+  - `src/main/java/com/example/assignment/Part2.java`
+    - Metodo `compressBlock(...)` usa `new DoubleDCT_2D(F, F)` e chiama `forward(block, true)` e `inverse(block, true)` per la compressione basata su blocchi.
+
+Esempio d'uso della DCT custom (come documentato nel codice):
+
+```java
+import com.example.lib.DCT2;
+import org.ejml.simple.SimpleMatrix;
+
+DCT2 dct2 = new DCT2();
+SimpleMatrix spatial = new SimpleMatrix(new double[][]{ { /* valori */ } });
+SimpleMatrix freq = dct2.forward(spatial); // oppure dct2.DCT2(spatial) nei commenti
+SimpleMatrix recon = dct2.inverse(freq);
+```
+
+Se esplori `DCT2.java` vedrai l'implementazione dettagliata della base (formula coseno, scaling) e il flusso separabile che applica la trasformazione su colonne e poi sulle righe.
+
+Questa sezione ora fornisce i riferimenti precisi alla DCT custom e ai punti del progetto dove JTransforms viene usata per confronto e compressione.
+
+## Come la UI coopera con la parte batch (sintesi)
+
+La UI (package `com.example.GUI`) funge principalmente da front-end che chiama le API batch per eseguire il lavoro pesante. In pratica:
+
+- I controller UI creano (o richiedono) un'istanza di `PartLauncher`:
+  - Per il benchmark, la UI passa una `AtomicBoolean` condivisa al launcher usando `PartLauncher.getInstance(benchmarkCancelled)`;
+  - Per la compressione, la UI usa `PartLauncher.getInstance()` (senza flag di cancellazione) e chiama `launchPart2(...)`.
+
+- Il benchmark è eseguito in background (worker thread) dalla UI per non bloccare l'EDT; la UI osserva lo stato tramite log/callback e può impostare la `AtomicBoolean` per richiedere la cancellazione cooperativa.
+
+- La compressione è sincrona dal punto di vista del chiamante: `launchPart2(...)` restituisce il `BufferedImage` ricomposto e, come effetto collaterale, `Part2` salva il BMP in `output/`.
+
+Questo design separa nettamente:
+
+- la logica core (misurazione, DCT, compressione) nelle classi di `assignment` e `lib`;
+- la presentazione/gestione utente nella GUI, che non replica la logica ma la richiama via `PartLauncher`.
+
 ## Note
 
 - Il benchmark confronta l’implementazione custom e quella della libreria sugli stessi input.

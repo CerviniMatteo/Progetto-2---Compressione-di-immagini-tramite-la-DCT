@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_CANCELLED;
+import static com.example.assignment.constants.LauncherConstants.BENCHMARK_CANCEL_FLAG_NOT_CONFIGURED;
 
 /**
  * Helper class that launches Part 1 benchmarking and Part 2 compression tasks.
@@ -128,9 +129,7 @@ public class PartLauncher {
     public Void launchAndHandlePart1() throws Exception {
 
         if (benchmarkCancelled == null) {
-            throw new IllegalStateException(
-                    "Benchmark cancellation flag was not configured."
-            );
+            throw new IllegalStateException(BENCHMARK_CANCEL_FLAG_NOT_CONFIGURED);
         }
 
         // Reset cancellation state before starting a new benchmark

@@ -10,8 +10,16 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_CANCELLED;
 
+/**
+ * Helper class that launches Part 1 benchmarking and manages cancellation state.
+ * <p>
+ * The launcher is responsible for preparing the benchmark inputs, invoking
+ * {@link Part1}, and logging lifecycle events for the benchmark thread.
+ * </p>
+ */
 public class Part1Launcher {
 
+    /** Logger used to report benchmark lifecycle events. */
     Log log = LogFactory.getLog(Part1Launcher.class);
 
     /** Block sizes to benchmark (powers of 2). */
@@ -19,14 +27,24 @@ public class Part1Launcher {
             8, 16, 32, 64, 128, 256, 512, 1024, 2048
     };
 
-
-    /** Cancellation flag for benchmark runs. */
+    /** Cancellation flag shared with the benchmark workflow. */
     private final AtomicBoolean benchmarkCancelled;
 
+    /**
+     * Creates a launcher backed by the provided cancellation flag.
+     *
+     * @param benchmarkCancelled shared cancellation flag used to stop the benchmark
+     */
     public Part1Launcher(AtomicBoolean benchmarkCancelled) {
         this.benchmarkCancelled = benchmarkCancelled;
     }
 
+    /**
+     * Runs Part 1 and handles the warmup and cancellation flow.
+     *
+     * @return always {@code null}; the method is used for side effects only
+     * @throws Exception if the underlying benchmark execution fails
+     */
     public Void launchAndHandlePart1() throws Exception {
         // Reset cancellation flag so a fresh run is not immediately canceled
         benchmarkCancelled.set(false);

@@ -9,108 +9,150 @@
     <artifactId>Progetto-2---Compressione-di-immagini-tramite-la-DCT</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+
+        <jmh.version>1.37</jmh.version>
+    </properties>
+
     <build>
         <plugins>
+
+            <!-- Java compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
+
                 <configuration>
                     <release>17</release>
+
+                    <!-- REQUIRED FOR JMH -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.openjdk.jmh</groupId>
+                            <artifactId>jmh-generator-annprocess</artifactId>
+                            <version>${jmh.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
+            <!-- Run application -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.6.3</version>
+
                 <configuration>
                     <mainClass>com.example.Application</mainClass>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
-
     <dependencies>
-        <!-- EJML library -->
+
+        <!-- EJML -->
         <dependency>
             <groupId>org.ejml</groupId>
             <artifactId>ejml-all</artifactId>
             <version>0.43</version>
         </dependency>
 
-        <!-- XChart library -->
+        <!-- XChart -->
         <dependency>
             <groupId>org.knowm.xchart</groupId>
             <artifactId>xchart</artifactId>
             <version>3.8.1</version>
         </dependency>
+
+        <!-- Apache Commons Math -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
-            <scope>compile</scope>
         </dependency>
+
+        <!-- JTransforms -->
         <dependency>
             <groupId>com.github.wendykierp</groupId>
             <artifactId>JTransforms</artifactId>
             <version>3.2</version>
         </dependency>
+
+        <!-- JMH Core -->
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
-            <version>1.37</version>
+            <version>${jmh.version}</version>
         </dependency>
+
+        <!-- JMH Annotation Processor -->
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
-            <version>1.37</version>
+            <version>${jmh.version}</version>
+            <scope>provided</scope>
         </dependency>
+
+        <!-- OpenCSV -->
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.9</version>
+
             <exclusions>
                 <exclusion>
                     <groupId>commons-beanutils</groupId>
                     <artifactId>commons-beanutils</artifactId>
                 </exclusion>
+
                 <exclusion>
                     <groupId>org.apache.commons</groupId>
                     <artifactId>commons-lang3</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- BeanUtils -->
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.11.0</version>
         </dependency>
+
+        <!-- Commons Lang -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.18.0</version>
         </dependency>
+
+        <!-- Log4j -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
             <version>2.25.4</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.25.4</version>
         </dependency>
+
+        <!-- FlatLaf -->
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
             <version>3.5.4</version>
         </dependency>
+
     </dependencies>
 
 </project>

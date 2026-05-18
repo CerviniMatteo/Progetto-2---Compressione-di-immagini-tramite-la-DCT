@@ -54,9 +54,6 @@ public class StylingFactory {
     /** Border color for text fields and dark elements. */
     private static final Color COLOR_BORDER_DARK = new Color(70, 70, 70);
 
-    /** Border color for accents. */
-    private static final Color COLOR_BORDER_ACCENT = new Color(70, 130, 180);
-
     /** White text and foreground. */
     private static final Color COLOR_TEXT_LIGHT = Color.WHITE;
 
@@ -237,6 +234,7 @@ public class StylingFactory {
      * @param horizontalAlignment the horizontal alignment (e.g., SwingConstants.CENTER)
      * @return a new styled label
      */
+    @SuppressWarnings("MagicConstant")
     public static JLabel getStyledLabel(String text, int horizontalAlignment) {
         JLabel label = new JLabel(text, horizontalAlignment);
         label.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_SUBHEADING));
@@ -270,7 +268,6 @@ public class StylingFactory {
             case STYLE2 -> COLOR_PURPLE;
             case STYLE3 -> COLOR_GOLD;
             case STYLE4 -> COLOR_RED;
-            default -> COLOR_STEELBLUE;
         };
     }
 

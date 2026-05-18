@@ -108,7 +108,7 @@ public class ImagePicker {
         }
 
         File selectedFile = fileChooser.getSelectedFile();
-        log.debug(String.format(LOG_FILE_SELECTED, selectedFile.getAbsolutePath()));
+        log.debug(LOG_FILE_SELECTED, selectedFile.getAbsolutePath());
         handleImageSelectionAsync(selectedFile);
     }
 
@@ -122,14 +122,14 @@ public class ImagePicker {
 
             @Override
             protected Pair<String, BufferedImage> doInBackground() throws Exception {
-                log.debug(String.format(LOG_READING_IMAGE, file.getAbsolutePath()));
+                log.debug(LOG_READING_IMAGE, file.getAbsolutePath());
                 BufferedImage image = ImageIO.read(file);
 
                 if (image == null) {
                     return null;
                 }
 
-                log.debug(String.format(LOG_IMAGE_LOADED, image.getWidth(), image.getHeight()));
+                log.debug(LOG_IMAGE_LOADED, image.getWidth(), image.getHeight());
                 FilePickerUtils.copyToOutputDirectory(file);
                 return new Pair<>(file.getName(), image);
             }
@@ -140,19 +140,19 @@ public class ImagePicker {
                     Pair<String, BufferedImage> result = get();
 
                     if (result == null) {
-                        log.warn(String.format(LOG_UNREADABLE_IMAGE, file.getName()));
+                        log.warn(LOG_UNREADABLE_IMAGE, file.getName());
                         return;
                     }
 
                     observable.set(result);
-                    log.info(String.format(LOG_IMAGE_PUBLISHED, file.getName()));
+                    log.info(LOG_IMAGE_PUBLISHED, file.getName());
 
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    log.error(String.format(LOG_IMAGE_READ_FAILED, file.getAbsolutePath(), e.getMessage()), e);
+                    log.error(LOG_IMAGE_READ_FAILED, file.getAbsolutePath(), e.getMessage(), e);
                 } catch (ExecutionException e) {
                     Throwable cause = e.getCause() != null ? e.getCause() : e;
-                    log.error(String.format(LOG_IMAGE_READ_FAILED, file.getAbsolutePath(), cause.getMessage()), cause);
+                    log.error(LOG_IMAGE_READ_FAILED, file.getAbsolutePath(), cause.getMessage(), cause);
                 }
             }
         }.execute();

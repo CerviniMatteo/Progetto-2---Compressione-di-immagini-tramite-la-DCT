@@ -41,21 +41,21 @@ public class OpenCsvUtils {
      */
     public static void createCSVFile(String path, List<BenchmarkMeasurement> measurements) {
         List<BenchmarkMeasurement> safe = measurements == null ? List.of() : measurements;
-        log.debug(String.format(BenchmarkConstants.LOG_CSV_CREATE, path, safe.size()));
+        log.debug(BenchmarkConstants.LOG_CSV_CREATE, path, safe.size());
 
         ensureParentDirectoryExists(path);
 
         try (CSVWriter writer = new CSVWriter(new FileWriter(path))) {
             writer.writeNext(buildHeader());
 
-            for (BenchmarkMeasurement m : safe) {
-                if (m == null) continue;
-                writer.writeNext(buildRow(m));
-            }
+             for (BenchmarkMeasurement m : safe) {
+                 if (m == null) continue;
+                 writer.writeNext(buildRow(m));
+             }
 
-            log.info(String.format(BenchmarkConstants.LOG_CSV_CREATED, safe.size()));
-        } catch (IOException e) {
-            log.error(String.format(BenchmarkConstants.LOG_CSV_CREATE_FAILED, path), e);
+             log.info(BenchmarkConstants.LOG_CSV_CREATED, safe.size());
+         } catch (IOException e) {
+             log.error(BenchmarkConstants.LOG_CSV_CREATE_FAILED, path, e);
         }
     }
 
@@ -124,7 +124,7 @@ public class OpenCsvUtils {
     private static void ensureParentDirectoryExists(String path) {
         File parent = new File(path).getParentFile();
         if (parent != null && !parent.exists() && !parent.mkdirs()) {
-            log.warn(String.format(BenchmarkConstants.LOG_CSV_CREATE_FAILED, parent.getAbsolutePath()));
+            log.warn(BenchmarkConstants.LOG_CSV_CREATE_FAILED, parent.getAbsolutePath());
         }
     }
 }

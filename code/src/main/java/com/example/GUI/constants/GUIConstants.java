@@ -113,11 +113,11 @@ public final class GUIConstants {
      */
     public static final String LOG_OPENING_IMAGE_PICKER = "Opening image picker dialog";
 
-    /**
-     * Log message printed after an image is selected.
-     * Placeholders represent the file name and its dimensions.
-     */
-    public static final String LOG_IMAGE_SELECTED = "Image selected: %s (size: %dx%d pixels)";
+     /**
+      * Log message printed after an image is selected.
+      * Placeholders represent the file name and its dimensions.
+      */
+     public static final String LOG_IMAGE_SELECTED = "Image selected: {} (size: {}x{} pixels)";
 
     /**
      * Log message printed when compression is requested without a selected image.
@@ -129,27 +129,27 @@ public final class GUIConstants {
      */
     public static final String LOG_OPENING_PARAMETERS_PICKER = "Opening compression parameters picker";
 
-    /**
-     * Log message printed when compression begins.
-     * Placeholders represent the compression parameters.
-     */
-    public static final String LOG_COMPRESSION_START = "Compression started with parameters: F=%d, d=%d";
+     /**
+      * Log message printed when compression begins.
+      * Placeholders represent the compression parameters.
+      */
+     public static final String LOG_COMPRESSION_START = "Compression started with parameters: F={}, d={}";
 
-    /**
-     * Log message printed when compression completes.
-     * Placeholders represent the output file name and resulting image dimensions.
-     */
-    public static final String LOG_COMPRESSION_DONE = "Compression completed: %s (size: %dx%d pixels)";
+     /**
+      * Log message printed when compression completes.
+      * Placeholders represent the output file name and resulting image dimensions.
+      */
+     public static final String LOG_COMPRESSION_DONE = "Compression completed: {} (size: {}x{} pixels)";
 
     /**
      * Prefix used when image preview rendering fails.
      */
-    public static final String LOG_PREVIEW_FAILED_PREFIX = "Failed to render image preview: ";
+    public static final String LOG_PREVIEW_FAILED_PREFIX = "Failed to render image preview: {}";
 
     /**
      * Prefix used when logging a compression failure.
      */
-    public static final String LOG_COMPRESSION_FAILED_PREFIX = "Compression failed: ";
+    public static final String LOG_COMPRESSION_FAILED_PREFIX = "Compression failed: {}";
 
     /**
      * Log message printed when the FlatDarkLaf theme cannot be applied.

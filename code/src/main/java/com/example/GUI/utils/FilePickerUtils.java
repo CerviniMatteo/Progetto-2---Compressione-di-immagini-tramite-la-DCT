@@ -55,14 +55,14 @@ public class FilePickerUtils {
         Path downloads = Paths.get(home, DOWNLOAD_PATH);
 
         if (!Files.exists(downloads)) {
-            log.debug(String.format(LOG_DOWNLOADS_NOT_FOUND, downloads));
+            log.debug(LOG_DOWNLOADS_NOT_FOUND, downloads);
             downloads = Paths.get(home, SCARICATI_PATH);
         }
 
         Path appImagesDir = downloads.resolve(PROJECT_DIR_PATH).resolve(IMMAGINI);
         Path resolvedDir = Files.exists(appImagesDir) ? appImagesDir : downloads;
 
-        log.debug(String.format(LOG_USING_DIRECTORY, resolvedDir));
+        log.debug(LOG_USING_DIRECTORY, resolvedDir);
         return resolvedDir;
     }
 
@@ -87,7 +87,7 @@ public class FilePickerUtils {
      * @see java.nio.file.StandardCopyOption#REPLACE_EXISTING
      */
     public static void copyToOutputDirectory(File file) throws IOException {
-        log.debug(String.format(LOG_COPYING_TO_OUTPUT, file.getName()));
+        log.debug(LOG_COPYING_TO_OUTPUT, file.getName());
         Path outputDir = Paths.get(GUIConstants.OUTPUT_DIR_NAME);
 
         if (!Files.exists(outputDir)) {
@@ -97,7 +97,7 @@ public class FilePickerUtils {
 
         Path target = outputDir.resolve(file.getName());
         Files.copy(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
-        log.debug(String.format(LOG_FILE_COPIED, target.toAbsolutePath()));
+        log.debug(LOG_FILE_COPIED, target.toAbsolutePath());
     }
 
 

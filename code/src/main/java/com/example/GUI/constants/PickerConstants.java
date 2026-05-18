@@ -160,20 +160,20 @@ public final class PickerConstants {
      */
     public static final String LOG_INTEGER_PICKER_SHOWN = "Integer picker shown";
 
-    /**
-     * Log message printed before parsing the picker inputs.
-     */
-    public static final String LOG_PARSE_INPUTS = "Attempting to parse inputs: F='%s', d='%s'";
+     /**
+      * Log message printed before parsing the picker inputs.
+      */
+     public static final String LOG_PARSE_INPUTS = "Attempting to parse inputs: F='{}', d='{}'";
 
-    /**
-     * Log message printed after parsing picker inputs successfully.
-     */
-    public static final String LOG_PARSED_INPUTS = "Parsed integers: F=%d, d=%d";
+     /**
+      * Log message printed after parsing picker inputs successfully.
+      */
+     public static final String LOG_PARSED_INPUTS = "Parsed integers: F={}, d={}";
 
-    /**
-     * Log message printed after successful validation of picker inputs.
-     */
-    public static final String LOG_VALIDATION_SUCCESS = "Parameters validated successfully: F=%d, d=%d";
+     /**
+      * Log message printed after successful validation of picker inputs.
+      */
+     public static final String LOG_VALIDATION_SUCCESS = "Parameters validated successfully: F={}, d={}";
 
     /**
      * Prefix used when validation fails.
@@ -190,64 +190,64 @@ public final class PickerConstants {
      */
     public static final String LOG_FILE_CHOOSER_CANCELLED = "File chooser cancelled by user";
 
-    /**
-     * Log message printed when a file is selected.
-     */
-    public static final String LOG_FILE_SELECTED = "File selected: %s";
+     /**
+      * Log message printed when a file is selected.
+      */
+     public static final String LOG_FILE_SELECTED = "File selected: {}";
 
-    /**
-     * Log message printed when the application resolves the initial directory for the chooser.
-     */
-    public static final String LOG_RESOLVE_INITIAL_DIR = "Resolving initial file chooser directory";
+     /**
+      * Log message printed when the application resolves the initial directory for the chooser.
+      */
+     public static final String LOG_RESOLVE_INITIAL_DIR = "Resolving initial file chooser directory";
 
-    /**
-     * Log message printed when the expected downloads directory cannot be found.
-     * The placeholder represents the fallback path being tested.
-     */
-    public static final String LOG_DOWNLOADS_NOT_FOUND = "Downloads directory not found at %s, trying fallback";
+     /**
+      * Log message printed when the expected downloads directory cannot be found.
+      * The placeholder represents the fallback path being tested.
+      */
+     public static final String LOG_DOWNLOADS_NOT_FOUND = "Downloads directory not found at {}, trying fallback";
 
-    /**
-     * Log message printed when a directory is chosen for file browsing.
-     */
-    public static final String LOG_USING_DIRECTORY = "Using directory: %s";
+     /**
+      * Log message printed when a directory is chosen for file browsing.
+      */
+     public static final String LOG_USING_DIRECTORY = "Using directory: {}";
 
-    /**
-     * Log message printed when the application starts reading an image file.
-     */
-    public static final String LOG_READING_IMAGE = "Reading image from %s";
+     /**
+      * Log message printed when the application starts reading an image file.
+      */
+     public static final String LOG_READING_IMAGE = "Reading image from {}";
 
-    /**
-     * Log message printed when the selected file cannot be read as an image.
-     */
-    public static final String LOG_UNREADABLE_IMAGE = "File %s is not a readable image format";
+     /**
+      * Log message printed when the selected file cannot be read as an image.
+      */
+     public static final String LOG_UNREADABLE_IMAGE = "File {} is not a readable image format";
 
-    /**
-     * Log message printed when an image is loaded successfully.
-     */
-    public static final String LOG_IMAGE_LOADED = "Image loaded successfully: %dx%d pixels";
+     /**
+      * Log message printed when an image is loaded successfully.
+      */
+     public static final String LOG_IMAGE_LOADED = "Image loaded successfully: {}x{} pixels";
 
-    /**
-     * Log message printed when a loaded image is published to observers.
-     */
-    public static final String LOG_IMAGE_PUBLISHED = "Image published: %s";
+     /**
+      * Log message printed when a loaded image is published to observers.
+      */
+     public static final String LOG_IMAGE_PUBLISHED = "Image published: {}";
 
-    /**
-     * Prefix used when image loading fails.
-     */
-    public static final String LOG_IMAGE_READ_FAILED = "Failed to read image from %s: %s";
+     /**
+      * Prefix used when image loading fails.
+      */
+     public static final String LOG_IMAGE_READ_FAILED = "Failed to read image from {}: {}";
 
-    /**
-     * Log message printed when copying a file into the output directory.
-     */
-    public static final String LOG_COPYING_TO_OUTPUT = "Copying file to output directory: %s";
+     /**
+      * Log message printed when copying a file into the output directory.
+      */
+     public static final String LOG_COPYING_TO_OUTPUT = "Copying file to output directory: {}";
 
-    /**
-     * Log message printed when the output directory is created.
-     */
-    public static final String LOG_CREATING_OUTPUT_DIR = "Creating output directory";
+     /**
+      * Log message printed when the output directory is created.
+      */
+     public static final String LOG_CREATING_OUTPUT_DIR = "Creating output directory";
 
-    /**
-     * Log message printed after a file has been copied successfully.
-     */
-    public static final String LOG_FILE_COPIED = "File copied to: %s";
+     /**
+      * Log message printed after a file has been copied successfully.
+      */
+     public static final String LOG_FILE_COPIED = "File copied to: {}";
 }

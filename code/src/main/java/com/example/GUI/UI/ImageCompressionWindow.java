@@ -170,16 +170,16 @@ public class ImageCompressionWindow extends JFrame {
                         selectedImageName = imageName;
                         selectedImage = get();
 
-                        log.info(String.format(GUIConstants.LOG_IMAGE_SELECTED,
-                                selectedImageName, selectedImage.getWidth(), selectedImage.getHeight()));
+                        log.info(GUIConstants.LOG_IMAGE_SELECTED,
+                                selectedImageName, selectedImage.getWidth(), selectedImage.getHeight());
 
                         ImagePreviewRenderer.getInstance().showImageAsync(originalBox, selectedImage, selectedImageName);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(), e);
+                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX, e.getMessage(), e);
                     } catch (ExecutionException e) {
                         Throwable cause = e.getCause() != null ? e.getCause() : e;
-                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + cause.getMessage(), cause);
+                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX, cause.getMessage(), cause);
                     }
                 }
             }.execute();
@@ -205,10 +205,10 @@ public class ImageCompressionWindow extends JFrame {
         CompressionCoefficientsPicker integerPicker = new CompressionCoefficientsPicker(selectedImage.getWidth(), selectedImage.getHeight());
 
         integerPicker.subscribe(pair -> {
-            int F = pair.getFirst();
-            int d = pair.getSecond();
+             int F = pair.getFirst();
+             int d = pair.getSecond();
 
-            log.info(String.format(GUIConstants.LOG_COMPRESSION_START, F, d));
+             log.info(GUIConstants.LOG_COMPRESSION_START, F, d);
             BufferedImage sourceImage = selectedImage;
             String outputName = selectedImageName + GUIConstants.COMPRESSED_SUFFIX;
 
@@ -225,12 +225,10 @@ public class ImageCompressionWindow extends JFrame {
                     try {
                         BufferedImage compressed = get();
 
-                        log.info(String.format(
-                                GUIConstants.LOG_COMPRESSION_DONE,
+                        log.info(GUIConstants.LOG_COMPRESSION_DONE,
                                 outputName,
                                 compressed.getWidth(),
-                                compressed.getHeight()
-                        ));
+                                compressed.getHeight());
 
                         ImagePreviewRenderer.getInstance().showImageAsync(
                                 compressedBox,
@@ -239,10 +237,7 @@ public class ImageCompressionWindow extends JFrame {
                         );
 
                     } catch (Exception e) {
-                        log.error(
-                                GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(),
-                                e
-                        );
+                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX, e.getMessage(), e);
                     }
                 }
             }.execute();

@@ -121,24 +121,23 @@ public class CompressionCoefficientsPicker extends JFrame {
              String fText = firstField.getText().trim();
              String dText = secondField.getText().trim();
 
-             log.debug(String.format(LOG_PARSE_INPUTS, fText, dText));
+             log.debug(LOG_PARSE_INPUTS, fText, dText);
 
              int F = Integer.parseInt(fText);
              int d = Integer.parseInt(dText);
 
-             log.debug(String.format(LOG_PARSED_INPUTS, F, d));
+             log.debug(LOG_PARSED_INPUTS, F, d);
 
              CompressionParametersValidator.validateInputs(F, d, rows, cols);
 
-             log.info(String.format(LOG_VALIDATION_SUCCESS, F, d));
+             log.info(LOG_VALIDATION_SUCCESS, F, d);
 
              observable.set(new Pair<>(F, d));
              dispose();
 
          } catch (NumberFormatException e) {
-             String errorMsg = INVALID_INTEGER_INPUT_ERROR;
-             log.warn(errorMsg);
-             showErrorDialog(errorMsg);
+             log.warn(INVALID_INTEGER_INPUT_ERROR);
+             showErrorDialog(INVALID_INTEGER_INPUT_ERROR);
          } catch (IllegalArgumentException ex) {
              log.warn(LOG_VALIDATION_FAILED_PREFIX + ex.getMessage());
              showErrorDialog(ex.getMessage());

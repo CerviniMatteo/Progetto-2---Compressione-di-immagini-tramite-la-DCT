@@ -39,23 +39,23 @@ public final class BenchmarkConstants {
      * Log message printed when the benchmark starts.
      * The placeholder represents the number of matrix sizes being tested.
      */
-    public static final String LOG_BENCHMARK_START = "DCT Benchmark started with %d sizes";
+    public static final String LOG_BENCHMARK_START = "DCT Benchmark started with {} sizes";
 
     /**
      * Log message printed before benchmarking a specific matrix size.
      * The two placeholders represent the matrix dimensions.
      */
-    public static final String LOG_BENCHMARK_SIZE = "Benchmarking matrix size: %dx%d";
+    public static final String LOG_BENCHMARK_SIZE = "Benchmarking matrix size: {}x{}";
 
     /**
      * Log message printed before measuring the custom DCT implementation.
      */
-    public static final String LOG_MEASURE_CUSTOM = "Measuring custom DCT implementation for N=%d";
+    public static final String LOG_MEASURE_CUSTOM = "Measuring custom DCT implementation for N={}";
 
     /**
      * Log message printed before measuring the library DCT implementation.
      */
-    public static final String LOG_MEASURE_LIBRARY = "Measuring library DCT implementation for N=%d";
+    public static final String LOG_MEASURE_LIBRARY = "Measuring library DCT implementation for N={}";
 
     /**
      * Log message used to print a single benchmark result row.
@@ -67,12 +67,12 @@ public final class BenchmarkConstants {
      *   <li>ratio between library and custom time</li>
      * </ul>
      */
-    public static final String LOG_RESULT_ROW = "N=%d | MyDCT: %.6f s | LibDCT: %.6f s | Ratio: %.2fx";
+    public static final String LOG_RESULT_ROW = "N={} | MyDCT: {} s | LibDCT: {} s | Ratio: {}x";
 
     /**
      * Log message printed after all benchmark sizes have been processed.
      */
-    public static final String LOG_BENCHMARK_DONE = "Benchmark completed for all %d sizes";
+    public static final String LOG_BENCHMARK_DONE = "Benchmark completed for all {} sizes";
 
     /**
      * Log message printed before exporting the benchmark results to CSV.
@@ -96,22 +96,12 @@ public final class BenchmarkConstants {
     /**
      * Prefix used when logging a CSV export failure.
      */
-    public static final String LOG_CSV_FAILED_PREFIX = "Failed to export CSV file: ";
+    public static final String LOG_CSV_FAILED_PREFIX = "Failed to export CSV file: {}";
 
     /**
      * CSV column name for the matrix size.
      */
     public static final String CSV_HEADER_SIZE = "Size";
-
-    /**
-     * CSV column name for the custom DCT execution time.
-     */
-    public static final String CSV_HEADER_MY_DCT_MS = "MyDCTTime (s)";
-
-    /**
-     * CSV column name for the library DCT execution time.
-     */
-    public static final String CSV_HEADER_LIB_DCT_MS = "LibDCTTime (s)";
 
     /**
      * CSV column name for the speed ratio between library and custom DCT.
@@ -172,7 +162,7 @@ public final class BenchmarkConstants {
      * Log message used when creating a CSV file.
      * Placeholders represent the output path and number of entries.
      */
-    public static final String LOG_CSV_CREATE = "Creating CSV file at: %s with %d entries";
+    public static final String LOG_CSV_CREATE = "Creating CSV file at: {} with {} entries";
 
     /**
      * Pattern used by JMH to select the benchmark runner method.
@@ -183,23 +173,18 @@ public final class BenchmarkConstants {
      * Log message used when a CSV file is created successfully.
      * The placeholder represents the number of rows written.
      */
-    public static final String LOG_CSV_CREATED = "CSV file created successfully with %d rows";
+    public static final String LOG_CSV_CREATED = "CSV file created successfully with {} rows";
 
     /**
      * Log message printed after benchmark CSV export completes successfully.
      */
-    public static final String LOG_CSV_EXPORTED_SUCCESSFULLY = "Benchmark CSV exported successfully to %s";
+    public static final String LOG_CSV_EXPORTED_SUCCESSFULLY = "Benchmark CSV exported successfully to {}";
 
     /**
      * Log message used when CSV creation fails.
      * The placeholder represents the target file path.
      */
-    public static final String LOG_CSV_CREATE_FAILED = "Failed to create CSV file at %s";
-
-     /**
-      * Formatting pattern for time values written to CSV.
-      */
-     public static final String CSV_TIME_FORMAT = "%.6f";
+    public static final String LOG_CSV_CREATE_FAILED = "Failed to create CSV file at {}";
 
      /**
       * Formatting pattern for time values with higher precision (9 decimal places).

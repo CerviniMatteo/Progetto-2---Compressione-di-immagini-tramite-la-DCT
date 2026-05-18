@@ -75,10 +75,10 @@ public final class ImagePreviewRenderer {
                     box.repaint();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    log.error(GUIConstants.LOG_PREVIEW_FAILED_PREFIX + e.getMessage(), e);
+                    log.error(GUIConstants.LOG_PREVIEW_FAILED_PREFIX, e.getMessage(), e);
                 } catch (ExecutionException e) {
                     Throwable cause = e.getCause() != null ? e.getCause() : e;
-                    log.error(GUIConstants.LOG_PREVIEW_FAILED_PREFIX + cause.getMessage(), cause);
+                    log.error(GUIConstants.LOG_PREVIEW_FAILED_PREFIX, cause.getMessage(), cause);
                 }
             }
         }.execute();

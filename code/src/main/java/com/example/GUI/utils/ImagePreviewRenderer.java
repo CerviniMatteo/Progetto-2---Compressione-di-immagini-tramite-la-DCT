@@ -2,7 +2,7 @@ package com.example.GUI.utils;
 
 import com.example.GUI.constants.GUIConstants;
 import com.example.GUI.model.PreviewData;
-import com.example.lib.utils.ImageUtils;
+import com.example.utils.ImageUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

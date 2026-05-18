@@ -5,8 +5,8 @@ import com.example.GUI.enums.PanelContrast;
 import com.example.GUI.utils.ImagePreviewRenderer;
 import com.example.assignment.Part2;
 import com.example.GUI.constants.GUIConstants;
-import com.example.assignment.launcher.PartLauncher;
-import com.example.lib.utils.ImageUtils;
+import com.example.assignment.launcher.PartsLauncher;
+import com.example.utils.ImageUtils;
 import org.apache.commons.math3.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -217,7 +217,7 @@ public class ImageCompressionWindow extends JFrame {
                 @Override
                 protected BufferedImage doInBackground() {
                     BufferedImage selectedCopy = ImageUtils.copyBufferedImage(sourceImage);
-                    return PartLauncher.getInstance().launchPart2(F, d, new Pair<>(outputName, selectedCopy));
+                    return PartsLauncher.getInstance().launchPart2(F, d, new Pair<>(outputName, selectedCopy));
                 }
 
                 @Override

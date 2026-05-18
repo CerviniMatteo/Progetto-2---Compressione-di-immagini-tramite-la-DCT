@@ -41,13 +41,13 @@ import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_
  *     <li>{@link #getInstance()} for compression-only workflows</li>
  * </ul>
  */
-public class PartLauncher {
+public class PartsLauncher {
 
     /** Singleton instance of the launcher. */
-    private static volatile PartLauncher INSTANCE;
+    private static volatile PartsLauncher INSTANCE;
 
     /** Logger used to report benchmark lifecycle events. */
-    private static final Logger log = LogManager.getLogger(PartLauncher.class);
+    private static final Logger log = LogManager.getLogger(PartsLauncher.class);
 
     /** Block sizes to benchmark (powers of 2). */
     private static final int[] BENCHMARK_BLOCK_SIZES = {
@@ -78,16 +78,16 @@ public class PartLauncher {
      * @param benchmarkCancelled shared cancellation flag
      * @return singleton launcher instance
      */
-    public static PartLauncher getInstance(AtomicBoolean benchmarkCancelled) {
+    public static PartsLauncher getInstance(AtomicBoolean benchmarkCancelled) {
 
         if (INSTANCE == null) {
-            synchronized (PartLauncher.class) {
+            synchronized (PartsLauncher.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new PartLauncher(benchmarkCancelled);
+                    INSTANCE = new PartsLauncher(benchmarkCancelled);
                 }
             }
         } else if (benchmarkCancelled != null) {
-            synchronized (PartLauncher.class) {
+            synchronized (PartsLauncher.class) {
                 INSTANCE.benchmarkCancelled = benchmarkCancelled;
             }
         }
@@ -104,7 +104,7 @@ public class PartLauncher {
      *
      * @return singleton launcher instance
      */
-    public static PartLauncher getInstance() {
+    public static PartsLauncher getInstance() {
         return getInstance(null);
     }
 
@@ -117,7 +117,7 @@ public class PartLauncher {
      *
      * @param benchmarkCancelled shared cancellation flag
      */
-    private PartLauncher(AtomicBoolean benchmarkCancelled) {
+    private PartsLauncher(AtomicBoolean benchmarkCancelled) {
         this.benchmarkCancelled = benchmarkCancelled;
     }
 

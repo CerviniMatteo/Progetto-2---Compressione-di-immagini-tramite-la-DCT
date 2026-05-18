@@ -1,11 +1,11 @@
 package com.example.assignment;
 
+import com.example.assignment.benchmark.BenchmarkExecutor;
 import com.example.assignment.constants.BenchmarkConstants;
+import com.example.assignment.lib.DCT2;
 import com.example.assignment.model.BenchmarkMeasurement;
-import com.example.lib.DCT2;
-import com.example.lib.utils.BenchmarkExecutor;
-import com.example.lib.utils.JmhBenchmarkExecutor;
-import com.example.lib.utils.OpenCsvUtils;
+import com.example.assignment.utils.OpenCsvUtils;
+import com.example.assignment.benchmark.JmhBenchmarkExecutor;
 import org.ejml.simple.SimpleMatrix;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

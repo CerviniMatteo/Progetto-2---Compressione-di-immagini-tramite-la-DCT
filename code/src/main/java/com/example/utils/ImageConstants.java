@@ -1,5 +1,5 @@
 // src/main/java/com/example/lib/utils/UtilsConstants.java
-package com.example.lib.utils;
+package com.example.utils;
 
 /**
  * Constants shared by utility classes in the library layer.
@@ -8,7 +8,7 @@ package com.example.lib.utils;
  * and common log messages related to saving images.
  * </p>
  */
-public final class UtilsConstants {
+public final class ImageConstants {
 
     /**
      * File format name for bitmap images.

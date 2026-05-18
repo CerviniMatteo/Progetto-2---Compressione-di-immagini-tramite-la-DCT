@@ -1,4 +1,4 @@
-package com.example.lib.utils;
+package com.example.assignment.benchmark;
 
 import com.example.assignment.constants.BenchmarkConstants;
 import org.openjdk.jmh.annotations.*;

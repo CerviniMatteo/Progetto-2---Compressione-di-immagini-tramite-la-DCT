@@ -1,4 +1,4 @@
-package com.example.lib.utils;
+package com.example.assignment.benchmark;
 
 import org.openjdk.jmh.util.Statistics;
 import java.util.function.Supplier;

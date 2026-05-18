@@ -1,4 +1,4 @@
-package com.example.lib.utils;
+package com.example.assignment.utils;
 
 import com.example.assignment.model.BenchmarkMeasurement;
 import com.example.assignment.constants.BenchmarkConstants;

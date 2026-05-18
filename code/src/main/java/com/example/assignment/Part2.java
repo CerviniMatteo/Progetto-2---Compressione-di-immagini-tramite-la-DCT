@@ -3,7 +3,7 @@ package com.example.assignment;
 import org.apache.commons.math3.util.Pair;
 import org.jtransforms.dct.DoubleDCT_2D;
 import java.awt.image.BufferedImage;
-import static com.example.lib.utils.ImageUtils.*;
+import static com.example.utils.ImageUtils.*;
 
 /**
  * Implements block-based grayscale image compression using the 2D Discrete Cosine Transform (DCT).

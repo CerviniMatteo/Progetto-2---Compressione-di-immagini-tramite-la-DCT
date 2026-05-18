@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_CANCELLED;
-import static com.example.assignment.constants.LauncherConstants.BENCHMARK_CANCEL_FLAG_NOT_CONFIGURED;
 
 /**
  * Helper class that launches Part 1 benchmarking and Part 2 compression tasks.
@@ -64,6 +63,9 @@ public class PartLauncher {
      * </p>
      */
     private AtomicBoolean benchmarkCancelled;
+
+    public static final String BENCHMARK_CANCEL_FLAG_NOT_CONFIGURED = "Benchmark cancellation flag was not configured.";
+
 
     /**
      * Returns the singleton launcher instance configured with a cancellation flag.

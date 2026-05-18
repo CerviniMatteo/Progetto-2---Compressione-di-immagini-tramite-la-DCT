@@ -10,7 +10,7 @@ import java.awt.*;
  * making it easy to maintain a consistent look and feel across the application.
  * </p>
  */
-public class UIStyleConstants {
+public final class UIStyleConstants {
 
     // ========================================================
     // COLOR CONSTANTS (RGB)

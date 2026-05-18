@@ -13,7 +13,7 @@ package com.example.GUI.constants;
  * helps keep labels consistent across windows and dialogs.
  * </p>
  */
-public class GUIConstants {
+public final class GUIConstants {
 
     /**
      * Main application window title.

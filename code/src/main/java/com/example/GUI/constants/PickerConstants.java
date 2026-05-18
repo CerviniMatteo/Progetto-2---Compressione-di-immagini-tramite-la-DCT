@@ -9,7 +9,7 @@ package com.example.GUI.constants;
  *   <li>log templates for the integer input picker and image/file chooser</li>
  * </ul>
  */
-public class PickerConstants {
+public final class PickerConstants {
 
     /**
      * System property key used to resolve the user's home directory.

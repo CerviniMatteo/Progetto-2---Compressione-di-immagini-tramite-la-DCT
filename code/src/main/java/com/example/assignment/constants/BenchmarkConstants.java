@@ -78,12 +78,6 @@ public class BenchmarkConstants {
      * Log message printed before exporting the benchmark results to CSV.
      */
     public static final String LOG_WRITING_CSV = "Writing benchmark results to CSV...";
-
-    /**
-     * Log message printed when CSV export succeeds.
-     */
-    public static final String LOG_CSV_SAVED = "Benchmark CSV exported successfully to " +      TIMES_VS_SIZE_CSV_PATH;
-
     /**
      * Log message printed when the benchmark is canceled by the user.
      */
@@ -122,7 +116,7 @@ public class BenchmarkConstants {
     /**
      * CSV column name for the speed ratio between library and custom DCT.
      */
-    public static final String CSV_HEADER_RATIO = "Ratio (Lib/My)";
+    public static final String CSV_HEADER_RATIO = "Custom slower than Lib (%)";
 
     /**
      * Log message used when creating a CSV file.
@@ -151,9 +145,4 @@ public class BenchmarkConstants {
      * Formatting pattern for time values written to CSV.
      */
     public static final String CSV_TIME_FORMAT = "%.6f";
-
-    /**
-     * Formatting pattern for ratio values written to CSV.
-     */
-    public static final String CSV_RATIO_FORMAT = "%.4f";
 }

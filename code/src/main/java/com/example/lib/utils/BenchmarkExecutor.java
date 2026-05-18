@@ -1,5 +1,6 @@
 package com.example.lib.utils;
 
+import org.openjdk.jmh.util.Statistics;
 import java.util.function.Supplier;
 
 /**
@@ -24,6 +25,6 @@ public interface BenchmarkExecutor {
      * @return average execution time in seconds
      * @throws Exception if the benchmark execution fails
      */
-    double run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception;
+    Statistics run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception;
 }
 

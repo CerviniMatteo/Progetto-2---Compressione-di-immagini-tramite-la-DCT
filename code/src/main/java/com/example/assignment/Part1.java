@@ -10,8 +10,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ejml.simple.SimpleMatrix;
 import org.jtransforms.dct.DoubleDCT_2D;
+import org.openjdk.jmh.util.Statistics;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,6 @@ import java.util.function.Supplier;
 
 import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_CANCELLED;
 import static com.example.assignment.constants.BenchmarkConstants.BENCHMARK_CANCELLED_BY_USER;
-import static com.example.lib.utils.UtilsConstants.OUTPUT_PATH;
 
 /**
  * Part 1 - DCT Benchmark Comparison.
@@ -139,23 +138,28 @@ public class Part1 {
                 log.debug(String.format(BenchmarkConstants.LOG_BENCHMARK_SIZE, n, n));
                 double[][] matrix = (double[][]) matrices.get(iterator++);
 
-                double myTime = benchmarkCustomDCT(dct, matrix, doWarmUp, isCancelled);
+                Statistics myTime = benchmarkCustomDCT(dct, matrix, doWarmUp, isCancelled);
 
                 if (isCancelled.get()) {
                     log.info(LOG_BENCHMARK_CANCELLED);
                     return;
                 }
 
-                double libTime = benchmarkLibraryDCT(n, matrix, doWarmUp, isCancelled);
+                Statistics libTime = benchmarkLibraryDCT(n, matrix, doWarmUp, isCancelled);
 
-                results.add(new BenchmarkMeasurement(n, myTime, libTime));
+                BenchmarkMeasurement measurement = new BenchmarkMeasurement(n, myTime, libTime);
+                results.add(measurement);
 
-                double ratio = myTime > 0 ? libTime / myTime : 0;
-                log.info(String.format(BenchmarkConstants.LOG_RESULT_ROW, n, myTime, libTime, ratio));
+                log.info(String.format(
+                        BenchmarkConstants.LOG_RESULT_ROW,
+                        measurement.size(),
+                        measurement.customMeanSeconds(),
+                        measurement.libraryMeanSeconds(),
+                        measurement.ratioOnMean()));
             }
 
             log.info(String.format(BenchmarkConstants.LOG_BENCHMARK_DONE, results.size()));
-            exportResultsToCSV(sizes, doWarmUp);
+            exportResultsToCSV(doWarmUp);
 
         } catch (CancellationException e) {
             log.error(LOG_BENCHMARK_CANCELLED, null);
@@ -179,10 +183,10 @@ public class Part1 {
      * @param matrix      the input matrix to transform
      * @param doWarmUp    whether to include JIT warmup iterations
      * @param isCancelled supplier polled at each iteration boundary
-     * @return execution time in seconds
+     * @return the full JMH {@link Statistics} summary for the custom implementation
      * @throws Exception if benchmark execution fails or is canceled
      */
-    private double benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp,
+    private Statistics benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp,
                                       Supplier<Boolean> isCancelled) throws Exception {
         log.debug(String.format(BenchmarkConstants.LOG_MEASURE_CUSTOM, matrix.length));
         SimpleMatrix simpleMatrix = new SimpleMatrix(matrix);
@@ -217,20 +221,22 @@ public class Part1 {
      * @param matrix      the original input matrix (not modified)
      * @param doWarmUp    whether to include JIT warmup iterations
      * @param isCancelled supplier polled at each iteration boundary
-     * @return execution time in seconds
+     * @return the full JMH {@link Statistics} summary for the library implementation
      * @throws Exception if benchmark execution fails or is canceled
      */
-    private double benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp,
-                                       Supplier<Boolean> isCancelled) throws Exception {
+    private Statistics benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp,
+                                           Supplier<Boolean> isCancelled) throws Exception {
         log.debug(String.format(BenchmarkConstants.LOG_MEASURE_LIBRARY, n));
         DoubleDCT_2D libLocal = new DoubleDCT_2D(n, n);
-        double[][] matrixCopy = deepCopyMatrix(matrix);
-        return benchmarkExecutor.run(() -> () -> {
-            if (isCancelled.get()) {
-                throw new CancellationException(BENCHMARK_CANCELLED_BY_USER);
-            }
-            libLocal.forward(matrixCopy, true);
-            return null;
+        return benchmarkExecutor.run(() -> {
+            double[][] matrixCopy = deepCopyMatrix(matrix);
+            return () -> {
+                if (isCancelled.get()) {
+                    throw new CancellationException(BENCHMARK_CANCELLED_BY_USER);
+                }
+                libLocal.forward(matrixCopy, true);
+                return null;
+            };
         }, doWarmUp);
     }
 
@@ -251,7 +257,7 @@ public class Part1 {
     }
 
     /**
-     * Collects benchmark results into arrays and exports them to a CSV file.
+     * Collects benchmark results and exports them to a CSV file.
      * <p><strong>File Output:</strong></p>
      * <ul>
      * <li>With warmup: {@code output/times_vs_size_with_JIT_warm_up.csv}</li>
@@ -260,34 +266,17 @@ public class Part1 {
      * Each CSV file contains the matrix sizes, custom implementation times, library times,
      * and computed performance ratios (library time / custom time).
      *
-     * @param sizes    array of matrix dimensions used in the benchmark
      * @param doWarmUp whether warmup was enabled (determines output filename)
      */
-    private void exportResultsToCSV(int[] sizes, boolean doWarmUp) {
-        double[] myTimes  = new double[results.size()];
-        double[] libTimes = new double[results.size()];
-        double[] ratios   = new double[results.size()];
-
-        for (int i = 0; i < results.size(); i++) {
-            BenchmarkMeasurement r = results.get(i);
-            myTimes[i]  = r.customTime();
-            libTimes[i] = r.libraryTime();
-            ratios[i]   = r.customTime() > 0 ? r.libraryTime() / r.customTime() : 0;
-        }
-
-        File outputDir = new File(OUTPUT_PATH);
-        if (!outputDir.exists() && !outputDir.mkdirs()) {
-            log.warn(BenchmarkConstants.LOG_CSV_CREATE_FAILED + OUTPUT_PATH);
-        }
-
+    private void exportResultsToCSV(boolean doWarmUp) {
         log.debug(BenchmarkConstants.LOG_WRITING_CSV);
         try {
             String outputPath = doWarmUp
                     ? BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH_WITH_WARMUP
                     : BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH;
 
-            OpenCsvUtils.createCSVFile(outputPath, sizes, myTimes, libTimes, ratios);
-            log.info(BenchmarkConstants.LOG_CSV_SAVED);
+            OpenCsvUtils.createCSVFile(outputPath, results);
+            log.info(String.format("Benchmark CSV exported successfully to %s", outputPath));
         } catch (Exception e) {
             log.error(BenchmarkConstants.LOG_CSV_FAILED_PREFIX + e.getMessage(), e);
         }

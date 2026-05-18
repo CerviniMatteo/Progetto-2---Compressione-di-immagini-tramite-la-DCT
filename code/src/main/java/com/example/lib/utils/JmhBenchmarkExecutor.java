@@ -7,6 +7,7 @@ import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.openjdk.jmh.util.Statistics;
 
 import java.util.Collection;
 import java.util.concurrent.CancellationException;
@@ -33,10 +34,10 @@ import java.util.function.Supplier;
 public class JmhBenchmarkExecutor implements BenchmarkExecutor {
 
     /** Default number of warmup iterations */
-    private static final int DEFAULT_WARMUP_ITERATIONS = 3;
+    private static final int DEFAULT_WARMUP_ITERATIONS = 0;
 
     /** Default number of measurement iterations */
-    private static final int DEFAULT_MEASUREMENT_ITERATIONS = 5;
+    private static final int DEFAULT_MEASUREMENT_ITERATIONS = 1;
 
     /**
      * Shared static volatile field used to pass the task factory to JMH worker threads.
@@ -121,7 +122,7 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
      * @throws Exception             if the benchmark execution fails for another reason
      */
     @Override
-    public double run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception {
+    public Statistics run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception {
 
         Options opt = new OptionsBuilder()
                 .include(String.format(BenchmarkConstants.JMH_BENCHMARK_INCLUDE_TEMPLATE, BenchmarkRunner.class.getSimpleName()))
@@ -144,6 +145,6 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
 
         // JMH score is in microseconds (per @OutputTimeUnit(TimeUnit.MICROSECONDS))
         // Convert to seconds for consistency
-        return results.iterator().next().getPrimaryResult().getScore() / 1_000_000.0;
+        return results.iterator().next().getPrimaryResult().getStatistics();
     }
 }

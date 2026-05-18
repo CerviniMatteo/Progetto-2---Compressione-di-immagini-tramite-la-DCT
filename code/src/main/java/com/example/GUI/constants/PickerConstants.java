@@ -64,7 +64,7 @@ public final class PickerConstants {
     /**
      * Validation error message for {@code F}.
      */
-    public static final String F_POSITIVE_ERROR = F + " must be positive";
+    public static final String F_GREATER_THAN_ONE = F + " must greater than 1";
 
     /**
      * Validation error message for {@code d}.

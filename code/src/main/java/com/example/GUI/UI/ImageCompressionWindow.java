@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.example.GUI.factory.StylingFactory.*;
 import static com.example.GUI.constants.UIStyleConstants.*;
+import static com.example.GUI.utils.FilePickerUtils.extractFilename;
 
 /**
  * Main Swing window for the DCT image compression workflow.
@@ -249,17 +250,6 @@ public class ImageCompressionWindow extends JFrame {
         });
 
         integerPicker.showUI();
-    }
-
-    /**
-     * Extracts the base filename without extension.
-     *
-     * @param filenameWithExtension full filename (e.g., "image.bmp")
-     * @return filename without extension (e.g., "image")
-     */
-    private String extractFilename(String filenameWithExtension) {
-        int dotIndex = filenameWithExtension.lastIndexOf('.');
-        return dotIndex > 0 ? filenameWithExtension.substring(0, dotIndex) : filenameWithExtension;
     }
 
     // ==================================================

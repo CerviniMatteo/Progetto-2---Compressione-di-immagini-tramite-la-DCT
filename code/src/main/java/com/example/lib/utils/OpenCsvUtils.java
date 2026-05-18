@@ -59,48 +59,6 @@ public class OpenCsvUtils {
         }
     }
 
-    /**
-     * Legacy CSV writer that keeps the original compact output format.
-     *
-     * @param path     destination file path
-     * @param sizes    input sizes (first column)
-     * @param myTimes  execution times for the custom DCT implementation
-     * @param libTimes execution times for the library DCT implementation
-     * @param ratios   pre-computed {@code library / custom} ratios
-     */
-    @SuppressWarnings("unused")
-    public static void createCSVFile(String path,
-                                     int[] sizes,
-                                     double[] myTimes,
-                                     double[] libTimes,
-                                     double[] ratios) {
-        log.debug(String.format(BenchmarkConstants.LOG_CSV_CREATE, path, sizes.length));
-
-        ensureParentDirectoryExists(path);
-
-        try (CSVWriter writer = new CSVWriter(new FileWriter(path))) {
-            writer.writeNext(new String[]{
-                    BenchmarkConstants.CSV_HEADER_SIZE,
-                    BenchmarkConstants.CSV_HEADER_MY_DCT_MS,
-                    BenchmarkConstants.CSV_HEADER_LIB_DCT_MS,
-                    BenchmarkConstants.CSV_HEADER_RATIO
-            });
-
-            for (int i = 0; i < sizes.length; i++) {
-                writer.writeNext(new String[]{
-                        Integer.toString(sizes[i]),
-                        String.format(BenchmarkConstants.CSV_TIME_FORMAT, myTimes[i]),
-                        String.format(BenchmarkConstants.CSV_TIME_FORMAT, libTimes[i]),
-                        formatRatio(ratios[i])
-                });
-            }
-
-            log.info(String.format(BenchmarkConstants.LOG_CSV_CREATED, sizes.length));
-        } catch (IOException e) {
-            log.error(String.format(BenchmarkConstants.LOG_CSV_CREATE_FAILED, path), e);
-        }
-    }
-
     // ── Private helpers ───────────────────────────────────────────────────────
 
     private static String[] buildHeader() {

@@ -1,6 +1,8 @@
 package com.example.GUI.UI;
 
 import com.example.GUI.observer.Observable;
+import com.example.GUI.utils.CompressionParametersValidator;
+import com.example.GUI.utils.DialogCreator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
@@ -114,84 +116,45 @@ public class CompressionCoefficientsPicker extends JFrame {
      *                                  Note: this exception is caught within the method and presented to the user
      *                                  as an error dialog (see {@link javax.swing.JOptionPane}).
      */
-    private void submit(int cols, int rows) {
-        try {
-            String fText = firstField.getText().trim();
-            String dText = secondField.getText().trim();
+     private void submit(int cols, int rows) {
+         try {
+             String fText = firstField.getText().trim();
+             String dText = secondField.getText().trim();
 
-            log.debug(String.format(LOG_PARSE_INPUTS, fText, dText));
+             log.debug(String.format(LOG_PARSE_INPUTS, fText, dText));
 
-            int F = Integer.parseInt(fText);
-            int d = Integer.parseInt(dText);
+             int F = Integer.parseInt(fText);
+             int d = Integer.parseInt(dText);
 
-            log.debug(String.format(LOG_PARSED_INPUTS, F, d));
+             log.debug(String.format(LOG_PARSED_INPUTS, F, d));
 
-            validateInputs(F, d, rows, cols);
+             CompressionParametersValidator.validateInputs(F, d, rows, cols);
 
-            log.info(String.format(LOG_VALIDATION_SUCCESS, F, d));
+             log.info(String.format(LOG_VALIDATION_SUCCESS, F, d));
 
-            observable.set(new Pair<>(F, d));
-            dispose();
+             observable.set(new Pair<>(F, d));
+             dispose();
 
-        } catch (NumberFormatException e) {
-            String errorMsg = INVALID_INTEGER_INPUT_ERROR;
-            log.warn(errorMsg);
-            showErrorDialog(errorMsg);
-        } catch (IllegalArgumentException ex) {
-            log.warn(LOG_VALIDATION_FAILED_PREFIX + ex.getMessage());
-            showErrorDialog(ex.getMessage());
-        }
-    }
-
-    /**
-     * Validates the input parameters against business rules.
-     *
-     * @param F compression factor (must be >= 0)
-     * @param d dependent parameter (must be 0 $le d $le 2*F - 2)
-     * @throws IllegalArgumentException if validation fails
-     */
-    private void validateInputs(int F, int d, int rows, int cols) {
-        if (F < 0) {
-            throw new IllegalArgumentException(F_POSITIVE_ERROR);
-        }
-
-        if (d < 0 || d > (2 * F) - 2) {
-            throw new IllegalArgumentException(D_VALUE_ERROR);
-        }
-
-        if(rows < F || cols < F){
-            throw new IllegalArgumentException(F_ROWS_COLS_ERROR);
-        }
-    }
-
-    /**
-     * Displays an error dialog to the user with dark theme styling.
-     *
-     * @param message error message to display
-     */
-     private void showErrorDialog(String message) {
-         JOptionPane optionPane = new JOptionPane(
-                 message,
-                 JOptionPane.ERROR_MESSAGE,
-                 JOptionPane.DEFAULT_OPTION
-         );
-
-         JDialog dialog = optionPane.createDialog(this, com.example.GUI.constants.PickerConstants.ERROR);
-         dialog.setBackground(COLOR_DARK);
-
-         JPanel panel = (JPanel) dialog.getContentPane();
-         panel.setBackground(COLOR_DARK);
-
-         for (Component comp : panel.getComponents()) {
-             if (comp instanceof JPanel) {
-                 comp.setBackground(COLOR_DARK);
-             }
-             comp.setBackground(COLOR_DARK);
-             comp.setForeground(Color.WHITE);
+         } catch (NumberFormatException e) {
+             String errorMsg = INVALID_INTEGER_INPUT_ERROR;
+             log.warn(errorMsg);
+             showErrorDialog(errorMsg);
+         } catch (IllegalArgumentException ex) {
+             log.warn(LOG_VALIDATION_FAILED_PREFIX + ex.getMessage());
+             showErrorDialog(ex.getMessage());
          }
-
-         dialog.setVisible(true);
      }
+
+
+     /**
+      * Displays an error dialog to the user with dark theme styling.
+      *
+      * @param message error message to display
+      */
+      private void showErrorDialog(String message) {
+          JDialog dialog = DialogCreator.createErrorDialog(this, com.example.GUI.constants.PickerConstants.ERROR, message);
+          dialog.setVisible(true);
+      }
 
     /**
      * Subscribe a consumer that will be notified when the user submits valid integers.

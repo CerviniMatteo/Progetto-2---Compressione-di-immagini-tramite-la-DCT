@@ -1,7 +1,7 @@
 package com.example.GUI.UI;
 
 import com.example.GUI.observer.Observable;
-import com.example.GUI.constants.GUIConstants;
+import com.example.GUI.utils.FilePickerUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
@@ -11,11 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ExecutionException;
 
 import static com.example.GUI.constants.PickerConstants.*;
@@ -98,7 +94,7 @@ public class ImagePicker {
      */
      public void showUI() {
          log.debug(LOG_OPEN_FILE_CHOOSER);
-         Path currentDirectory = resolveInitialDirectory();
+         Path currentDirectory = FilePickerUtils.resolveInitialDirectory();
 
          JFileChooser fileChooser = new JFileChooser();
          fileChooser.setCurrentDirectory(currentDirectory.toFile());
@@ -114,32 +110,6 @@ public class ImagePicker {
         File selectedFile = fileChooser.getSelectedFile();
         log.debug(String.format(LOG_FILE_SELECTED, selectedFile.getAbsolutePath()));
         handleImageSelectionAsync(selectedFile);
-    }
-
-    /**
-     * Resolves the initial directory for the file chooser.
-     * <p>
-     * Attempts to use the application-specific images directory, falling back to
-     * the user's downloads directory if it doesn't exist.
-     * </p>
-     *
-     * @return the resolved directory path
-     */
-    private Path resolveInitialDirectory() {
-        log.debug(LOG_RESOLVE_INITIAL_DIR);
-        String home = System.getProperty(HOME_PATH);
-        Path downloads = Paths.get(home, DOWNLOAD_PATH);
-
-        if (!Files.exists(downloads)) {
-            log.debug(String.format(LOG_DOWNLOADS_NOT_FOUND, downloads));
-            downloads = Paths.get(home, SCARICATI_PATH);
-        }
-
-        Path appImagesDir = downloads.resolve(PROJECT_DIR_PATH).resolve(IMMAGINI);
-        Path resolvedDir = Files.exists(appImagesDir) ? appImagesDir : downloads;
-        
-        log.debug(String.format(LOG_USING_DIRECTORY, resolvedDir));
-        return resolvedDir;
     }
 
     /**
@@ -160,7 +130,7 @@ public class ImagePicker {
                 }
 
                 log.debug(String.format(LOG_IMAGE_LOADED, image.getWidth(), image.getHeight()));
-                copyToOutputDirectory(file);
+                FilePickerUtils.copyToOutputDirectory(file);
                 return new Pair<>(file.getName(), image);
             }
 
@@ -188,23 +158,4 @@ public class ImagePicker {
         }.execute();
     }
 
-    /**
-     * Copies the selected file to the output directory.
-     *
-     * @param file the file to copy
-     * @throws IOException if the copy operation fails
-     */
-    private void copyToOutputDirectory(File file) throws IOException {
-        log.debug(String.format(LOG_COPYING_TO_OUTPUT, file.getName()));
-        Path outputDir = Paths.get(GUIConstants.OUTPUT_DIR_NAME);
-
-        if (!Files.exists(outputDir)) {
-            log.debug(LOG_CREATING_OUTPUT_DIR);
-            Files.createDirectories(outputDir);
-        }
-
-        Path target = outputDir.resolve(file.getName());
-        Files.copy(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
-        log.debug(String.format(LOG_FILE_COPIED, target.toAbsolutePath()));
-    }
 }

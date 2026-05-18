@@ -64,19 +64,91 @@ public final class PickerConstants {
     /**
      * Validation error message for {@code F}.
      */
-    public static final String F_GREATER_THAN_ONE = F + " must greater than 1";
+    public static final String F_GREATER_THAN_ONE = F + " must be greater than 1";
 
     /**
      * Validation error message for {@code d}.
      */
     public static final String D_VALUE_ERROR = D + " must be >= 0 and <= (2" + F + "- 2)";
 
-    public static final String F_ROWS_COLS_ERROR = "F must be less than the number of rows and columns";
+     public static final String F_ROWS_COLS_ERROR = "F must be less than the number of rows and columns";
 
-    /**
-     * Error message shown when the user enters non-integer values.
-     */
-    public static final String INVALID_INTEGER_INPUT_ERROR = "Invalid input: Please enter integers only";
+     /**
+      * Magic number: minimum allowed value for compression factor F.
+      */
+     public static final int MIN_COMPRESSION_FACTOR = 1;
+
+     /**
+      * Magic number: multiplier used in truncation parameter calculation (d max = 2*F - 2).
+      */
+     public static final int D_RANGE_MULTIPLIER = 2;
+
+     /**
+      * Magic number: offset used in truncation parameter calculation (d max = 2*F - 2).
+      */
+     public static final int D_RANGE_OFFSET = 2;
+
+     /**
+      * Magic number: minimum allowed value for truncation parameter d.
+      */
+     public static final int MIN_TRUNCATION_PARAMETER = 0;
+
+     /**
+      * Format string for F validation error with calculation details.
+      * HTML formatted for better visual display in dialogs.
+      */
+     public static final String F_VALIDATION_ERROR_FORMAT =
+         "<html><b>%s</b><br>" +
+         "F = <b>%d</b><br>" +
+         "Requirement: F > <b>%d</b><br>" +
+         "<font color='red'>✗ Invalid: %d &lt;= %d</font></html>";
+
+     /**
+      * Format string for negative d validation error.
+      * HTML formatted for better visual display in dialogs.
+      */
+     public static final String D_NEGATIVE_ERROR_FORMAT =
+         "<html><b>%s</b><br>" +
+         "d = <b>%d</b><br>" +
+         "Requirement: d >= <b>%d</b><br>" +
+         "<font color='red'>✗ Invalid: d is negative</font></html>";
+
+     /**
+      * Format string for d exceeding maximum validation error with calculation.
+      * HTML formatted for better visual display in dialogs.
+      */
+     public static final String D_EXCEEDS_MAX_ERROR_FORMAT =
+         "<html><b>%s</b><br>" +
+         "d = <b>%d</b><br>" +
+         "Calculation: max_d = %d*F-%d = %d*%d-%d = <b>%d</b><br>" +
+         "<font color='red'>✗ Invalid: d > max_d</font></html>";
+
+     /**
+      * Format string for image height validation error.
+      * HTML formatted for better visual display in dialogs.
+      */
+     public static final String F_HEIGHT_ERROR_FORMAT =
+         "<html><b>%s</b><br>" +
+         "Image height = <b>%d</b> pixels<br>" +
+         "Block size F = <b>%d</b><br>" +
+         "Requirement: rows >= F<br>" +
+         "<font color='red'>✗ Invalid: Image height < F</font></html>";
+
+     /**
+      * Format string for image width validation error.
+      * HTML formatted for better visual display in dialogs.
+      */
+     public static final String F_WIDTH_ERROR_FORMAT =
+         "<html><b>%s</b><br>" +
+         "Image width = <b>%d</b> pixels<br>" +
+         "Block size F = <b>%d</b><br>" +
+         "Requirement: cols >= F<br>" +
+         "<font color='red'>✗ Invalid: Image width < F</font></html>";
+
+     /**
+      * Error message shown when the user enters non-integer values.
+      */
+     public static final String INVALID_INTEGER_INPUT_ERROR = "Invalid input: Please enter integers only";
 
     /**
      * Log message printed when the integer picker is initialized.

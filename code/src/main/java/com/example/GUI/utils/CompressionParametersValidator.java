@@ -55,14 +55,28 @@ public class CompressionParametersValidator {
      * The compression factor represents the block size for DCT transformation.
      * It must be a positive integer.
      * </p>
+     * <p>
+     * <strong>Calculation example:</strong><br>
+     * Valid F values: 2, 4, 8, 16, 32, etc. (all integers > 1)<br>
+     * Invalid F values: 0, 1, -5 (must satisfy F > 1)
+     * </p>
      *
      * @param F compression factor
      *
-     * @throws IllegalArgumentException if F <= 1
+     * @throws IllegalArgumentException if F <= 1 with details about the requirement
      */
     private static void validateCompressionFactor(int F) {
-        if (F <= 1) {
-            throw new IllegalArgumentException(F_GREATER_THAN_ONE);
+        if (F <= MIN_COMPRESSION_FACTOR) {
+            throw new IllegalArgumentException(
+                String.format(
+                    F_VALIDATION_ERROR_FORMAT,
+                    F_GREATER_THAN_ONE,
+                    F,
+                    MIN_COMPRESSION_FACTOR,
+                    F,
+                    MIN_COMPRESSION_FACTOR
+                )
+            );
         }
     }
 
@@ -72,15 +86,43 @@ public class CompressionParametersValidator {
      * The truncation parameter must satisfy: 0 <= d <= 2*F - 2
      * This ensures that the frequency cutoff is within the valid DCT coefficient range.
      * </p>
+     * <p>
+     * <strong>Calculation example:</strong><br>
+     * If F=8, then valid range for d is: 0 <= d <= 2*8-2 = 14<br>
+     * If d=16, validation fails because: 16 > 14 (exceeds max coefficient count)
+     * </p>
      *
      * @param d truncation parameter
      * @param F compression factor (used to calculate valid range)
      *
-     * @throws IllegalArgumentException if d is outside the valid range
+     * @throws IllegalArgumentException if d is outside the valid range with calculation details
      */
     private static void validateTruncationParameter(int d, int F) {
-        if (d < 0 || d > (2 * F) - 2) {
-            throw new IllegalArgumentException(D_VALUE_ERROR);
+        if (d < MIN_TRUNCATION_PARAMETER) {
+            throw new IllegalArgumentException(
+                String.format(
+                    D_NEGATIVE_ERROR_FORMAT,
+                    D_VALUE_ERROR,
+                    d,
+                    MIN_TRUNCATION_PARAMETER
+                )
+            );
+        }
+        int maxD = (D_RANGE_MULTIPLIER * F) - D_RANGE_OFFSET;
+        if (d > maxD) {
+            throw new IllegalArgumentException(
+                String.format(
+                    D_EXCEEDS_MAX_ERROR_FORMAT,
+                    D_VALUE_ERROR,
+                    d,
+                    D_RANGE_MULTIPLIER,
+                    D_RANGE_OFFSET,
+                    D_RANGE_MULTIPLIER,
+                    F,
+                    D_RANGE_OFFSET,
+                    maxD
+                )
+            );
         }
     }
 
@@ -91,16 +133,42 @@ public class CompressionParametersValidator {
      * Both the compression factor and truncation parameter must be less than
      * the image's row and column dimensions to ensure valid block processing.
      * </p>
+     * <p>
+     * <strong>Calculation example:</strong><br>
+     * If image is 512x512 and F=8:<br>
+     * Check: rows >= F → 512 >= 8 ✓ and cols >= F → 512 >= 8 ✓ (Valid)<br>
+     * If image is 256x100 and F=8:<br>
+     * Check: rows >= F → 256 >= 8 ✓ and cols >= F → 100 >= 8 ✓ (Valid)<br>
+     * If image is 64x4 and F=8:<br>
+     * Check: cols >= F → 4 >= 8 ✗ (Invalid - block size exceeds image width)
+     * </p>
      *
      * @param F compression factor
      * @param rows image height
      * @param cols image width
      *
-     * @throws IllegalArgumentException if F or d exceeds image dimensions
+     * @throws IllegalArgumentException if F or d exceeds image dimensions with calculations
      */
     private static void validateImageDimensions(int F, int rows, int cols) {
-        if (rows < F || cols < F) {
-            throw new IllegalArgumentException(F_ROWS_COLS_ERROR);
+        if (rows < F) {
+            throw new IllegalArgumentException(
+                String.format(
+                    F_HEIGHT_ERROR_FORMAT,
+                    F_ROWS_COLS_ERROR,
+                    rows,
+                    F
+                )
+            );
+        }
+        if (cols < F) {
+            throw new IllegalArgumentException(
+                String.format(
+                    F_WIDTH_ERROR_FORMAT,
+                    F_ROWS_COLS_ERROR,
+                    cols,
+                    F
+                )
+            );
         }
     }
 

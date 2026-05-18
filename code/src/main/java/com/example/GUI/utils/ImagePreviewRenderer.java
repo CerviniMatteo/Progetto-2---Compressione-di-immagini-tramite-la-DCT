@@ -3,7 +3,8 @@ package com.example.GUI.utils;
 import com.example.GUI.constants.GUIConstants;
 import com.example.GUI.model.PreviewData;
 import com.example.lib.utils.ImageUtils;
-import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -26,6 +27,7 @@ import static com.example.GUI.constants.UIStyleConstants.*;
 public final class ImagePreviewRenderer {
 
     private static volatile ImagePreviewRenderer INSTANCE;
+    private static final Logger log = LogManager.getLogger(ImagePreviewRenderer.class);
 
     private ImagePreviewRenderer() {
     }
@@ -47,9 +49,8 @@ public final class ImagePreviewRenderer {
      * @param box target panel where the preview is rendered
      * @param image source image to preview
      * @param name base image name used for label and output file lookup
-     * @param log logger used to report preview failures
      */
-     public void showImageAsync(JPanel box, BufferedImage image, String name, Log log) {
+      public void showImageAsync(JPanel box, BufferedImage image, String name) {
          int boxW = Math.max(box.getWidth() - IMAGE_PREVIEW_PADDING, MIN_IMAGE_DIMENSION);
          int boxH = Math.max(box.getHeight() - IMAGE_PREVIEW_TITLE_HEIGHT, MIN_IMAGE_DIMENSION);
 

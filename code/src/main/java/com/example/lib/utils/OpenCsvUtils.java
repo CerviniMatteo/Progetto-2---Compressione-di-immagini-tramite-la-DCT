@@ -3,8 +3,8 @@ package com.example.lib.utils;
 import com.example.assignment.model.BenchmarkMeasurement;
 import com.example.assignment.constants.BenchmarkConstants;
 import com.opencsv.CSVWriter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class OpenCsvUtils {
 
-    private static final Log log = LogFactory.getLog(OpenCsvUtils.class);
+    private static final Logger log = LogManager.getLogger(OpenCsvUtils.class);
 
     // ── Public API ────────────────────────────────────────────────────────────
 

@@ -6,9 +6,9 @@ import com.example.lib.DCT2;
 import com.example.lib.utils.BenchmarkExecutor;
 import com.example.lib.utils.JmhBenchmarkExecutor;
 import com.example.lib.utils.OpenCsvUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.ejml.simple.SimpleMatrix;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jtransforms.dct.DoubleDCT_2D;
 import org.openjdk.jmh.util.Statistics;
 
@@ -49,7 +49,7 @@ import static com.example.assignment.constants.BenchmarkConstants.BENCHMARK_CANC
  */
 public class Part1 {
 
-    private static final Log log = LogFactory.getLog(Part1.class);
+    private static final Logger log = LogManager.getLogger(Part1.class);
 
     private final BenchmarkExecutor benchmarkExecutor;
 
@@ -162,9 +162,9 @@ public class Part1 {
             exportResultsToCSV(doWarmUp);
 
         } catch (CancellationException e) {
-            log.error(LOG_BENCHMARK_CANCELLED, null);
+            log.error(LOG_BENCHMARK_CANCELLED, e);
         } catch (InterruptedException e) {
-            log.error(LOG_BENCHMARK_CANCELLED, null);
+            log.error(LOG_BENCHMARK_CANCELLED, e);
             Thread.currentThread().interrupt();
         }
     }

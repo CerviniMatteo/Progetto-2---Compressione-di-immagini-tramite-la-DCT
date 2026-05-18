@@ -1,8 +1,8 @@
 package com.example.GUI.utils;
 
 import com.example.GUI.constants.GUIConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import static com.example.GUI.constants.PickerConstants.*;
  */
 public class FilePickerUtils {
 
-    private static final Log log = LogFactory.getLog(FilePickerUtils.class);
+    private static final Logger log = LogManager.getLogger(FilePickerUtils.class);
 
     /**
      * Resolves the initial directory for the file chooser.

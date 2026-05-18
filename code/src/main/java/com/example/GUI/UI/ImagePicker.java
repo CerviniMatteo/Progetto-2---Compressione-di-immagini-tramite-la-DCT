@@ -2,9 +2,9 @@ package com.example.GUI.UI;
 
 import com.example.GUI.observer.Observable;
 import com.example.GUI.utils.FilePickerUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -53,7 +53,7 @@ public class ImagePicker {
     /**
      * Logger for image picker events and errors.
      */
-    private static final Log log = LogFactory.getLog(ImagePicker.class);
+    private static final Logger log = LogManager.getLogger(ImagePicker.class);
 
     /**
      * Observable used to notify subscribers when an image is selected.

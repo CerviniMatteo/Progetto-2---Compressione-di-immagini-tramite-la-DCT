@@ -3,9 +3,9 @@ package com.example.assignment.launcher;
 import com.example.GUI.constants.GUIConstants;
 import com.example.assignment.Part1;
 import com.example.assignment.Part2;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class PartLauncher {
     private static volatile PartLauncher INSTANCE;
 
     /** Logger used to report benchmark lifecycle events. */
-    private final Log log = LogFactory.getLog(PartLauncher.class);
+    private static final Logger log = LogManager.getLogger(PartLauncher.class);
 
     /** Block sizes to benchmark (powers of 2). */
     private static final int[] BENCHMARK_BLOCK_SIZES = {
@@ -156,7 +156,7 @@ public class PartLauncher {
         );
 
         if (benchmarkCancelled.get()) {
-            log.info(LOG_BENCHMARK_CANCELLED);
+            log.error(LOG_BENCHMARK_CANCELLED);
             return null;
         }
 

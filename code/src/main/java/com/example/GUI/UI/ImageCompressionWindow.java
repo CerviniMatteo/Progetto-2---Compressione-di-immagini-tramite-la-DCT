@@ -7,9 +7,9 @@ import com.example.assignment.Part2;
 import com.example.GUI.constants.GUIConstants;
 import com.example.assignment.launcher.PartLauncher;
 import com.example.lib.utils.ImageUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -40,8 +40,8 @@ public class ImageCompressionWindow extends JFrame {
     /**
      * Logger for UI events and warnings.
      */
-    private static final Log log =
-            LogFactory.getLog(ImageCompressionWindow.class);
+    private static final Logger log =
+            LogManager.getLogger(ImageCompressionWindow.class);
 
     /**
      * Currently selected source image (kept as an unmodified copy).
@@ -173,7 +173,7 @@ public class ImageCompressionWindow extends JFrame {
                         log.info(String.format(GUIConstants.LOG_IMAGE_SELECTED,
                                 selectedImageName, selectedImage.getWidth(), selectedImage.getHeight()));
 
-                        ImagePreviewRenderer.getInstance().showImageAsync(originalBox, selectedImage, selectedImageName, log);
+                        ImagePreviewRenderer.getInstance().showImageAsync(originalBox, selectedImage, selectedImageName);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX + e.getMessage(), e);
@@ -235,8 +235,7 @@ public class ImageCompressionWindow extends JFrame {
                         ImagePreviewRenderer.getInstance().showImageAsync(
                                 compressedBox,
                                 compressed,
-                                outputName,
-                                log
+                                outputName
                         );
 
                     } catch (Exception e) {

@@ -1,8 +1,5 @@
 package com.example.GUI.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import static com.example.GUI.constants.PickerConstants.*;
 
 /**
@@ -19,7 +16,6 @@ import static com.example.GUI.constants.PickerConstants.*;
  */
 public class CompressionParametersValidator {
 
-    private static final Log log = LogFactory.getLog(CompressionParametersValidator.class);
 
     /**
      * Validates the input parameters against compression business rules.

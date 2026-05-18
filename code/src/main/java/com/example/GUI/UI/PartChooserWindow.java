@@ -5,8 +5,8 @@ import com.example.GUI.enums.PanelContrast;
 import com.example.GUI.constants.GUIConstants;
 import com.example.assignment.launcher.PartLauncher;
 import com.formdev.flatlaf.FlatDarkLaf;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -65,7 +65,7 @@ public class PartChooserWindow extends JFrame {
     private final AtomicBoolean benchmarkCancelled = new AtomicBoolean(false);
 
     /** Logger used to track UI actions and warnings. */
-    private static final Log log = LogFactory.getLog(PartChooserWindow.class);
+    private static final Logger log = LogManager.getLogger(PartChooserWindow.class);
 
     /**
      * Constructs and displays the part chooser window.

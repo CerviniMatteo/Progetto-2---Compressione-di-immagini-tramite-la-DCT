@@ -3,9 +3,9 @@ package com.example.GUI.UI;
 import com.example.GUI.observer.Observable;
 import com.example.GUI.utils.CompressionParametersValidator;
 import com.example.GUI.utils.DialogCreator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math3.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,7 +44,7 @@ public class CompressionCoefficientsPicker extends JFrame {
     /**
      * Logger for parameter picker events and validation errors.
      */
-    private static final Log log = LogFactory.getLog(CompressionCoefficientsPicker.class);
+    private static final Logger log = LogManager.getLogger(CompressionCoefficientsPicker.class);
 
     /**
      * Text field where the user enters the first integer {@code F}.

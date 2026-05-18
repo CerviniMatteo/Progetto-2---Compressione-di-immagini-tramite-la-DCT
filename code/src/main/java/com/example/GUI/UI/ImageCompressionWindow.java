@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutionException;
 
 import static com.example.GUI.factory.StylingFactory.*;
+import static com.example.GUI.constants.UIStyleConstants.*;
 
 /**
  * Main Swing window for the DCT image compression workflow.
@@ -91,56 +92,56 @@ public class ImageCompressionWindow extends JFrame {
      *
      * @return configured top panel
      */
-    private JPanel createTopPanel() {
-        JPanel topButtonsPanel = getStyledPanel(PanelContrast.HIGH);
-        topButtonsPanel.setLayout(new BorderLayout(15, 10));
-        topButtonsPanel.setBorder(new EmptyBorder(15, 20, 15, 20));
+     private JPanel createTopPanel() {
+         JPanel topButtonsPanel = getStyledPanel(PanelContrast.HIGH);
+         topButtonsPanel.setLayout(new BorderLayout(GAP_HORIZONTAL_STANDARD, GAP_VERTICAL_STANDARD));
+         topButtonsPanel.setBorder(new EmptyBorder(BORDER_TOP_TOP_CONTROLS, BORDER_LEFT_TOP_CONTROLS, BORDER_BOTTOM_TOP_CONTROLS, BORDER_RIGHT_TOP_CONTROLS));
 
-        // Title label
-        JLabel titleLabel = getStyledHeadingLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
+         // Title label
+         JLabel titleLabel = getStyledHeadingLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
 
-        // Buttons panel
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setBackground(new Color(30, 30, 30));
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
+         // Buttons panel
+         JPanel buttonsPanel = new JPanel();
+         buttonsPanel.setBackground(COLOR_DARK);
+         buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, GAP_HORIZONTAL_STANDARD, 0));
 
-        JButton chooseImageButton =
-                getStyledButton(GUIConstants.BUTTON_CHOOSE_IMAGE, ButtonStyle.STYLE2);
+         JButton chooseImageButton =
+                 getStyledButton(GUIConstants.BUTTON_CHOOSE_IMAGE, ButtonStyle.STYLE2);
 
-        JButton compressButton =
-                getStyledButton(GUIConstants.BUTTON_COMPRESS_IMAGE, ButtonStyle.STYLE3);
+         JButton compressButton =
+                 getStyledButton(GUIConstants.BUTTON_COMPRESS_IMAGE, ButtonStyle.STYLE3);
 
-        buttonsPanel.add(chooseImageButton);
-        buttonsPanel.add(compressButton);
+         buttonsPanel.add(chooseImageButton);
+         buttonsPanel.add(compressButton);
 
-        topButtonsPanel.add(titleLabel, BorderLayout.WEST);
-        topButtonsPanel.add(buttonsPanel, BorderLayout.EAST);
+         topButtonsPanel.add(titleLabel, BorderLayout.WEST);
+         topButtonsPanel.add(buttonsPanel, BorderLayout.EAST);
 
-        // Wire button actions
-        chooseImageButton.addActionListener(e -> handleChooseImage());
-        compressButton.addActionListener(e -> handleCompression());
+         // Wire button actions
+         chooseImageButton.addActionListener(e -> handleChooseImage());
+         compressButton.addActionListener(e -> handleCompression());
 
-        return topButtonsPanel;
-    }
+         return topButtonsPanel;
+     }
 
     /**
      * Creates the bottom panel with side-by-side image preview boxes.
      *
      * @return configured images panel
      */
-    private JPanel createImagesPanel() {
-        JPanel imagesPanel = getStyledPanel(PanelContrast.MEDIUM);
-        imagesPanel.setLayout(new GridLayout(1, 2, 30, 0));
-        imagesPanel.setBorder(new EmptyBorder(20, 25, 20, 25));
+     private JPanel createImagesPanel() {
+         JPanel imagesPanel = getStyledPanel(PanelContrast.MEDIUM);
+         imagesPanel.setLayout(new GridLayout(1, 2, GAP_GRID_COL_IMAGES, 0));
+         imagesPanel.setBorder(new EmptyBorder(BORDER_TOP_PANEL, BORDER_LEFT_PANEL, BORDER_BOTTOM_PANEL, BORDER_RIGHT_PANEL));
 
-        originalBox = createImageBox(GUIConstants.LABEL_ORIGINAL);
-        compressedBox = createImageBox(GUIConstants.LABEL_COMPRESSED);
+         originalBox = createImageBox(GUIConstants.LABEL_ORIGINAL);
+         compressedBox = createImageBox(GUIConstants.LABEL_COMPRESSED);
 
-        imagesPanel.add(originalBox);
-        imagesPanel.add(compressedBox);
+         imagesPanel.add(originalBox);
+         imagesPanel.add(compressedBox);
 
-        return imagesPanel;
-    }
+         return imagesPanel;
+     }
 
     /**
      * Handles the "Choose Image" button action.
@@ -271,31 +272,31 @@ public class ImageCompressionWindow extends JFrame {
      * @param title title displayed when no image preview is currently shown
      * @return configured preview panel
      */
-    private JPanel createImageBox(String title) {
+     private JPanel createImageBox(String title) {
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout(0, 15));
-        panel.setBackground(new Color(45, 45, 45));
-        panel.setBorder(new LineBorder(new Color(70, 130, 180), 2));
+         JPanel panel = new JPanel();
+         panel.setLayout(new BorderLayout(0, GAP_VERTICAL_IMAGE));
+         panel.setBackground(COLOR_MEDIUM_DARK);
+         panel.setBorder(new LineBorder(COLOR_STEELBLUE, BORDER_WIDTH_IMAGE_BOX));
 
-        // Title label with better styling
-        JLabel titleLabel = getStyledHeadingLabel(title);
-        titleLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 22));
+         // Title label with better styling
+         JLabel titleLabel = getStyledHeadingLabel(title);
+         titleLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_IMAGE_BOX_TITLE));
 
-        JPanel titleContainer = new JPanel();
-        titleContainer.setBackground(new Color(30, 30, 30));
-        titleContainer.setBorder(new EmptyBorder(10, 15, 10, 15));
-        titleContainer.add(titleLabel);
+         JPanel titleContainer = new JPanel();
+         titleContainer.setBackground(COLOR_DARK);
+         titleContainer.setBorder(new EmptyBorder(BORDER_TOP_TITLE, BORDER_LEFT_TITLE, BORDER_BOTTOM_TITLE, BORDER_RIGHT_TITLE));
+         titleContainer.add(titleLabel);
 
-        panel.add(titleContainer, BorderLayout.NORTH);
+         panel.add(titleContainer, BorderLayout.NORTH);
 
-        JLabel placeholderLabel = new JLabel(title, SwingConstants.CENTER);
-        placeholderLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 28));
-        placeholderLabel.setForeground(new Color(120, 120, 120));
+         JLabel placeholderLabel = new JLabel(title, SwingConstants.CENTER);
+         placeholderLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_PLACEHOLDER));
+         placeholderLabel.setForeground(COLOR_LIGHT_GRAY);
 
-        panel.add(placeholderLabel, BorderLayout.CENTER);
+         panel.add(placeholderLabel, BorderLayout.CENTER);
 
-        return panel;
-    }
+         return panel;
+     }
 
 }

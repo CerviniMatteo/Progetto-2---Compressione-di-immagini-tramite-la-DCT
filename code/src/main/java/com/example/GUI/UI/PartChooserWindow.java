@@ -16,6 +16,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import static com.example.GUI.constants.GUIConstants.LOG_PART1_SELECTED;
 import static com.example.GUI.constants.GUIConstants.LOG_PART2_SELECTED;
+import static com.example.GUI.constants.UIStyleConstants.*;
 import static com.example.GUI.factory.StylingFactory.*;
 import static com.example.assignment.constants.BenchmarkConstants.BENCHMARK_ERROR;
 
@@ -115,17 +116,17 @@ public class PartChooserWindow extends JFrame {
      */
     private JPanel createTitleSection() {
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(new Color(30, 30, 30));
+         JPanel panel = new JPanel();
+         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+         panel.setBackground(COLOR_DARK);
 
-        JLabel titleLabel = getStyledTitleLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+         JLabel titleLabel = getStyledTitleLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
+         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel descriptionLabel = getStyledLabel(GUIConstants.PART_CHOOSER_DESCRIPTION, SwingConstants.CENTER);
-        descriptionLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, 16));
-        descriptionLabel.setForeground(new Color(150, 150, 150));
-        descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+         JLabel descriptionLabel = getStyledLabel(GUIConstants.PART_CHOOSER_DESCRIPTION, SwingConstants.CENTER);
+         descriptionLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_FORM_LABEL));
+         descriptionLabel.setForeground(COLOR_GRAY_PLACEHOLDER);
+         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         panel.add(titleLabel);
         panel.add(Box.createVerticalStrut(10));
@@ -139,49 +140,49 @@ public class PartChooserWindow extends JFrame {
      *
      * @return configured button panel
      */
-    private JPanel createButtonPanel() {
+     private JPanel createButtonPanel() {
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(1, 2, 20, 0));
-        panel.setBackground(new Color(30, 30, 30));
+         JPanel panel = new JPanel();
+         panel.setLayout(new GridLayout(1, 2, GAP_GRID_COL_BUTTONS, 0));
+         panel.setBackground(COLOR_DARK);
 
-        part1Button        = getStyledButton(GUIConstants.PART1_BUTTON_HTML,          BUTTON_STYLE);
-        part2Button        = getStyledButton(GUIConstants.PART2_BUTTON_HTML,          BUTTON_STYLE);
-        endBenchmarkButton = getStyledButton(GUIConstants.STOP_BENCHMARK_BUTTON_HTML, RED_BUTTON_STYLE);
+         part1Button        = getStyledButton(GUIConstants.PART1_BUTTON_HTML,          BUTTON_STYLE);
+         part2Button        = getStyledButton(GUIConstants.PART2_BUTTON_HTML,          BUTTON_STYLE);
+         endBenchmarkButton = getStyledButton(GUIConstants.STOP_BENCHMARK_BUTTON_HTML, RED_BUTTON_STYLE);
 
-        Dimension buttonSize = new Dimension(250, 60);
-        part1Button.setPreferredSize(buttonSize);
-        part2Button.setPreferredSize(buttonSize);
-        endBenchmarkButton.setPreferredSize(buttonSize);
+         Dimension buttonSize = new Dimension(BUTTON_WIDTH_PART_CHOOSER, BUTTON_HEIGHT_PART_CHOOSER);
+         part1Button.setPreferredSize(buttonSize);
+         part2Button.setPreferredSize(buttonSize);
+         endBenchmarkButton.setPreferredSize(buttonSize);
 
-        endBenchmarkButton.addActionListener(e -> {
-            log.info(GUIConstants.LOG_BENCHMARK_THREAD_CANCELED);
-            benchmarkCancelled.set(true);
-            if (benchmarkWorker != null && !benchmarkWorker.isDone()) {
-                benchmarkWorker.cancel(true);
-            }
-        });
+         endBenchmarkButton.addActionListener(e -> {
+             log.info(GUIConstants.LOG_BENCHMARK_THREAD_CANCELED);
+             benchmarkCancelled.set(true);
+             if (benchmarkWorker != null && !benchmarkWorker.isDone()) {
+                 benchmarkWorker.cancel(true);
+             }
+         });
 
-        part1Button.addActionListener(e -> {
-            try {
-                handlePart1();
-            } catch (CancellationException ex) {
-                log.error(BENCHMARK_ERROR, ex);
-            }
-        });
+         part1Button.addActionListener(e -> {
+             try {
+                 handlePart1();
+             } catch (CancellationException ex) {
+                 log.error(BENCHMARK_ERROR, ex);
+             }
+         });
 
-        part2Button.addActionListener(e -> handlePart2());
+         part2Button.addActionListener(e -> handlePart2());
 
-        leftPanel = new JPanel();
-        leftPanel.setLayout(new BorderLayout(0, 10));
-        leftPanel.setBackground(new Color(30, 30, 30));
-        leftPanel.add(part1Button, BorderLayout.CENTER);
+         leftPanel = new JPanel();
+         leftPanel.setLayout(new BorderLayout(0, 10));
+         leftPanel.setBackground(COLOR_DARK);
+         leftPanel.add(part1Button, BorderLayout.CENTER);
 
-        panel.add(leftPanel);
-        panel.add(part2Button);
+         panel.add(leftPanel);
+         panel.add(part2Button);
 
-        return panel;
-    }
+         return panel;
+     }
 
     /**
      * Handles the Part 1 button action.

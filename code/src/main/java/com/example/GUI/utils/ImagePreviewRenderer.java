@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 import static com.example.GUI.factory.StylingFactory.getStyledLabel;
+import static com.example.GUI.constants.UIStyleConstants.*;
 
 /**
  * Singleton utility responsible for rendering image previews in Swing panels.
@@ -48,11 +49,11 @@ public final class ImagePreviewRenderer {
      * @param name base image name used for label and output file lookup
      * @param log logger used to report preview failures
      */
-    public void showImageAsync(JPanel box, BufferedImage image, String name, Log log) {
-        int boxW = Math.max(box.getWidth() - 40, 100);
-        int boxH = Math.max(box.getHeight() - 80, 80);
+     public void showImageAsync(JPanel box, BufferedImage image, String name, Log log) {
+         int boxW = Math.max(box.getWidth() - IMAGE_PREVIEW_PADDING, MIN_IMAGE_DIMENSION);
+         int boxH = Math.max(box.getHeight() - IMAGE_PREVIEW_TITLE_HEIGHT, MIN_IMAGE_DIMENSION);
 
-        new SwingWorker<PreviewData, Void>() {
+         new SwingWorker<PreviewData, Void>() {
             @Override
             protected PreviewData doInBackground() {
                 BufferedImage rgb = ImageUtils.toRgbImage(image);
@@ -94,29 +95,29 @@ public final class ImagePreviewRenderer {
         );
     }
 
-    private static JPanel createImageLabel(String name, Image scaled, String sizeText) {
-        JPanel container = new JPanel(new BorderLayout(0, 12));
-        container.setBackground(new Color(45, 45, 45));
-        container.setBorder(new EmptyBorder(15, 15, 15, 15));
+     private static JPanel createImageLabel(String name, Image scaled, String sizeText) {
+         JPanel container = new JPanel(new BorderLayout(0, GAP_VERTICAL_PREVIEW));
+         container.setBackground(COLOR_MEDIUM_DARK);
+         container.setBorder(new EmptyBorder(BORDER_TOP_PREVIEW, BORDER_LEFT_PREVIEW, BORDER_BOTTOM_PREVIEW, BORDER_RIGHT_PREVIEW));
 
-        JLabel titleLabel = getStyledLabel(name, SwingConstants.CENTER);
-        titleLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, 20));
-        titleLabel.setForeground(new Color(70, 130, 180));
+         JLabel titleLabel = getStyledLabel(name, SwingConstants.CENTER);
+         titleLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_PREVIEW_LABEL));
+         titleLabel.setForeground(COLOR_STEELBLUE);
 
-        JPanel imagePanel = new JPanel(new BorderLayout());
-        imagePanel.setBackground(Color.WHITE);
-        imagePanel.setBorder(new LineBorder(new Color(100, 100, 100), 1));
-        imagePanel.add(new JLabel(new ImageIcon(scaled), SwingConstants.CENTER), BorderLayout.CENTER);
+         JPanel imagePanel = new JPanel(new BorderLayout());
+         imagePanel.setBackground(Color.WHITE);
+         imagePanel.setBorder(new LineBorder(COLOR_GRAY_BORDER, BORDER_WIDTH_STANDARD));
+         imagePanel.add(new JLabel(new ImageIcon(scaled), SwingConstants.CENTER), BorderLayout.CENTER);
 
-        JLabel sizeLabel = getStyledLabel(sizeText, SwingConstants.CENTER);
-        sizeLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, 14));
-        sizeLabel.setForeground(new Color(150, 150, 150));
+         JLabel sizeLabel = getStyledLabel(sizeText, SwingConstants.CENTER);
+         sizeLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_SMALL));
+         sizeLabel.setForeground(COLOR_GRAY_PLACEHOLDER);
 
-        container.add(titleLabel, BorderLayout.NORTH);
-        container.add(imagePanel, BorderLayout.CENTER);
-        container.add(sizeLabel, BorderLayout.SOUTH);
+         container.add(titleLabel, BorderLayout.NORTH);
+         container.add(imagePanel, BorderLayout.CENTER);
+         container.add(sizeLabel, BorderLayout.SOUTH);
 
-        return container;
-    }
+         return container;
+     }
 }
 

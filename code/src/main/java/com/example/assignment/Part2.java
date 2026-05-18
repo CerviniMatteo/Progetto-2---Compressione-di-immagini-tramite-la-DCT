@@ -1,6 +1,5 @@
 package com.example.assignment;
 
-import com.example.lib.utils.UtilsConstants;
 import org.apache.commons.math3.util.Pair;
 import org.jtransforms.dct.DoubleDCT_2D;
 import java.awt.image.BufferedImage;
@@ -18,6 +17,11 @@ import static com.example.lib.utils.ImageUtils.*;
  * The compressed image is saved as BMP in {@code OUTPUT_PATH}.
  */
 public class Part2 {
+
+    /**
+     * Default relative output folder used by utility methods.
+     */
+    public static final String OUTPUT_PATH = "output/";
 
     /**
      * Compresses an image using block DCT with frequency truncation.
@@ -55,7 +59,7 @@ public class Part2 {
         }
 
         BufferedImage result = convertArrayToImage(compressedImage);
-        saveAsBMP(result, UtilsConstants.OUTPUT_PATH + imageInfo.getFirst());
+        saveAsBMP(result, OUTPUT_PATH + imageInfo.getFirst());
         return result;
     }
 

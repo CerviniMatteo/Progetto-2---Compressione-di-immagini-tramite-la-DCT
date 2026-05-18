@@ -19,6 +19,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ExecutionException;
 
 import static com.example.GUI.constants.PickerConstants.*;
+import static com.example.GUI.constants.UIStyleConstants.*;
 
 /**
  * A simple file/image picker UI that lets the user choose an image file and publishes
@@ -52,11 +53,6 @@ public class ImagePicker {
     // CONSTANTS
     // ========================================================
 
-    /** File chooser window width in pixels. */
-    private static final int FILE_CHOOSER_WIDTH = 512;
-
-    /** File chooser window height in pixels. */
-    private static final int FILE_CHOOSER_HEIGHT = 400;
 
     /**
      * Logger for image picker events and errors.
@@ -100,15 +96,15 @@ public class ImagePicker {
      * @see javax.swing.JFileChooser
      * @see javax.imageio.ImageIO
      */
-    public void showUI() {
-        log.debug(LOG_OPEN_FILE_CHOOSER);
-        Path currentDirectory = resolveInitialDirectory();
+     public void showUI() {
+         log.debug(LOG_OPEN_FILE_CHOOSER);
+         Path currentDirectory = resolveInitialDirectory();
 
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(currentDirectory.toFile());
-        fileChooser.setPreferredSize(new Dimension(FILE_CHOOSER_WIDTH, FILE_CHOOSER_HEIGHT));
+         JFileChooser fileChooser = new JFileChooser();
+         fileChooser.setCurrentDirectory(currentDirectory.toFile());
+         fileChooser.setPreferredSize(new Dimension(DIALOG_WIDTH_FILE_CHOOSER, DIALOG_HEIGHT_FILE_CHOOSER));
 
-        int result = fileChooser.showOpenDialog(null);
+         int result = fileChooser.showOpenDialog(null);
 
         if (result != JFileChooser.APPROVE_OPTION) {
             log.debug(LOG_FILE_CHOOSER_CANCELLED);

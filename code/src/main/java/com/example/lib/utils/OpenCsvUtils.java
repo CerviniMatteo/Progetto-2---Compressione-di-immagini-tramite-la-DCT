@@ -106,16 +106,16 @@ public class OpenCsvUtils {
     private static String[] buildHeader() {
         return new String[]{
                 BenchmarkConstants.CSV_HEADER_SIZE,
-                "Custom Avg (s)",
-                "Custom Min (s)",
-                "Custom Max (s)",
-                "Custom Sum (s)",
-                "Custom N",
-                "Library Avg (s)",
-                "Library Min (s)",
-                "Library Max (s)",
-                "Library Sum (s)",
-                "Library N",
+                BenchmarkConstants.CSV_HEADER_CUSTOM_AVG_SECONDS,
+                BenchmarkConstants.CSV_HEADER_CUSTOM_MIN_SECONDS,
+                BenchmarkConstants.CSV_HEADER_CUSTOM_MAX_SECONDS,
+                BenchmarkConstants.CSV_HEADER_CUSTOM_SUM_SECONDS,
+                BenchmarkConstants.CSV_HEADER_CUSTOM_N,
+                BenchmarkConstants.CSV_HEADER_LIBRARY_AVG_SECONDS,
+                BenchmarkConstants.CSV_HEADER_LIBRARY_MIN_SECONDS,
+                BenchmarkConstants.CSV_HEADER_LIBRARY_MAX_SECONDS,
+                BenchmarkConstants.CSV_HEADER_LIBRARY_SUM_SECONDS,
+                BenchmarkConstants.CSV_HEADER_LIBRARY_N,
                 BenchmarkConstants.CSV_HEADER_RATIO
         };
     }
@@ -156,11 +156,11 @@ public class OpenCsvUtils {
     private static String formatRatio(double ratio) {
         if (Double.isNaN(ratio) || ratio <= 0) return "";
         double percentageDifference = (1.0 / ratio - 1.0) * 100.0;
-        return String.format("%.2f%%", percentageDifference);
+        return String.format(BenchmarkConstants.PERCENTAGE_FORMAT, percentageDifference);
     }
 
     private static String formatSeconds(double seconds) {
-        return Double.isNaN(seconds) ? "" : String.format("%.9f", seconds);
+        return Double.isNaN(seconds) ? "" : String.format(BenchmarkConstants.TIME_FORMAT_HIGH_PRECISION, seconds);
     }
 
     private static void ensureParentDirectoryExists(String path) {

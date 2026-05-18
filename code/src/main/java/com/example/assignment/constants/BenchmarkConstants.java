@@ -15,7 +15,7 @@ package com.example.assignment.constants;
  * for shared benchmark-related string constants.
  * </p>
  */
-public class BenchmarkConstants {
+public final class BenchmarkConstants {
 
     public static final String BENCHMARK_ERROR = "Benchmark error";
 
@@ -119,6 +119,56 @@ public class BenchmarkConstants {
     public static final String CSV_HEADER_RATIO = "Custom slower than Lib (%)";
 
     /**
+     * CSV column name for the custom DCT average time.
+     */
+    public static final String CSV_HEADER_CUSTOM_AVG_SECONDS = "Custom Avg (s)";
+
+    /**
+     * CSV column name for the custom DCT minimum time.
+     */
+    public static final String CSV_HEADER_CUSTOM_MIN_SECONDS = "Custom Min (s)";
+
+    /**
+     * CSV column name for the custom DCT maximum time.
+     */
+    public static final String CSV_HEADER_CUSTOM_MAX_SECONDS = "Custom Max (s)";
+
+    /**
+     * CSV column name for the custom DCT sum time.
+     */
+    public static final String CSV_HEADER_CUSTOM_SUM_SECONDS = "Custom Sum (s)";
+
+    /**
+     * CSV column name for the custom DCT sample count.
+     */
+    public static final String CSV_HEADER_CUSTOM_N = "Custom N";
+
+    /**
+     * CSV column name for the library DCT average time.
+     */
+    public static final String CSV_HEADER_LIBRARY_AVG_SECONDS = "Library Avg (s)";
+
+    /**
+     * CSV column name for the library DCT minimum time.
+     */
+    public static final String CSV_HEADER_LIBRARY_MIN_SECONDS = "Library Min (s)";
+
+    /**
+     * CSV column name for the library DCT maximum time.
+     */
+    public static final String CSV_HEADER_LIBRARY_MAX_SECONDS = "Library Max (s)";
+
+    /**
+     * CSV column name for the library DCT sum time.
+     */
+    public static final String CSV_HEADER_LIBRARY_SUM_SECONDS = "Library Sum (s)";
+
+    /**
+     * CSV column name for the library DCT sample count.
+     */
+    public static final String CSV_HEADER_LIBRARY_N = "Library N";
+
+    /**
      * Log message used when creating a CSV file.
      * Placeholders represent the output path and number of entries.
      */
@@ -136,13 +186,31 @@ public class BenchmarkConstants {
     public static final String LOG_CSV_CREATED = "CSV file created successfully with %d rows";
 
     /**
+     * Log message printed after benchmark CSV export completes successfully.
+     */
+    public static final String LOG_CSV_EXPORTED_SUCCESSFULLY = "Benchmark CSV exported successfully to %s";
+
+    /**
      * Log message used when CSV creation fails.
      * The placeholder represents the target file path.
      */
     public static final String LOG_CSV_CREATE_FAILED = "Failed to create CSV file at %s";
 
-    /**
-     * Formatting pattern for time values written to CSV.
-     */
-    public static final String CSV_TIME_FORMAT = "%.6f";
+     /**
+      * Formatting pattern for time values written to CSV.
+      */
+     public static final String CSV_TIME_FORMAT = "%.6f";
+
+     /**
+      * Formatting pattern for time values with higher precision (9 decimal places).
+      * Used for detailed benchmark statistics display.
+      */
+     public static final String TIME_FORMAT_HIGH_PRECISION = "%.9f";
+
+     /**
+      * Formatting pattern for percentage values with 2 decimal places and percent sign.
+      * Used to display performance ratio comparisons.
+      */
+     public static final String PERCENTAGE_FORMAT = "%.2f%%";
+
 }

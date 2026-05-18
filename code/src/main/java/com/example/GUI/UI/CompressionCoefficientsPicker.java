@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import static com.example.GUI.factory.StylingFactory.*;
 import static com.example.GUI.constants.PickerConstants.*;
+import static com.example.GUI.constants.UIStyleConstants.*;
 
 /**
  * GUI component for collecting two integer parameters used by the application.
@@ -34,13 +35,6 @@ public class CompressionCoefficientsPicker extends JFrame {
     // ========================================================
     // CONSTANTS
     // ========================================================
-
-    /** Window width in pixels. */
-    private static final int WINDOW_WIDTH = 500;
-
-    /** Window height in pixels. */
-    private static final int WINDOW_HEIGHT = 300;
-
     /** Text field column count for integer input. */
     private static final int TEXT_FIELD_COLUMNS = 8;
 
@@ -81,12 +75,12 @@ public class CompressionCoefficientsPicker extends JFrame {
 
         super(COMPRESSION_FACTOR_PICKER);
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        setLayout(new BorderLayout(10, 10));
-        // Apply dark theme styling
-        styleFrame(this);
-        getContentPane().setBackground(new Color(30, 30, 30));
+         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+         setSize(WINDOW_WIDTH_PICKER, WINDOW_HEIGHT_PICKER);
+         setLayout(new BorderLayout(10, 10));
+         // Apply dark theme styling
+         styleFrame(this);
+         getContentPane().setBackground(COLOR_DARK);
 
         // Build UI in a separate panel class and reuse here
         CompressionCoefficientsPanel uiPanel = new CompressionCoefficientsPanel(TEXT_FIELD_COLUMNS);
@@ -175,29 +169,29 @@ public class CompressionCoefficientsPicker extends JFrame {
      *
      * @param message error message to display
      */
-    private void showErrorDialog(String message) {
-        JOptionPane optionPane = new JOptionPane(
-                message,
-                JOptionPane.ERROR_MESSAGE,
-                JOptionPane.DEFAULT_OPTION
-        );
+     private void showErrorDialog(String message) {
+         JOptionPane optionPane = new JOptionPane(
+                 message,
+                 JOptionPane.ERROR_MESSAGE,
+                 JOptionPane.DEFAULT_OPTION
+         );
 
-        JDialog dialog = optionPane.createDialog(this, com.example.GUI.constants.PickerConstants.ERROR);
-        dialog.setBackground(new Color(30, 30, 30));
-        
-        JPanel panel = (JPanel) dialog.getContentPane();
-        panel.setBackground(new Color(30, 30, 30));
-        
-        for (Component comp : panel.getComponents()) {
-            if (comp instanceof JPanel) {
-                comp.setBackground(new Color(30, 30, 30));
-            }
-            comp.setBackground(new Color(30, 30, 30));
-            comp.setForeground(Color.WHITE);
-        }
-        
-        dialog.setVisible(true);
-    }
+         JDialog dialog = optionPane.createDialog(this, com.example.GUI.constants.PickerConstants.ERROR);
+         dialog.setBackground(COLOR_DARK);
+
+         JPanel panel = (JPanel) dialog.getContentPane();
+         panel.setBackground(COLOR_DARK);
+
+         for (Component comp : panel.getComponents()) {
+             if (comp instanceof JPanel) {
+                 comp.setBackground(COLOR_DARK);
+             }
+             comp.setBackground(COLOR_DARK);
+             comp.setForeground(Color.WHITE);
+         }
+
+         dialog.setVisible(true);
+     }
 
     /**
      * Subscribe a consumer that will be notified when the user submits valid integers.

@@ -276,7 +276,7 @@ public class Part1 {
                     : BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH;
 
             OpenCsvUtils.createCSVFile(outputPath, results);
-            log.info(String.format("Benchmark CSV exported successfully to %s", outputPath));
+            log.info(String.format(BenchmarkConstants.LOG_CSV_EXPORTED_SUCCESSFULLY, outputPath));
         } catch (Exception e) {
             log.error(BenchmarkConstants.LOG_CSV_FAILED_PREFIX + e.getMessage(), e);
         }

@@ -8,7 +8,7 @@ package com.example.lib.utils;
  * and common log messages related to saving images.
  * </p>
  */
-public class UtilsConstants {
+public final class UtilsConstants {
 
     /**
      * File format name for bitmap images.
@@ -29,9 +29,4 @@ public class UtilsConstants {
      * Log message used when image saving fails.
      */
     public static final String SAVING_ERROR = "Failed to save image";
-
-    /**
-     * Default relative output folder used by utility methods.
-     */
-    public static final String OUTPUT_PATH = "output/";
 }

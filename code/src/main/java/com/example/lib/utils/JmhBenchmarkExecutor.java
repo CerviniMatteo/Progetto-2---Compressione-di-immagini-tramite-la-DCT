@@ -34,10 +34,10 @@ import java.util.function.Supplier;
 public class JmhBenchmarkExecutor implements BenchmarkExecutor {
 
     /** Default number of warmup iterations */
-    private static final int DEFAULT_WARMUP_ITERATIONS = 0;
+    private static final int DEFAULT_WARMUP_ITERATIONS = 3;
 
     /** Default number of measurement iterations */
-    private static final int DEFAULT_MEASUREMENT_ITERATIONS = 1;
+    private static final int DEFAULT_MEASUREMENT_ITERATIONS = 5;
 
     /**
      * Shared static volatile field used to pass the task factory to JMH worker threads.

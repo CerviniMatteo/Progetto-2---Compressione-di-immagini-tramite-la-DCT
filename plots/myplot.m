@@ -70,7 +70,25 @@ for k = 1:length(datasets)
             CSV.Properties.VariableNames{idx} = new_name;
         end
     end
-
+    %% =====================================================
+    % CONVERT CELL COLUMNS TO NUMERIC
+    %% =====================================================
+    
+    vars_to_convert = {
+        'n', ...
+        'my_avg', 'my_min', 'my_max', ...
+        'lib_avg', 'lib_min', 'lib_max'
+    };
+    
+    for i = 1:length(vars_to_convert)
+    
+        v = vars_to_convert{i};
+    
+        if iscell(CSV.(v))
+            CSV.(v) = str2double(CSV.(v));
+        end
+    end
+    
     %% =====================================================
     % CONVENIENCE VARIABLES
     %% =====================================================

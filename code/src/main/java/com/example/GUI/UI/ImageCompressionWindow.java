@@ -1,10 +1,8 @@
 package com.example.GUI.UI;
 
+import com.example.GUI.constants.GUIConstants;
 import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
-import com.example.GUI.utils.ImagePreviewRenderer;
-import com.example.assignment.Part2;
-import com.example.GUI.constants.GUIConstants;
 import com.example.assignment.launcher.PartsLauncher;
 import com.example.utils.ImageUtils;
 import org.apache.commons.math3.util.Pair;
@@ -13,63 +11,26 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.concurrent.ExecutionException;
 
-import static com.example.GUI.factory.StylingFactory.*;
 import static com.example.GUI.constants.UIStyleConstants.*;
-import static com.example.GUI.utils.FilePickerUtils.extractFilename;
+import static com.example.GUI.factory.StylingFactory.*;
 
-/**
- * Main Swing window for the DCT image compression workflow.
- * <p>This frame provides:</p>
- * <ul>
- *   <li>Controls to pick an image and trigger compression</li>
- *   <li>Side-by-side previews for original and compressed images</li>
- *   <li>Integration with {@link ImagePicker} and {@link CompressionCoefficientsPicker}</li>
- * </ul>
- * <p>
- * Compression is delegated to {@link Part2#compress(Pair, int, int)}.
- * The original selected image is preserved by compressing a deep copy.
- * </p>
- */
 public class ImageCompressionWindow extends JFrame {
 
-    /**
-     * Logger for UI events and warnings.
-     */
     private static final Logger log =
             LogManager.getLogger(ImageCompressionWindow.class);
 
-    /**
-     * Currently selected source image (kept as an unmodified copy).
-     */
     private BufferedImage selectedImage;
-
-    /**
-     * Base name of the selected image file (without extension).
-     */
     private String selectedImageName;
+    private File selectedImageFile;
 
-    /**
-     * Holds references to the preview boxes for updating after image operations.
-     */
-    private JPanel originalBox;
-    private JPanel compressedBox;
+    private ImageViewerPanel originalViewer;
+    private ImageViewerPanel compressedViewer;
 
-
-    /**
-     * Builds and displays the image compression window.
-     * <p>The constructor:</p>
-     * <ol>
-     *   <li>Creates top controls ("Choose Image" and "Compress Image")</li>
-     *   <li>Creates side-by-side preview boxes ("Original" and "Compressed")</li>
-     *   <li>Subscribes to image/parameter pickers</li>
-     *   <li>Wires compression action and UI updates</li>
-     * </ol>
-     */
     public ImageCompressionWindow() {
 
         super(GUIConstants.APP_TITLE);
@@ -79,208 +40,186 @@ public class ImageCompressionWindow extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JPanel topButtonsPanel = createTopPanel();
-        JPanel imagesPanel = createImagesPanel();
-
-        add(topButtonsPanel, BorderLayout.NORTH);
-        add(imagesPanel, BorderLayout.CENTER);
+        add(createTopPanel(), BorderLayout.NORTH);
+        add(createImagesPanel(), BorderLayout.CENTER);
 
         setVisible(true);
     }
 
-    /**
-     * Creates the top button panel with "Choose Image" and "Compress Image" controls.
-     *
-     * @return configured top panel
-     */
-     private JPanel createTopPanel() {
-         JPanel topButtonsPanel = getStyledPanel(PanelContrast.HIGH);
-         topButtonsPanel.setLayout(new BorderLayout(GAP_HORIZONTAL_STANDARD, GAP_VERTICAL_STANDARD));
-         topButtonsPanel.setBorder(new EmptyBorder(BORDER_TOP_TOP_CONTROLS, BORDER_LEFT_TOP_CONTROLS, BORDER_BOTTOM_TOP_CONTROLS, BORDER_RIGHT_TOP_CONTROLS));
+    private JPanel createTopPanel() {
+        JPanel topButtonsPanel = getStyledPanel(PanelContrast.HIGH);
+        topButtonsPanel.setLayout(new BorderLayout(GAP_HORIZONTAL_STANDARD, GAP_VERTICAL_STANDARD));
+        topButtonsPanel.setBorder(new EmptyBorder(BORDER_TOP_TOP_CONTROLS, BORDER_LEFT_TOP_CONTROLS, BORDER_BOTTOM_TOP_CONTROLS, BORDER_RIGHT_TOP_CONTROLS));
+        JLabel titleLabel = getStyledHeadingLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setBackground(COLOR_DARK);
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, GAP_HORIZONTAL_STANDARD, 0));
+        JButton chooseImageButton = getStyledButton(GUIConstants.BUTTON_CHOOSE_IMAGE, ButtonStyle.STYLE2);
+        JButton compressButton = getStyledButton(GUIConstants.BUTTON_COMPRESS_IMAGE, ButtonStyle.STYLE3);
+        buttonsPanel.add(chooseImageButton);
+        buttonsPanel.add(compressButton);
+        topButtonsPanel.add(titleLabel, BorderLayout.WEST);
+        topButtonsPanel.add(buttonsPanel, BorderLayout.EAST);
+        chooseImageButton.addActionListener(e -> handleChooseImage());
+        compressButton.addActionListener(e -> handleCompression());
+        return topButtonsPanel;
+    }
 
-         // Title label
-         JLabel titleLabel = getStyledHeadingLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
+    private JPanel createImagesPanel() {
 
-         // Buttons panel
-         JPanel buttonsPanel = new JPanel();
-         buttonsPanel.setBackground(COLOR_DARK);
-         buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, GAP_HORIZONTAL_STANDARD, 0));
+        JPanel imagesPanel = getStyledPanel(PanelContrast.MEDIUM);
 
-         JButton chooseImageButton =
-                 getStyledButton(GUIConstants.BUTTON_CHOOSE_IMAGE, ButtonStyle.STYLE2);
+        imagesPanel.setLayout(new GridBagLayout());
 
-         JButton compressButton =
-                 getStyledButton(GUIConstants.BUTTON_COMPRESS_IMAGE, ButtonStyle.STYLE3);
+        imagesPanel.setBorder(
+                new EmptyBorder(
+                        BORDER_TOP_PANEL,
+                        BORDER_LEFT_PANEL,
+                        BORDER_BOTTOM_PANEL,
+                        BORDER_RIGHT_PANEL
+                )
+        );
 
-         buttonsPanel.add(chooseImageButton);
-         buttonsPanel.add(compressButton);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+        gbc.weightx = 0.5;
 
-         topButtonsPanel.add(titleLabel, BorderLayout.WEST);
-         topButtonsPanel.add(buttonsPanel, BorderLayout.EAST);
+        // LEFT: original image
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-         // Wire button actions
-         chooseImageButton.addActionListener(e -> handleChooseImage());
-         compressButton.addActionListener(e -> handleCompression());
+        originalViewer = new ImageViewerPanel(GUIConstants.LABEL_ORIGINAL);
+        imagesPanel.add(originalViewer, gbc);
 
-         return topButtonsPanel;
-     }
+        // RIGHT: compressed image
+        gbc.gridx = 1;
+        gbc.gridy = 0;
 
-    /**
-     * Creates the bottom panel with side-by-side image preview boxes.
-     *
-     * @return configured images panel
-     */
-     private JPanel createImagesPanel() {
-         JPanel imagesPanel = getStyledPanel(PanelContrast.MEDIUM);
-         imagesPanel.setLayout(new GridLayout(1, 2, GAP_GRID_COL_IMAGES, 0));
-         imagesPanel.setBorder(new EmptyBorder(BORDER_TOP_PANEL, BORDER_LEFT_PANEL, BORDER_BOTTOM_PANEL, BORDER_RIGHT_PANEL));
+        compressedViewer = new ImageViewerPanel(GUIConstants.LABEL_COMPRESSED);
+        imagesPanel.add(compressedViewer, gbc);
 
-         originalBox = createImageBox(GUIConstants.LABEL_ORIGINAL);
-         compressedBox = createImageBox(GUIConstants.LABEL_COMPRESSED);
+        return imagesPanel;
+    }
 
-         imagesPanel.add(originalBox);
-         imagesPanel.add(compressedBox);
-
-         return imagesPanel;
-     }
-
-    /**
-     * Handles the "Choose Image" button action.
-     * <p>
-     * Creates an {@link ImagePicker} and subscribes to its image selection events.
-     * When an image is selected, stores a deep copy and displays it in the original box.
-     * </p>
-     */
     private void handleChooseImage() {
-        log.debug(GUIConstants.LOG_OPENING_IMAGE_PICKER);
+
         ImagePicker imagePicker = new ImagePicker();
 
+        /**
+         * IMPORTANT: now expecting Pair<File, BufferedImage>
+         */
         imagePicker.subscribe(pair -> {
-            String imageName = extractFilename(pair.getFirst());
+
+            File file = pair.getFirst();
+            BufferedImage img = pair.getSecond();
+
             new SwingWorker<BufferedImage, Void>() {
 
                 @Override
                 protected BufferedImage doInBackground() {
-                    return ImageUtils.copyBufferedImage(pair.getSecond());
+                    return ImageUtils.copyBufferedImage(img);
                 }
 
                 @Override
                 protected void done() {
                     try {
-                        selectedImageName = imageName;
+
+                        selectedImageFile = file;
+                        selectedImageName = file.getName();
                         selectedImage = get();
 
-                        log.info(GUIConstants.LOG_IMAGE_SELECTED,
-                                selectedImageName, selectedImage.getWidth(), selectedImage.getHeight());
+                        double sizeKb = file.length() / 1024.0;
 
-                        ImagePreviewRenderer.getInstance().showImageAsync(originalBox, selectedImage, selectedImageName);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX, e.getMessage(), e);
-                    } catch (ExecutionException e) {
-                        Throwable cause = e.getCause() != null ? e.getCause() : e;
-                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX, cause.getMessage(), cause);
+                        originalViewer.setImage(
+                                selectedImage,
+                                selectedImageName,
+                                sizeKb
+                        );
+
+                    } catch (Exception e) {
+                        log.error("Error loading image", e);
                     }
                 }
+
             }.execute();
         });
 
         imagePicker.showUI();
     }
 
-    /**
-     * Handles the "Compress Image" button action.
-     * <p>
-     * If an image is selected, creates an {@link CompressionCoefficientsPicker} and waits for compression
-     * parameters. Once received, compresses a copy of the original and displays the result.
-     * </p>
-     */
     private void handleCompression() {
+
         if (selectedImage == null) {
             log.warn(GUIConstants.LOG_COMPRESS_WITHOUT_IMAGE);
             return;
         }
 
-        log.debug(GUIConstants.LOG_OPENING_PARAMETERS_PICKER);
-        CompressionCoefficientsPicker integerPicker = new CompressionCoefficientsPicker(selectedImage.getWidth(), selectedImage.getHeight());
+        CompressionCoefficientsPicker picker =
+                new CompressionCoefficientsPicker(
+                        selectedImage.getWidth(),
+                        selectedImage.getHeight()
+                );
 
-        integerPicker.subscribe(pair -> {
-             int F = pair.getFirst();
-             int d = pair.getSecond();
+        picker.subscribe(pair -> {
 
-             log.info(GUIConstants.LOG_COMPRESSION_START, F, d);
-            BufferedImage sourceImage = selectedImage;
-            String outputName = selectedImageName + GUIConstants.COMPRESSED_SUFFIX;
+            int F = pair.getFirst();
+            int d = pair.getSecond();
+
+            String outputName =
+                    selectedImageName + GUIConstants.COMPRESSED_SUFFIX;
 
             new SwingWorker<BufferedImage, Void>() {
 
                 @Override
                 protected BufferedImage doInBackground() {
-                    BufferedImage selectedCopy = ImageUtils.copyBufferedImage(sourceImage);
-                    return PartsLauncher.getInstance().launchPart2(F, d, new Pair<>(outputName, selectedCopy));
+
+                    return PartsLauncher
+                            .getInstance()
+                            .launchPart2(
+                                    F,
+                                    d,
+                                    new Pair<>(
+                                            outputName,
+                                            ImageUtils.copyBufferedImage(selectedImage)
+                                    )
+                            );
                 }
 
                 @Override
                 protected void done() {
+
                     try {
+
                         BufferedImage compressed = get();
 
-                        log.info(GUIConstants.LOG_COMPRESSION_DONE,
-                                outputName,
-                                compressed.getWidth(),
-                                compressed.getHeight());
+                        File outFile = new File(
+                                GUIConstants.OUTPUT_DIR_NAME
+                                        + File.separator
+                                        + outputName
+                                        + GUIConstants.FILE_EXTENSION_BMP
+                        );
 
-                        ImagePreviewRenderer.getInstance().showImageAsync(
-                                compressedBox,
+                        double sizeKb = outFile.length() / 1024.0;
+
+                        compressedViewer.setImage(
                                 compressed,
-                                outputName
+                                outputName,
+                                sizeKb
                         );
 
                     } catch (Exception e) {
-                        log.error(GUIConstants.LOG_COMPRESSION_FAILED_PREFIX, e.getMessage(), e);
+                        log.error(
+                                GUIConstants.LOG_COMPRESSION_FAILED_PREFIX,
+                                e.getMessage(),
+                                e
+                        );
                     }
                 }
+
             }.execute();
         });
 
-        integerPicker.showUI();
+        picker.showUI();
     }
-
-    // ==================================================
-    // IMAGE BOX
-    // ==================================================
-
-    /**
-     * Creates a stylized panel used as an image preview box.
-     *
-     * @param title title displayed when no image preview is currently shown
-     * @return configured preview panel
-     */
-     private JPanel createImageBox(String title) {
-
-         JPanel panel = new JPanel();
-         panel.setLayout(new BorderLayout(0, GAP_VERTICAL_IMAGE));
-         panel.setBackground(COLOR_MEDIUM_DARK);
-         panel.setBorder(new LineBorder(COLOR_STEELBLUE, BORDER_WIDTH_IMAGE_BOX));
-
-         // Title label with better styling
-         JLabel titleLabel = getStyledHeadingLabel(title);
-         titleLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_IMAGE_BOX_TITLE));
-
-         JPanel titleContainer = new JPanel();
-         titleContainer.setBackground(COLOR_DARK);
-         titleContainer.setBorder(new EmptyBorder(BORDER_TOP_TITLE, BORDER_LEFT_TITLE, BORDER_BOTTOM_TITLE, BORDER_RIGHT_TITLE));
-         titleContainer.add(titleLabel);
-
-         panel.add(titleContainer, BorderLayout.NORTH);
-
-         JLabel placeholderLabel = new JLabel(title, SwingConstants.CENTER);
-         placeholderLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.BOLD, FONT_SIZE_PLACEHOLDER));
-         placeholderLabel.setForeground(COLOR_LIGHT_GRAY);
-
-         panel.add(placeholderLabel, BorderLayout.CENTER);
-
-         return panel;
-     }
-
 }

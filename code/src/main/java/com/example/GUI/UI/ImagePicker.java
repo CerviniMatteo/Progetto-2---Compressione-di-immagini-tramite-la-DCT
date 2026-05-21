@@ -77,11 +77,6 @@ public class ImagePicker {
                 log.debug(LOG_IMAGE_LOADED, image.getWidth(), image.getHeight());
 
                 FilePickerUtils.copyToOutputDirectory(file);
-
-                /**
-                 * IMPORTANT CHANGE:
-                 * we pass the REAL file, not just its name
-                 */
                 return new Pair<>(file, image);
             }
 

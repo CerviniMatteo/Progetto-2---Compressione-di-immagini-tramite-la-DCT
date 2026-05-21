@@ -1,20 +1,10 @@
 package com.example.GUI.UI;
-import com.example.GUI.UI.ScalableImagePanel;
-import com.example.GUI.constants.GUIConstants;
-import com.example.GUI.enums.ButtonStyle;
-import com.example.GUI.enums.PanelContrast;
-import com.example.assignment.launcher.PartsLauncher;
-import com.example.utils.ImageUtils;
-import org.apache.commons.math3.util.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ExecutionException;
 public class ImageViewerPanel extends JPanel {
 
     private final JLabel titleLabel;

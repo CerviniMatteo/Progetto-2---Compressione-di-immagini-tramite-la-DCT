@@ -14,7 +14,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.concurrent.ExecutionException;
 
 import static com.example.GUI.constants.UIStyleConstants.*;
 import static com.example.GUI.factory.StylingFactory.*;
@@ -127,7 +126,6 @@ public class ImageCompressionWindow extends JFrame {
 
                         selectedImageFile = file;
                         selectedImageName = file.getName();
-                        selectedImage = get();
 
                         double sizeKb = file.length() / 1024.0;
 

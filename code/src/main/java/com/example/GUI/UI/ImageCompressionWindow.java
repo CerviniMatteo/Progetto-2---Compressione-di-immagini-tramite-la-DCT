@@ -126,7 +126,7 @@ public class ImageCompressionWindow extends JFrame {
 
                         selectedImageFile = file;
                         selectedImageName = file.getName();
-
+                        selectedImage = get();
                         double sizeKb = file.length() / 1024.0;
 
                         originalViewer.setImage(

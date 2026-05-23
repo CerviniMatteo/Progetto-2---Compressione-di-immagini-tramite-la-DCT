@@ -46,16 +46,8 @@ for k = 1:length(datasets)
         'Size',                    'n';
     
         'CustomAvg_s_',           'my_avg';
-        'CustomMin_s_',           'my_min';
-        'CustomMax_s_',           'my_max';
-        'CustomSum_s_',           'my_sum';
-        'CustomN',                'my_n';
-    
+
         'LibraryAvg_s_',          'lib_avg';
-        'LibraryMin_s_',          'lib_min';
-        'LibraryMax_s_',          'lib_max';
-        'LibrarySum_s_',          'lib_sum';
-        'LibraryN',               'lib_n';
     
         'CustomSlowerThanLib___', 'pct_slower';
     };
@@ -95,12 +87,10 @@ for k = 1:length(datasets)
     n       = CSV.n;
 
     my_avg  = CSV.my_avg;
-    my_min  = CSV.my_min;
-    my_max  = CSV.my_max;
+
 
     lib_avg = CSV.lib_avg;
-    lib_min = CSV.lib_min;
-    lib_max = CSV.lib_max;
+
 
     %% =====================================================
     % COMMON GRAPH VARIABLES

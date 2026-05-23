@@ -27,3 +27,17 @@ Thumbs.db
 # Maven / Gradle
 .gradle/
 gradle-wrapper.jar
+
+*.aux
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.out
+*.synctex.gz
+*.synctex.*
+*.toc
+
+.vs/
+.vscode/
+

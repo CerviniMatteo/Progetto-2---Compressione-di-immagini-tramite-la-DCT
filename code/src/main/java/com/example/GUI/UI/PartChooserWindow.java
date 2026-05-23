@@ -66,7 +66,6 @@ public class PartChooserWindow extends JFrame {
 
     /** Logger used to track UI actions and warnings. */
     private static final Logger log = LogManager.getLogger(PartChooserWindow.class);
-
     /**
      * Constructs and displays the part chooser window.
      */
@@ -201,17 +200,16 @@ public class PartChooserWindow extends JFrame {
             @Override
             protected Void doInBackground() throws Exception {
                 PartsLauncher partsLauncher = PartsLauncher.getInstance(benchmarkCancelled);
-                return partsLauncher.launchAndHandlePart1();
+                partsLauncher.launchAndHandlePart1();
+                return null;
             }
 
             @Override
             protected void done() {
                 try {
                     get();
-                } catch (CancellationException ignored) {
-                     // Cancellation is expected if the user stops the benchmark, so we ignore it here
-                } catch (Exception e) {
-                    log.error(BENCHMARK_ERROR, e);
+                } catch (Exception ignored) {
+                    // Cancellation or other errors are expected
                 }
                 leftPanel.remove(endBenchmarkButton);
                 leftPanel.revalidate();

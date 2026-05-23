@@ -139,14 +139,14 @@ public class Part1 {
                 log.debug(LogConstants.LOG_BENCHMARK_SIZE, n, n);
                 double[][] matrix = (double[][]) matrices.get(iterator++);
 
-                Statistics myTime = benchmarkCustomDCT(dct, matrix, doWarmUp, isCancelled);
+                double myTime = benchmarkCustomDCT(dct, matrix, doWarmUp, isCancelled);
 
                 if (isCancelled.get()) {
                     log.info(LOG_BENCHMARK_CANCELLED);
                     return;
                 }
 
-                Statistics libTime = benchmarkLibraryDCT(n, matrix, doWarmUp, isCancelled);
+                double libTime = benchmarkLibraryDCT(n, matrix, doWarmUp, isCancelled);
 
                 BenchmarkMeasurement measurement = new BenchmarkMeasurement(n, myTime, libTime);
                 results.add(measurement);
@@ -154,8 +154,7 @@ public class Part1 {
                 log.info(LogConstants.LOG_RESULT_ROW,
                         measurement.size(),
                         String.format(BenchmarkConstants.TIME_FORMAT_HIGH_PRECISION, measurement.customMeanSeconds()),
-                        String.format(BenchmarkConstants.TIME_FORMAT_HIGH_PRECISION, measurement.libraryMeanSeconds()),
-                        String.format(BenchmarkConstants.PERCENTAGE_FORMAT, measurement.ratioOnMean()));
+                        String.format(BenchmarkConstants.TIME_FORMAT_HIGH_PRECISION, measurement.libraryMeanSeconds()));
             }
 
             log.info(LogConstants.LOG_BENCHMARK_DONE, results.size());
@@ -186,7 +185,7 @@ public class Part1 {
      * @return the full JMH {@link Statistics} summary for the custom implementation
      * @throws Exception if benchmark execution fails or is canceled
      */
-    private Statistics benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp,
+    private double benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp,
                                       Supplier<Boolean> isCancelled) throws Exception {
         log.debug(LogConstants.LOG_MEASURE_CUSTOM, matrix.length);
         SimpleMatrix simpleMatrix = new SimpleMatrix(matrix);
@@ -194,8 +193,7 @@ public class Part1 {
             if (isCancelled.get()) {
                 throw new CancellationException(BENCHMARK_CANCELLED_BY_USER);
             }
-            dct.forward(simpleMatrix);
-            return null;
+            return dct.forward(simpleMatrix);
         }, doWarmUp);
     }
 
@@ -224,7 +222,7 @@ public class Part1 {
      * @return the full JMH {@link Statistics} summary for the library implementation
      * @throws Exception if benchmark execution fails or is canceled
      */
-    private Statistics benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp,
+    private double benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp,
                                            Supplier<Boolean> isCancelled) throws Exception {
         log.debug(LogConstants.LOG_MEASURE_LIBRARY, n);
         DoubleDCT_2D libLocal = new DoubleDCT_2D(n, n);

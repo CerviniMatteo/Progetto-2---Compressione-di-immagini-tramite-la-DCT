@@ -5,6 +5,7 @@ import com.example.GUI.enums.ButtonStyle;
 import com.example.GUI.enums.PanelContrast;
 import com.example.assignment.launcher.PartsLauncher;
 import com.example.utils.ImageUtils;
+import com.example.utils.SwingWorkerHelper;
 import org.apache.commons.math3.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,8 @@ import static com.example.GUI.factory.StylingFactory.*;
 
 public class ImageCompressionWindow extends JFrame {
 
-    private static final Logger log =
-            LogManager.getLogger(ImageCompressionWindow.class);
+    private static final Logger log = LogManager.getLogger(ImageCompressionWindow.class);
+
 
     private BufferedImage selectedImage;
     private String selectedImageName;
@@ -105,42 +106,26 @@ public class ImageCompressionWindow extends JFrame {
 
         ImagePicker imagePicker = new ImagePicker();
 
-        /**
-         * IMPORTANT: now expecting Pair<File, BufferedImage>
-         */
         imagePicker.subscribe(pair -> {
 
             File file = pair.getFirst();
             BufferedImage img = pair.getSecond();
 
-            new SwingWorker<BufferedImage, Void>() {
+            new SwingWorkerHelper<>(() -> ImageUtils.copyBufferedImage(img))
+                .onSuccess(copiedImage -> {
+                    selectedImageFile = file;
+                    selectedImageName = file.getName();
+                    selectedImage = copiedImage;
+                    double sizeKb = file.length() / 1024.0;
 
-                @Override
-                protected BufferedImage doInBackground() {
-                    return ImageUtils.copyBufferedImage(img);
-                }
-
-                @Override
-                protected void done() {
-                    try {
-
-                        selectedImageFile = file;
-                        selectedImageName = file.getName();
-                        selectedImage = get();
-                        double sizeKb = file.length() / 1024.0;
-
-                        originalViewer.setImage(
-                                selectedImage,
-                                selectedImageName,
-                                sizeKb
-                        );
-
-                    } catch (Exception e) {
-                        log.error("Error loading image", e);
-                    }
-                }
-
-            }.execute();
+                    originalViewer.setImage(
+                            selectedImage,
+                            selectedImageName,
+                            sizeKb
+                    );
+                })
+                .onError(e -> log.error("Error loading image", e))
+                .execute();
         });
 
         imagePicker.showUI();
@@ -167,55 +152,40 @@ public class ImageCompressionWindow extends JFrame {
             String outputName =
                     selectedImageName + GUIConstants.COMPRESSED_SUFFIX;
 
-            new SwingWorker<BufferedImage, Void>() {
+            new SwingWorkerHelper<>(() ->
+                PartsLauncher
+                    .getInstance()
+                    .launchPart2(
+                        F,
+                        d,
+                        new Pair<>(
+                            outputName,
+                            ImageUtils.copyBufferedImage(selectedImage)
+                        )
+                    )
+            )
+            .onSuccess(compressed -> {
+                File outFile = new File(
+                        GUIConstants.OUTPUT_DIR_NAME
+                                + File.separator
+                                + outputName
+                                + GUIConstants.FILE_EXTENSION_BMP
+                );
 
-                @Override
-                protected BufferedImage doInBackground() {
+                double sizeKb = outFile.length() / 1024.0;
 
-                    return PartsLauncher
-                            .getInstance()
-                            .launchPart2(
-                                    F,
-                                    d,
-                                    new Pair<>(
-                                            outputName,
-                                            ImageUtils.copyBufferedImage(selectedImage)
-                                    )
-                            );
-                }
-
-                @Override
-                protected void done() {
-
-                    try {
-
-                        BufferedImage compressed = get();
-
-                        File outFile = new File(
-                                GUIConstants.OUTPUT_DIR_NAME
-                                        + File.separator
-                                        + outputName
-                                        + GUIConstants.FILE_EXTENSION_BMP
-                        );
-
-                        double sizeKb = outFile.length() / 1024.0;
-
-                        compressedViewer.setImage(
-                                compressed,
-                                outputName,
-                                sizeKb
-                        );
-
-                    } catch (Exception e) {
-                        log.error(
-                                GUIConstants.LOG_COMPRESSION_FAILED_PREFIX,
-                                e.getMessage(),
-                                e
-                        );
-                    }
-                }
-
-            }.execute();
+                compressedViewer.setImage(
+                        compressed,
+                        outputName,
+                        sizeKb
+                );
+            })
+            .onError(e -> log.error(
+                    GUIConstants.LOG_COMPRESSION_FAILED_PREFIX,
+                    e.getMessage(),
+                    e
+            ))
+            .execute();
         });
 
         picker.showUI();

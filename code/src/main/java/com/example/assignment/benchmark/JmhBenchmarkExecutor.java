@@ -7,7 +7,6 @@ import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.util.Statistics;
 
 import java.util.Collection;
 import java.util.concurrent.CancellationException;
@@ -122,7 +121,7 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
      * @throws Exception             if the benchmark execution fails for another reason
      */
     @Override
-    public Statistics run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception {
+    public double run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception {
 
         Options opt = new OptionsBuilder()
                 .include(String.format(BenchmarkConstants.JMH_BENCHMARK_INCLUDE_TEMPLATE, BenchmarkRunner.class.getSimpleName()))
@@ -145,6 +144,6 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
 
         // JMH score is in microseconds (per @OutputTimeUnit(TimeUnit.MICROSECONDS))
         // Convert to seconds for consistency
-        return results.iterator().next().getPrimaryResult().getStatistics();
+        return results.iterator().next().getPrimaryResult().getScore();
     }
 }

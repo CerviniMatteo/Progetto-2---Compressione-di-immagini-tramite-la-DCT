@@ -28,6 +28,7 @@ public class FilePickerUtils {
 
     private static final Logger log = LogManager.getLogger(FilePickerUtils.class);
 
+
     /**
      * Resolves the initial directory for the file chooser.
      * <p>
@@ -98,18 +99,8 @@ public class FilePickerUtils {
         Path target = outputDir.resolve(file.getName());
         Files.copy(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
         log.debug(LOG_FILE_COPIED, target.toAbsolutePath());
-    }
+     }
 
 
-    /**
-     * Extracts the base filename without extension.
-     *
-     * @param filenameWithExtension full filename (e.g., "image.bmp")
-     * @return filename without extension (e.g., "image")
-     */
-    public static String extractFilename(String filenameWithExtension) {
-        int dotIndex = filenameWithExtension.lastIndexOf('.');
-        return dotIndex > 0 ? filenameWithExtension.substring(0, dotIndex) : filenameWithExtension;
-    }
 }
 

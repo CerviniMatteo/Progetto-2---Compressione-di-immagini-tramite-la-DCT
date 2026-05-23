@@ -47,11 +47,11 @@ public class Part2 {
         int cols = signal[0].length - signal[0].length % F;
 
         double[][] compressedImage = new double[rows][cols];
-
+        // cut image
         for (int i = 0; i < rows; i ++) {
             System.arraycopy(signal[i], 0, compressedImage[i], 0, cols);
         }
-
+        //compress blocks
         for (int i = 0; i < rows; i += F) {
             for (int j = 0; j < cols; j += F) {
                 compressBlock(compressedImage, i, j, F, d);
@@ -85,13 +85,13 @@ public class Part2 {
         double[][] block = new double[F][F];
 
         DoubleDCT_2D dct = new DoubleDCT_2D(F, F);
-
+        // copy block
         for (int k = 0; k < F; k++) {
             System.arraycopy(signal[i + k], j, block[k], 0, F);
         }
-
+        // calculate DCT2
         dct.forward(block, true);
-
+        // cut frequencies
         for (int k = 0; k < F; k++) {
             for (int l = 0; l < F; l++) {
                 if (k + l >= d) {
@@ -99,9 +99,9 @@ public class Part2 {
                 }
             }
         }
-
+        // calculate IDCT2
         dct.inverse(block, true);
-
+        // shift into bitmap domain
         shiftBlockBy255(block);
 
         for (int k = 0; k < F; k++) {

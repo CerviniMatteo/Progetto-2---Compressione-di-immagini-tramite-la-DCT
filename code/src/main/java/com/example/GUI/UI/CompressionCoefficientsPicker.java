@@ -40,7 +40,6 @@ public class CompressionCoefficientsPicker extends JFrame {
     /** Text field column count for integer input. */
     private static final int TEXT_FIELD_COLUMNS = 8;
 
-
     /**
      * Logger for parameter picker events and validation errors.
      */
@@ -100,6 +99,19 @@ public class CompressionCoefficientsPicker extends JFrame {
         log.debug(LOG_INTEGER_PICKER_INITIALIZED);
     }
 
+    /**
+     * Show an error dialog and log the error.
+     *
+     * @param parentComponent the parent component
+     * @param title the dialog title
+     * @param message the error message
+     */
+    public static void showErrorDialog(Component parentComponent, String title, String message) {
+        log.warn(message);
+        JDialog dialog = DialogCreator.createErrorDialog((JFrame) parentComponent, title, message);
+        dialog.setVisible(true);
+    }
+
 
     /**
      * Read, validate and publish the integers entered in the UI.
@@ -116,43 +128,32 @@ public class CompressionCoefficientsPicker extends JFrame {
      *                                  Note: this exception is caught within the method and presented to the user
      *                                  as an error dialog (see {@link javax.swing.JOptionPane}).
      */
-     private void submit(int cols, int rows) {
-         try {
-             String fText = firstField.getText().trim();
-             String dText = secondField.getText().trim();
+      private void submit(int cols, int rows) {
+          try {
+              String fText = firstField.getText().trim();
+              String dText = secondField.getText().trim();
 
-             log.debug(LOG_PARSE_INPUTS, fText, dText);
+              log.debug(LOG_PARSE_INPUTS, fText, dText);
 
-             int F = Integer.parseInt(fText);
-             int d = Integer.parseInt(dText);
+              int F = Integer.parseInt(fText);
+              int d = Integer.parseInt(dText);
 
-             log.debug(LOG_PARSED_INPUTS, F, d);
+              log.debug(LOG_PARSED_INPUTS, F, d);
 
-             CompressionParametersValidator.validateInputs(F, d, rows, cols);
+              CompressionParametersValidator.validateInputs(F, d, rows, cols);
 
-             log.info(LOG_VALIDATION_SUCCESS, F, d);
+              log.info(LOG_VALIDATION_SUCCESS, F, d);
 
-             observable.set(new Pair<>(F, d));
-             dispose();
+              observable.set(new Pair<>(F, d));
+              dispose();
 
-         } catch (NumberFormatException e) {
-             log.warn(INVALID_INTEGER_INPUT_ERROR);
-             showErrorDialog(INVALID_INTEGER_INPUT_ERROR);
-         } catch (IllegalArgumentException ex) {
-             log.warn(LOG_VALIDATION_FAILED_PREFIX + ex.getMessage());
-             showErrorDialog(ex.getMessage());
-         }
-     }
-
-
-     /**
-      * Displays an error dialog to the user with dark theme styling.
-      *
-      * @param message error message to display
-      */
-      private void showErrorDialog(String message) {
-          JDialog dialog = DialogCreator.createErrorDialog(this, com.example.GUI.constants.PickerConstants.ERROR, message);
-          dialog.setVisible(true);
+          } catch (NumberFormatException e) {
+              log.warn(INVALID_INTEGER_INPUT_ERROR);
+              showErrorDialog(this, "Error", INVALID_INTEGER_INPUT_ERROR);
+          } catch (IllegalArgumentException ex) {
+              log.warn(LOG_VALIDATION_FAILED_PREFIX + ex.getMessage());
+              showErrorDialog(this, "Error", ex.getMessage());
+          }
       }
 
     /**

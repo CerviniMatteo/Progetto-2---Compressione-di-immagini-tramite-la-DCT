@@ -2,6 +2,7 @@ package com.example.GUI.UI;
 
 import com.example.GUI.observer.Observable;
 import com.example.GUI.utils.FilePickerUtils;
+import com.example.utils.SwingWorkerHelper;
 import org.apache.commons.math3.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,15 +13,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
 
 import static com.example.GUI.constants.PickerConstants.*;
 import static com.example.GUI.constants.UIStyleConstants.*;
 
 public class ImagePicker {
 
-    private static final Logger log =
-            LogManager.getLogger(ImagePicker.class);
+    private static final Logger log = LogManager.getLogger(ImagePicker.class);
 
     /**
      * NOW: File + BufferedImage instead of String + BufferedImage
@@ -60,69 +59,33 @@ public class ImagePicker {
     }
 
     private void handleImageSelectionAsync(File file) {
-
-        new SwingWorker<Pair<File, BufferedImage>, Void>() {
-
-            @Override
-            protected Pair<File, BufferedImage> doInBackground() throws Exception {
-
+        new SwingWorkerHelper<>(() -> {
+            try {
                 log.debug(LOG_READING_IMAGE, file.getAbsolutePath());
 
                 BufferedImage image = ImageIO.read(file);
-
                 if (image == null) {
                     return null;
                 }
 
                 log.debug(LOG_IMAGE_LOADED, image.getWidth(), image.getHeight());
-
                 FilePickerUtils.copyToOutputDirectory(file);
+
                 return new Pair<>(file, image);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        })
+        .onSuccess(result -> {
+            if (result == null) {
+                log.warn(LOG_UNREADABLE_IMAGE, file.getName());
+                return;
             }
 
-            @Override
-            protected void done() {
-
-                try {
-
-                    Pair<File, BufferedImage> result = get();
-
-                    if (result == null) {
-                        log.warn(LOG_UNREADABLE_IMAGE, file.getName());
-                        return;
-                    }
-
-                    observable.set(result);
-
-                    log.info(LOG_IMAGE_PUBLISHED, file.getName());
-
-                } catch (InterruptedException e) {
-
-                    Thread.currentThread().interrupt();
-
-                    log.error(
-                            LOG_IMAGE_READ_FAILED,
-                            file.getAbsolutePath(),
-                            e.getMessage(),
-                            e
-                    );
-
-                } catch (ExecutionException e) {
-
-                    Throwable cause =
-                            e.getCause() != null
-                                    ? e.getCause()
-                                    : e;
-
-                    log.error(
-                            LOG_IMAGE_READ_FAILED,
-                            file.getAbsolutePath(),
-                            cause.getMessage(),
-                            cause
-                    );
-                }
-            }
-
-        }.execute();
+            observable.set(result);
+            log.info(LOG_IMAGE_PUBLISHED, file.getName());
+        })
+        .onError(e -> log.error(LOG_IMAGE_READ_FAILED, file.getAbsolutePath(), e.getMessage(), e))
+        .execute();
     }
 }

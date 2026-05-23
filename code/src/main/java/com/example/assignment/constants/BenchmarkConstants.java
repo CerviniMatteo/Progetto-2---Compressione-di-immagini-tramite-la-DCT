@@ -46,11 +46,8 @@ public final class BenchmarkConstants {
       * Formatting pattern for time values with higher precision (9 decimal places).
       * Used for detailed benchmark statistics display.
       */
-     public static final String TIME_FORMAT_HIGH_PRECISION = "%.9f";
+    public static final String TIME_FORMAT_HIGH_PRECISION = "%.9f";
 
-     /**
-      * Formatting pattern for percentage values with 2 decimal places and percent sign.
-      * Used to display performance ratio comparisons.
-      */
-     public static final String PERCENTAGE_FORMAT = "%.2f%%";
+
+
 }

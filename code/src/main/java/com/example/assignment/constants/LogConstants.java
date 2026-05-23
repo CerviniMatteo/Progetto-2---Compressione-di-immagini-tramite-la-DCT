@@ -29,7 +29,7 @@ public class LogConstants {
      *   <li>ratio between library and custom time</li>
      * </ul>
      */
-    public static final String LOG_RESULT_ROW = "N={} | MyDCT: {} s | LibDCT: {} s | Ratio: {}x";
+    public static final String LOG_RESULT_ROW = "N={} | MyDCT: {} s | LibDCT: {} s";
     /**
      * Log message printed after all benchmark sizes have been processed.
      */

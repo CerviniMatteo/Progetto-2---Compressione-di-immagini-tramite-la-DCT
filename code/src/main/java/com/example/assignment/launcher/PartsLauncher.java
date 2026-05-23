@@ -124,11 +124,10 @@ public class PartsLauncher {
     /**
      * Runs Part 1 benchmarking and handles cancellation flow.
      *
-     * @return always {@code null}; method is used for side effects only
      * @throws Exception if benchmark execution fails
      * @throws IllegalStateException if benchmark cancellation support was not configured
      */
-    public Void launchAndHandlePart1() throws Exception {
+    public void launchAndHandlePart1() throws Exception {
 
         if (benchmarkCancelled == null) {
             throw new IllegalStateException(BENCHMARK_CANCEL_FLAG_NOT_CONFIGURED);
@@ -157,7 +156,7 @@ public class PartsLauncher {
 
         if (benchmarkCancelled.get()) {
             log.error(LOG_BENCHMARK_CANCELLED);
-            return null;
+            return;
         }
 
         // Actual benchmark
@@ -170,7 +169,6 @@ public class PartsLauncher {
 
         log.debug(GUIConstants.LOG_BENCHMARK_THREAD_DONE);
 
-        return null;
     }
 
     /**
@@ -206,7 +204,7 @@ public class PartsLauncher {
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                m[i][j] = Math.random();
+                m[i][j] = Math.random()*100;
             }
         }
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_CANCELLED;
+import static com.example.assignment.constants.LogConstants.LOG_BENCHMARK_CANCELLED;
 
 /**
  * Helper class that launches Part 1 benchmarking and Part 2 compression tasks.

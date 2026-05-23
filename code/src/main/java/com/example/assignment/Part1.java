@@ -2,6 +2,7 @@ package com.example.assignment;
 
 import com.example.assignment.benchmark.BenchmarkExecutor;
 import com.example.assignment.constants.BenchmarkConstants;
+import com.example.assignment.constants.LogConstants;
 import com.example.assignment.lib.DCT2;
 import com.example.assignment.model.BenchmarkMeasurement;
 import com.example.assignment.utils.OpenCsvUtils;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.function.Supplier;
 
-import static com.example.assignment.constants.BenchmarkConstants.LOG_BENCHMARK_CANCELLED;
+import static com.example.assignment.constants.LogConstants.LOG_BENCHMARK_CANCELLED;
 import static com.example.assignment.constants.BenchmarkConstants.BENCHMARK_CANCELLED_BY_USER;
 
 /**
@@ -122,7 +123,7 @@ public class Part1 {
     public void benchmark(int[] sizes, List<Object> matrices, boolean doWarmUp,
                           Supplier<Boolean> isCancelled) throws Exception {
         results.clear();
-        log.info(BenchmarkConstants.LOG_BENCHMARK_START, sizes.length);
+        log.info(LogConstants.LOG_BENCHMARK_START, sizes.length);
 
         DCT2 dct = new DCT2();
         int iterator = 0;
@@ -135,7 +136,7 @@ public class Part1 {
                     return;
                 }
 
-                log.debug(BenchmarkConstants.LOG_BENCHMARK_SIZE, n, n);
+                log.debug(LogConstants.LOG_BENCHMARK_SIZE, n, n);
                 double[][] matrix = (double[][]) matrices.get(iterator++);
 
                 Statistics myTime = benchmarkCustomDCT(dct, matrix, doWarmUp, isCancelled);
@@ -150,14 +151,14 @@ public class Part1 {
                 BenchmarkMeasurement measurement = new BenchmarkMeasurement(n, myTime, libTime);
                 results.add(measurement);
 
-                log.info(BenchmarkConstants.LOG_RESULT_ROW,
+                log.info(LogConstants.LOG_RESULT_ROW,
                         measurement.size(),
                         String.format(BenchmarkConstants.TIME_FORMAT_HIGH_PRECISION, measurement.customMeanSeconds()),
                         String.format(BenchmarkConstants.TIME_FORMAT_HIGH_PRECISION, measurement.libraryMeanSeconds()),
                         String.format(BenchmarkConstants.PERCENTAGE_FORMAT, measurement.ratioOnMean()));
             }
 
-            log.info(BenchmarkConstants.LOG_BENCHMARK_DONE, results.size());
+            log.info(LogConstants.LOG_BENCHMARK_DONE, results.size());
             exportResultsToCSV(doWarmUp);
 
         } catch (CancellationException e) {
@@ -187,7 +188,7 @@ public class Part1 {
      */
     private Statistics benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp,
                                       Supplier<Boolean> isCancelled) throws Exception {
-        log.debug(BenchmarkConstants.LOG_MEASURE_CUSTOM, matrix.length);
+        log.debug(LogConstants.LOG_MEASURE_CUSTOM, matrix.length);
         SimpleMatrix simpleMatrix = new SimpleMatrix(matrix);
         return benchmarkExecutor.run(() -> () -> {
             if (isCancelled.get()) {
@@ -225,7 +226,7 @@ public class Part1 {
      */
     private Statistics benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp,
                                            Supplier<Boolean> isCancelled) throws Exception {
-        log.debug(BenchmarkConstants.LOG_MEASURE_LIBRARY, n);
+        log.debug(LogConstants.LOG_MEASURE_LIBRARY, n);
         DoubleDCT_2D libLocal = new DoubleDCT_2D(n, n);
         return benchmarkExecutor.run(() -> {
             double[][] matrixCopy = deepCopyMatrix(matrix);
@@ -268,16 +269,16 @@ public class Part1 {
      * @param doWarmUp whether warmup was enabled (determines output filename)
      */
     private void exportResultsToCSV(boolean doWarmUp) {
-        log.debug(BenchmarkConstants.LOG_WRITING_CSV);
+        log.debug(LogConstants.LOG_WRITING_CSV);
         try {
             String outputPath = doWarmUp
                     ? BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH_WITH_WARMUP
                     : BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH;
 
             OpenCsvUtils.createCSVFile(outputPath, results);
-            log.info(BenchmarkConstants.LOG_CSV_EXPORTED_SUCCESSFULLY, outputPath);
+            log.info(LogConstants.LOG_CSV_EXPORTED_SUCCESSFULLY, outputPath);
         } catch (Exception e) {
-            log.error(BenchmarkConstants.LOG_CSV_FAILED_PREFIX, e.getMessage(), e);
+            log.error(LogConstants.LOG_CSV_FAILED_PREFIX, e.getMessage(), e);
         }
     }
 }

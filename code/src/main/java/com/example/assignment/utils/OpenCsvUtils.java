@@ -1,5 +1,7 @@
 package com.example.assignment.utils;
 
+import com.example.assignment.constants.CSVConstants;
+import com.example.assignment.constants.LogConstants;
 import com.example.assignment.model.BenchmarkMeasurement;
 import com.example.assignment.constants.BenchmarkConstants;
 import com.opencsv.CSVWriter;
@@ -41,7 +43,7 @@ public class OpenCsvUtils {
      */
     public static void createCSVFile(String path, List<BenchmarkMeasurement> measurements) {
         List<BenchmarkMeasurement> safe = measurements == null ? List.of() : measurements;
-        log.debug(BenchmarkConstants.LOG_CSV_CREATE, path, safe.size());
+        log.debug(LogConstants.LOG_CSV_CREATE, path, safe.size());
 
         ensureParentDirectoryExists(path);
 
@@ -53,9 +55,9 @@ public class OpenCsvUtils {
                  writer.writeNext(buildRow(m));
              }
 
-             log.info(BenchmarkConstants.LOG_CSV_CREATED, safe.size());
+             log.info(LogConstants.LOG_CSV_CREATED, safe.size());
          } catch (IOException e) {
-             log.error(BenchmarkConstants.LOG_CSV_CREATE_FAILED, path, e);
+             log.error(LogConstants.LOG_CSV_CREATE_FAILED, path, e);
         }
     }
 
@@ -63,18 +65,18 @@ public class OpenCsvUtils {
 
     private static String[] buildHeader() {
         return new String[]{
-                BenchmarkConstants.CSV_HEADER_SIZE,
-                BenchmarkConstants.CSV_HEADER_CUSTOM_AVG_SECONDS,
-                BenchmarkConstants.CSV_HEADER_CUSTOM_MIN_SECONDS,
-                BenchmarkConstants.CSV_HEADER_CUSTOM_MAX_SECONDS,
-                BenchmarkConstants.CSV_HEADER_CUSTOM_SUM_SECONDS,
-                BenchmarkConstants.CSV_HEADER_CUSTOM_N,
-                BenchmarkConstants.CSV_HEADER_LIBRARY_AVG_SECONDS,
-                BenchmarkConstants.CSV_HEADER_LIBRARY_MIN_SECONDS,
-                BenchmarkConstants.CSV_HEADER_LIBRARY_MAX_SECONDS,
-                BenchmarkConstants.CSV_HEADER_LIBRARY_SUM_SECONDS,
-                BenchmarkConstants.CSV_HEADER_LIBRARY_N,
-                BenchmarkConstants.CSV_HEADER_RATIO
+                CSVConstants.CSV_HEADER_SIZE,
+                CSVConstants.CSV_HEADER_CUSTOM_AVG_SECONDS,
+                CSVConstants.CSV_HEADER_CUSTOM_MIN_SECONDS,
+                CSVConstants.CSV_HEADER_CUSTOM_MAX_SECONDS,
+                CSVConstants.CSV_HEADER_CUSTOM_SUM_SECONDS,
+                CSVConstants.CSV_HEADER_CUSTOM_N,
+                CSVConstants.CSV_HEADER_LIBRARY_AVG_SECONDS,
+                CSVConstants.CSV_HEADER_LIBRARY_MIN_SECONDS,
+                CSVConstants.CSV_HEADER_LIBRARY_MAX_SECONDS,
+                CSVConstants.CSV_HEADER_LIBRARY_SUM_SECONDS,
+                CSVConstants.CSV_HEADER_LIBRARY_N,
+                CSVConstants.CSV_HEADER_RATIO
         };
     }
 
@@ -124,7 +126,7 @@ public class OpenCsvUtils {
     private static void ensureParentDirectoryExists(String path) {
         File parent = new File(path).getParentFile();
         if (parent != null && !parent.exists() && !parent.mkdirs()) {
-            log.warn(BenchmarkConstants.LOG_CSV_CREATE_FAILED, parent.getAbsolutePath());
+            log.warn(LogConstants.LOG_CSV_CREATE_FAILED, parent.getAbsolutePath());
         }
     }
 }

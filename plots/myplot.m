@@ -1,17 +1,6 @@
 clear; clc; close all;
 
-%% =========================================================
-% LOAD DATASETS
-%% =========================================================
-datasets(1).name  = "no_warmup";
-datasets(1).table = readtable( ...
-    "times_vs_size.csv", ...
-    'VariableNamingRule', 'preserve');
 
-datasets(2).name  = "with_warmup";
-datasets(2).table = readtable( ...
-    "times_vs_size_with_JIT_warm_up.csv", ...
-    'VariableNamingRule', 'preserve');
 
 %% =========================================================
 % OUTPUT DIRECTORY
@@ -25,10 +14,10 @@ end
 %% =========================================================
 % LOOP OVER DATASETS
 %% =========================================================
-for k = 1:length(datasets)
 
-    CSV          = datasets(k).table;
-    dataset_name = datasets(k).name;
+    CSV          =  readtable( ...
+    "times_vs_size.csv", ...
+    'VariableNamingRule', 'preserve');
 
     %% =====================================================
     % NORMALIZE COLUMN NAMES
@@ -68,8 +57,7 @@ for k = 1:length(datasets)
     
     vars_to_convert = {
         'n', ...
-        'my_avg', 'my_min', 'my_max', ...
-        'lib_avg', 'lib_min', 'lib_max'
+        'my_avg', 'lib_avg'
     };
     
     for i = 1:length(vars_to_convert)
@@ -113,7 +101,7 @@ for k = 1:length(datasets)
     xlabel('Matrix size n');
     ylabel('Execution time (s, log-scale)');
 
-    title(['Experimental execution time - ', dataset_name]);
+    title(['Experimental execution time - ', "benchmark"]);
 
     legend( ...
         'My DCT-II', ...
@@ -127,9 +115,8 @@ for k = 1:length(datasets)
     % SAVE FIGURES
     %% =====================================================
     saveas(f1,  fullfile(cmp_dir, ...
-        strcat("figure_01_semilogy_", dataset_name, ".png")));
+        strcat("figure_01_semilogy_", "benchmark", ".png")));
 
 
-end
 
 disp("All plots generated successfully.");

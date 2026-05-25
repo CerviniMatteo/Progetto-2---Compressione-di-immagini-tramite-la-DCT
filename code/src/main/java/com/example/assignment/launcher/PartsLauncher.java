@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.example.assignment.constants.BenchmarkConstants.BENCHMARK_CANCEL_FLAG_NOT_CONFIGURED;
 import static com.example.assignment.constants.LogConstants.LOG_BENCHMARK_CANCELLED;
 
 /**
@@ -51,7 +52,7 @@ public class PartsLauncher {
 
     /** Block sizes to benchmark (powers of 2). */
     private static final int[] BENCHMARK_BLOCK_SIZES = {
-            8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192
+            8, 16,
     };
 
     /**
@@ -63,9 +64,6 @@ public class PartsLauncher {
      * </p>
      */
     private AtomicBoolean benchmarkCancelled;
-
-    public static final String BENCHMARK_CANCEL_FLAG_NOT_CONFIGURED = "Benchmark cancellation flag was not configured.";
-
 
     /**
      * Returns the singleton launcher instance configured with a cancellation flag.
@@ -146,11 +144,9 @@ public class PartsLauncher {
             matrices.add(randomMatrix(n));
         }
 
-        // Warmup benchmark
         part1.benchmark(
                 BENCHMARK_BLOCK_SIZES,
                 matrices,
-                false,
                 benchmarkCancelled::get
         );
 
@@ -159,16 +155,7 @@ public class PartsLauncher {
             return;
         }
 
-        // Actual benchmark
-        part1.benchmark(
-                BENCHMARK_BLOCK_SIZES,
-                matrices,
-                true,
-                benchmarkCancelled::get
-        );
-
         log.debug(GUIConstants.LOG_BENCHMARK_THREAD_DONE);
-
     }
 
     /**

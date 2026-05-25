@@ -10,7 +10,15 @@ package com.example.assignment.constants;
  */
 public final class BenchmarkConstants {
 
+    /**
+     * Exception message used when the benchmark gets canceled
+     */
     public static final String BENCHMARK_ERROR = "Benchmark error";
+
+    /**
+     * Exception message used when the benchmark cancellation flag is not properly configured.
+     */
+    public static final String BENCHMARK_CANCEL_FLAG_NOT_CONFIGURED = "Benchmark cancellation flag was not configured.";
 
     /**
      * CSV prefix path
@@ -21,11 +29,6 @@ public final class BenchmarkConstants {
      * CSV path used when the benchmark is executed without JIT warmup.
      */
     public static final String TIMES_VS_SIZE_CSV_PATH = OUTPUT_PATH  + "times_vs_size.csv";
-
-    /**
-     * CSV path used when the benchmark is executed with JIT warmup enabled.
-     */
-    public static final String TIMES_VS_SIZE_CSV_PATH_WITH_WARMUP = OUTPUT_PATH + "times_vs_size_with_JIT_warm_up.csv";
 
     /**
      * Exception message used when a benchmark run is interrupted by user cancellation.

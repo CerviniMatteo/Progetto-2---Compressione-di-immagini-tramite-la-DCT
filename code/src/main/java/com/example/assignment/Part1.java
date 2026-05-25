@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.function.Supplier;
 
+import static com.example.assignment.constants.BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH;
 import static com.example.assignment.constants.LogConstants.LOG_BENCHMARK_CANCELLED;
 import static com.example.assignment.constants.BenchmarkConstants.BENCHMARK_CANCELLED_BY_USER;
 
@@ -111,8 +112,6 @@ public class Part1 {
      * @param sizes       array of matrix dimensions to benchmark (e.g., [8, 16, 32, 64, 128, 256])
      * @param matrices    list of pre-generated matrices matching the sizes array; each matrix
      *                    will be used to benchmark both implementations
-     * @param doWarmUp    if {@code true}, allows JMH to run warmup iterations before measurements;
-     *                    if {@code false}, skips warmup for faster execution but with potentially less stable results
      * @param isCancelled a {@link Supplier} returning {@code true} when the benchmark should stop early;
      *                    use {@code () -> false} to run without cancellation support
      * @throws Exception if benchmark execution or CSV export fails
@@ -120,7 +119,7 @@ public class Part1 {
      * @see BenchmarkMeasurement
      * @see JmhBenchmarkExecutor
      */
-    public void benchmark(int[] sizes, List<Object> matrices, boolean doWarmUp,
+    public void benchmark(int[] sizes, List<Object> matrices,
                           Supplier<Boolean> isCancelled) throws Exception {
         results.clear();
         log.info(LogConstants.LOG_BENCHMARK_START, sizes.length);
@@ -132,7 +131,7 @@ public class Part1 {
             for (int n : sizes) {
 
                 if (isCancelled.get()) {
-                    log.info(LOG_BENCHMARK_CANCELLED);
+                    log.error(LOG_BENCHMARK_CANCELLED);
                     return;
                 }
 
@@ -158,7 +157,7 @@ public class Part1 {
             }
 
             log.info(LogConstants.LOG_BENCHMARK_DONE, results.size());
-            exportResultsToCSV(doWarmUp);
+            exportResultsToCSV();
 
         } catch (CancellationException e) {
             log.error(LOG_BENCHMARK_CANCELLED, e);
@@ -262,17 +261,12 @@ public class Part1 {
      * Each CSV file contains the matrix sizes, custom implementation times, library times,
      * and computed performance ratios (library time / custom time).
      *
-     * @param doWarmUp whether warmup was enabled (determines output filename)
      */
-    private void exportResultsToCSV(boolean doWarmUp) {
+    private void exportResultsToCSV() {
         log.debug(LogConstants.LOG_WRITING_CSV);
         try {
-            String outputPath = doWarmUp
-                    ? BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH_WITH_WARMUP
-                    : BenchmarkConstants.TIMES_VS_SIZE_CSV_PATH;
-
-            OpenCsvUtils.createCSVFile(outputPath, results);
-            log.info(LogConstants.LOG_CSV_EXPORTED_SUCCESSFULLY, outputPath);
+            OpenCsvUtils.createCSVFile(TIMES_VS_SIZE_CSV_PATH, results);
+            log.info(LogConstants.LOG_CSV_EXPORTED_SUCCESSFULLY, TIMES_VS_SIZE_CSV_PATH);
         } catch (Exception e) {
             log.error(LogConstants.LOG_CSV_FAILED_PREFIX, e.getMessage(), e);
         }

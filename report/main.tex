@@ -8,15 +8,23 @@
 \usepackage{amsfonts}
 \usepackage[italian]{babel}
 \usepackage[a4paper,margin=2.5cm]{geometry}
-\usepackage[hidelinks]{hyperref}
+\usepackage[]{hyperref}
+\usepackage{multicol}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
 \usepackage[
-backend=biber,
+backend=bibtex,
 style=ieee,
 sorting=none,
 ]{biblatex}
 \usepackage{xcolor}
 \usepackage{listings}
-\usepackage{matlab-prettifier}
 
 \definecolor{codebg}{RGB}{245,245,244}
 \definecolor{codegray}{RGB}{110,110,110}
@@ -28,6 +36,29 @@ sorting=none,
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95, 0.92}
+
+\lstdefinestyle{Java}{
+    language=Java,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codeblue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codeorange},
+    numberstyle=\tiny \color{black},
+    numbers=left,
+    stepnumber=1,
+    numbersep=10pt,
+    frame=single,
+    rulecolor=\color{black!20},
+    tabsize=4,
+    showspaces=false,
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=true,
+    columns=fullflexible,
+    keepspaces=true,
+    captionpos=b
+}
 
 \title{Report secondo progetto di Metodi del calcolo scientifico}
 \author{Daniele Besozzi 894998 \\ Andrea Consonni 900116 \\ Matteo Cervini 902225}

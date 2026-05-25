@@ -150,7 +150,7 @@ public class ImageCompressionWindow extends JFrame {
             int d = pair.getSecond();
 
             String outputName =
-                    selectedImageName + GUIConstants.COMPRESSED_SUFFIX;
+                    selectedImageName.substring(0, selectedImageName.lastIndexOf(".")) + GUIConstants.COMPRESSED_SUFFIX;
 
             new SwingWorkerHelper<>(() ->
                 PartsLauncher

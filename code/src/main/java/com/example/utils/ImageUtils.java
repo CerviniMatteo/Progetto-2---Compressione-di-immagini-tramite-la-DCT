@@ -179,7 +179,6 @@ public class ImageUtils {
     public static void saveAsBMP(BufferedImage img, String path) {
         try {
             File output = new File(path + DOT_BMP);
-
             ImageIO.write(img, BMP, output);
 
             System.out.println(SAVE_IMAGE_TO + output.getAbsolutePath());

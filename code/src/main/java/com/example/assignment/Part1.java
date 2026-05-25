@@ -139,14 +139,14 @@ public class Part1 {
                 log.debug(LogConstants.LOG_BENCHMARK_SIZE, n, n);
                 double[][] matrix = (double[][]) matrices.get(iterator++);
 
-                double myTime = benchmarkCustomDCT(dct, matrix, doWarmUp, isCancelled);
+                double myTime = benchmarkCustomDCT(dct, matrix, isCancelled);
 
                 if (isCancelled.get()) {
                     log.info(LOG_BENCHMARK_CANCELLED);
                     return;
                 }
 
-                double libTime = benchmarkLibraryDCT(n, matrix, doWarmUp, isCancelled);
+                double libTime = benchmarkLibraryDCT(n, matrix, isCancelled);
 
                 BenchmarkMeasurement measurement = new BenchmarkMeasurement(n, myTime, libTime);
                 results.add(measurement);
@@ -180,12 +180,11 @@ public class Part1 {
      *
      * @param dct         the custom DCT2 implementation
      * @param matrix      the input matrix to transform
-     * @param doWarmUp    whether to include JIT warmup iterations
      * @param isCancelled supplier polled at each iteration boundary
      * @return the full JMH {@link Statistics} summary for the custom implementation
      * @throws Exception if benchmark execution fails or is canceled
      */
-    private double benchmarkCustomDCT(DCT2 dct, double[][] matrix, boolean doWarmUp,
+    private double benchmarkCustomDCT(DCT2 dct, double[][] matrix,
                                       Supplier<Boolean> isCancelled) throws Exception {
         log.debug(LogConstants.LOG_MEASURE_CUSTOM, matrix.length);
         SimpleMatrix simpleMatrix = new SimpleMatrix(matrix);
@@ -194,7 +193,7 @@ public class Part1 {
                 throw new CancellationException(BENCHMARK_CANCELLED_BY_USER);
             }
             return dct.forward(simpleMatrix);
-        }, doWarmUp);
+        });
     }
 
     /**
@@ -217,12 +216,11 @@ public class Part1 {
      *
      * @param n           the matrix dimension (n x n)
      * @param matrix      the original input matrix (not modified)
-     * @param doWarmUp    whether to include JIT warmup iterations
      * @param isCancelled supplier polled at each iteration boundary
      * @return the full JMH {@link Statistics} summary for the library implementation
      * @throws Exception if benchmark execution fails or is canceled
      */
-    private double benchmarkLibraryDCT(int n, double[][] matrix, boolean doWarmUp,
+    private double benchmarkLibraryDCT(int n, double[][] matrix,
                                            Supplier<Boolean> isCancelled) throws Exception {
         log.debug(LogConstants.LOG_MEASURE_LIBRARY, n);
         DoubleDCT_2D libLocal = new DoubleDCT_2D(n, n);
@@ -235,7 +233,7 @@ public class Part1 {
                 libLocal.forward(matrixCopy, true);
                 return null;
             };
-        }, doWarmUp);
+        });
     }
 
     /**

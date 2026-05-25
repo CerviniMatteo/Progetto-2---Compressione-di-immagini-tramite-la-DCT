@@ -19,11 +19,10 @@ public interface BenchmarkExecutor {
      * </p>
      *
      * @param taskFactory builds the task to be benchmarked
-     * @param doWarmUp    if {@code true}, performs warmup iterations before measurement;
      *                    if {@code false}, skips warmup for faster execution
      * @return average execution time in seconds
      * @throws Exception if the benchmark execution fails
      */
-    double run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception;
+    double run(Supplier<Supplier<?>> taskFactory) throws Exception;
 }
 

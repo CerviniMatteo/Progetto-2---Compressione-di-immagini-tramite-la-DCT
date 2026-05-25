@@ -114,19 +114,18 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
      * </p>
      *
      * @param taskFactory builds the task to be benchmarked
-     * @param doWarmUp    if {@code true}, runs {@value #DEFAULT_WARMUP_ITERATIONS} warmup iterations;
      *                    if {@code false}, skips warmup entirely
      * @return average execution time in seconds
      * @throws CancellationException if the benchmark was aborted and produced no results
      * @throws Exception             if the benchmark execution fails for another reason
      */
     @Override
-    public double run(Supplier<Supplier<?>> taskFactory, boolean doWarmUp) throws Exception {
+    public double run(Supplier<Supplier<?>> taskFactory) throws Exception {
 
         Options opt = new OptionsBuilder()
                 .include(String.format(BenchmarkConstants.JMH_BENCHMARK_INCLUDE_TEMPLATE, BenchmarkRunner.class.getSimpleName()))
                 .forks(0)
-                .warmupIterations(doWarmUp ? DEFAULT_WARMUP_ITERATIONS : 0)
+                .warmupIterations(DEFAULT_WARMUP_ITERATIONS)
                 .measurementIterations(DEFAULT_MEASUREMENT_ITERATIONS)
                 .build();
 
@@ -141,9 +140,6 @@ public class JmhBenchmarkExecutor implements BenchmarkExecutor {
         if (results.isEmpty()) {
             throw new CancellationException(BenchmarkConstants.BENCHMARK_ABORTED_NO_RESULTS);
         }
-
-        // JMH score is in microseconds (per @OutputTimeUnit(TimeUnit.MICROSECONDS))
-        // Convert to seconds for consistency
         return results.iterator().next().getPrimaryResult().getScore();
     }
 }

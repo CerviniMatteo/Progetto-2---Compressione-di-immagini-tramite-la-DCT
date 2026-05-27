@@ -41,3 +41,5 @@ gradle-wrapper.jar
 .vs/
 .vscode/
 
+*-blx.bib
+

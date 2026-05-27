@@ -87,6 +87,7 @@ end
     n_labels = string(n);
 
     bw = 0.35;
+    
 
     %% =====================================================
     % 1) SEMILOG PLOT
@@ -98,8 +99,8 @@ end
 
     semilogy(n, lib_avg, '-s', 'LineWidth', 1.5);
 
-    xlabel('Matrix size n');
-    ylabel('Execution time (s, log-scale)');
+    xlabel('Matrix size (n)');
+    ylabel('Execution time (s)');
 
     title(['Experimental execution time - ', "benchmark"]);
 
@@ -115,7 +116,7 @@ end
     % SAVE FIGURES
     %% =====================================================
     saveas(f1,  fullfile(cmp_dir, ...
-        strcat("figure_01_semilogy_", "benchmark", ".png")));
+        strcat("figure_01_semilogy_", "benchmark", ".pdf")));
 
 
 

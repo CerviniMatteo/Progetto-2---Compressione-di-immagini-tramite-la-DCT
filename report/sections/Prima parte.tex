@@ -5,7 +5,7 @@ Per effettuare le operazioni di algebra lineare richieste in modo semplice ed ot
 scelto di utilizzare la libreria \texttt{Efficient Java Matrix Library}(ejml)\cite{abeles_ejml_0_44_0}.
 \section{Metodologia di misura delle performance}
 Per misurare le performance della nostra implementazione rispetto a quella della libreria, 
-abbiamo generato in maniera causale matrici di dimensioni pari a $2^i, i = 3,\dots,12$.
+abbiamo generato in maniera causale matrici di dimensioni pari a $2^i, i = 3,\dots,13$.
 Le entrate di questa matrice sono generate in maniera casuale in un intervallo di valori a virgola mobile compreso tra $0$ e $100$.
 \lstinputlisting[
     language=Java,
@@ -32,3 +32,21 @@ Il codice di configurazione del benchmark è riportato nel listing \ref{ls:bench
 	label=ls:benchmark
 ]{../code/src/main/java/com/example/assignment/benchmark/JmhBenchmarkExecutor.java}
 \section{Risultati}
+I risultati del benchmark sono riportati nella figura \ref{fig:DCT2_benchamrk_results}
+\begin{figure}[hbt]
+    \centering
+    \includegraphics[
+        width = \textwidth,
+        trim= 0cm 9.5cm 0cm 9cm
+        ]{../plots/results/figure_01_semilogy_benchmark.pdf}
+    \caption{Risultati del benchmark tra la nostra implementazione della DCT2 e quella fornita da \texttt{JTransform}}
+    \label{fig:DCT2_benchamrk_results}
+\end{figure}
+Come si può evincere dal grafico, i tempi di esecuzione dell'implementazione fornita dalla libreria sono di gran lunga inferiori
+rispetto alla nostra implementazione. L'algoritmo implementato dalla libreria è nella versione fast (FFT) e implementa una variante
+dell'algoritmo dividi-et-impera per la FFT (split-radix e mixed-radix) ottimizzato per sistemi multiprocessore \cite{jtransforms_dct2d}.
+Ciò comporta un aumento significativo delle prestazioni dato sia dall'algoritmo utilizzato sia dalla capacità della libreria di sfruttare
+le capacità di multithreading del processore.
+
+
+

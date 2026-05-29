@@ -1,4 +1,4 @@
-package com.unimib.assignment.utils;
+package com.unimib.assignment.GUI.utils;
 
 import javax.swing.*;
 import java.util.concurrent.ExecutionException;

@@ -1,6 +1,6 @@
 package com.unimib.assignment.backend.constants;
 
-public class CSVConstants {
+public final class CSVConstants {
 
     /**
      * CSV column name for the matrix size.

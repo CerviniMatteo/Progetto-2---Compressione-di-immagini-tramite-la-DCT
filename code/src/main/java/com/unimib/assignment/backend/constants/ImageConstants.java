@@ -1,5 +1,4 @@
-// src/main/java/com/example/lib/utils/UtilsConstants.java
-package com.unimib.assignment.utils;
+package com.unimib.assignment.backend.constants;
 
 /**
  * Constants shared by utility classes in the library layer.

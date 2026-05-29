@@ -1,9 +1,9 @@
 package com.unimib.assignment.backend;
 
+import com.unimib.assignment.backend.utils.ImageUtils;
 import org.apache.commons.math3.util.Pair;
 import org.jtransforms.dct.DoubleDCT_2D;
 import java.awt.image.BufferedImage;
-import static com.unimib.assignment.utils.ImageUtils.*;
 
 /**
  * Implements block-based grayscale image compression using the 2D Discrete Cosine Transform (DCT).
@@ -41,7 +41,7 @@ public class Part2 {
      */
     public BufferedImage compress(Pair<String, BufferedImage> imageInfo, int F, int d) {
         BufferedImage image = imageInfo.getSecond();
-        double[][] signal = convertImageToArray(image);
+        double[][] signal = ImageUtils.convertImageToArray(image);
 
         int rows = signal.length - signal.length % F;
         int cols = signal[0].length - signal[0].length % F;
@@ -58,8 +58,8 @@ public class Part2 {
             }
         }
 
-        BufferedImage result = convertArrayToImage(compressedImage);
-        saveAsBMP(result, OUTPUT_PATH + imageInfo.getFirst());
+        BufferedImage result = ImageUtils.convertArrayToImage(compressedImage);
+        ImageUtils.saveAsBMP(result, OUTPUT_PATH + imageInfo.getFirst());
         return result;
     }
 

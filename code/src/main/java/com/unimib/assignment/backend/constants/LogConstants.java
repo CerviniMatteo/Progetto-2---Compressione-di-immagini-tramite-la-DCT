@@ -1,6 +1,6 @@
 package com.unimib.assignment.backend.constants;
 
-public class LogConstants {
+public final class LogConstants {
     /**
      * Log message printed when the benchmark starts.
      * The placeholder represents the number of matrix sizes being tested.

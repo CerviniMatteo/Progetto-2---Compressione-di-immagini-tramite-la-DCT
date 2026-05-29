@@ -2,7 +2,7 @@ package com.unimib.assignment.GUI.UI;
 
 import com.unimib.assignment.GUI.observer.Observable;
 import com.unimib.assignment.GUI.utils.FilePickerUtils;
-import com.unimib.assignment.utils.SwingWorkerHelper;
+import com.unimib.assignment.GUI.utils.SwingWorkerHelper;
 import org.apache.commons.math3.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

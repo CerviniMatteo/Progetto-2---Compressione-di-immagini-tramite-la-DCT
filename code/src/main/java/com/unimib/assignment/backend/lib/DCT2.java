@@ -85,8 +85,8 @@
             for (int i = 0; i < result.getNumCols(); i++) {
                 // Extract the i-th column as a vector
                 SimpleMatrix col = result.extractVector(false, i);
-                // Apply the transform: Dm * column
-                SimpleMatrix transformed = Dm.mult(col);
+                // Apply the transform: Dn * column
+                SimpleMatrix transformed = Dn.mult(col);
                 // Insert the transformed column back into the result matrix
                 result.insertIntoThis(0, i, transformed);
             }
@@ -97,8 +97,8 @@
             for (int i = 0; i < result.getNumRows(); i++) {
                 // Extract the i-th row as a vector
                 SimpleMatrix row = result.extractVector(true, i);
-                // Apply the transform: (Dn * (row)^T)^T = row * Dn^T
-                SimpleMatrix transformed = Dn.mult(row.transpose()).transpose();
+                // Apply the transform: (Dm * (row)^T)^T = row * Dm^T
+                SimpleMatrix transformed = Dm.mult(row.transpose()).transpose();
                 // Insert the transformed row back into the result matrix
                 result.insertIntoThis(i, 0, transformed);
             }

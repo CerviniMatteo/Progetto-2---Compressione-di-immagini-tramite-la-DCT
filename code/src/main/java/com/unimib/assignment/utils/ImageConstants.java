@@ -1,0 +1,32 @@
+// src/main/java/com/example/lib/utils/UtilsConstants.java
+package com.unimib.assignment.utils;
+
+/**
+ * Constants shared by utility classes in the library layer.
+ * <p>
+ * These values are used for image persistence, output folder naming,
+ * and common log messages related to saving images.
+ * </p>
+ */
+public final class ImageConstants {
+
+    /**
+     * File format name for bitmap images.
+     */
+    public static final String BMP = "bmp";
+
+    /**
+     * Bitmap file extension, including the leading dot.
+     */
+    public static final String DOT_BMP = ".bmp";
+
+    /**
+     * Log message prefix used when an image is saved successfully.
+     */
+    public static final String SAVE_IMAGE_TO = "Image saved to: ";
+
+    /**
+     * Log message used when image saving fails.
+     */
+    public static final String SAVING_ERROR = "Failed to save image";
+}

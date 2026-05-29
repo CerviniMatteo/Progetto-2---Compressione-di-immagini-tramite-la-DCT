@@ -1,0 +1,121 @@
+@startuml Class and Package Dependencies
+
+top to bottom direction
+scale 1.2
+
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam nodesep 60
+skinparam ranksep 120
+skinparam ArrowThickness 1.2
+skinparam ArrowColor #555555
+
+skinparam packageFontSize 14
+skinparam packageFontStyle bold
+
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #AAAAAA
+  FontSize 11
+  Shadowing false
+}
+skinparam package {
+  BackgroundColor<<GUI>>       #D6E4FF
+  BorderColor<<GUI>>           #3B6FD4
+  BackgroundColor<<backend>>   #EAF3DE
+  BorderColor<<backend>>       #3B6D11
+  BackgroundColor<<utils>>     #D6F5E3
+  BorderColor<<utils>>         #2E8B57
+  BackgroundColor<<launcher>>  #FFE9CC
+  BorderColor<<launcher>>      #D4820A
+  BackgroundColor<<benchmark>> #EDE0FF
+  BorderColor<<benchmark>>     #7B3FB5
+  BackgroundColor<<constants>> #F0EFEB
+  BorderColor<<constants>>     #8A8070
+  BackgroundColor<<model>>     #FFE4EC
+  BorderColor<<model>>         #C2386A
+  BackgroundColor<<lib>>       #D6F5F5
+  BorderColor<<lib>>           #1F8A8A
+  BackgroundColor<<root>>      #FFFACC
+  BorderColor<<root>>          #B8A800
+}
+
+' =========================
+' ROOT
+' =========================
+!pragma useIntermediatePackages false
+package "com.unimib.assignment" <<root>> {
+
+  ' =========================
+  ' GUI (TOP + VISUALLY BIGGER)
+  ' =========================
+  package "GUI" as GUI <<GUI>> {
+
+
+  }
+
+  ' =========================
+  ' BACKEND
+  ' =========================
+  package "backend" as backend <<backend>> {
+
+    package "constants" <<constants>> {
+      class BenchmarkConstants
+      class LogConstants
+      class CSVConstants
+      class ImageConstants
+    }
+
+    package "model" <<model>> {
+      class BenchmarkMeasurement
+    }
+
+    package "lib" <<lib>> {
+      class DCT2
+    }
+
+    package "utils" <<utils>> {
+      class OpenCsvUtils
+      class ImageUtils
+    }
+
+    package "benchmark" <<benchmark>> {
+      interface BenchmarkExecutor
+      class JmhBenchmarkExecutor
+    }
+
+    package "launcher" <<launcher>> {
+      class PartsLauncher
+    }
+
+    class Part1
+    class Part2
+  }
+}
+
+' =========================
+' RELATIONS
+' =========================
+
+JmhBenchmarkExecutor ..|> BenchmarkExecutor
+
+Part1 ..> BenchmarkExecutor
+Part1 ..> JmhBenchmarkExecutor
+Part1 ..> BenchmarkConstants
+Part1 ..> LogConstants
+Part1 ..> DCT2
+Part1 ..> BenchmarkMeasurement
+Part1 ..> OpenCsvUtils
+
+Part2 ..> ImageUtils
+
+OpenCsvUtils ..> BenchmarkConstants
+OpenCsvUtils ..> CSVConstants
+OpenCsvUtils ..> LogConstants
+OpenCsvUtils ..> BenchmarkMeasurement
+
+PartsLauncher ..> Part1
+PartsLauncher ..> Part2
+
+GUI ..> PartsLauncher
+@enduml

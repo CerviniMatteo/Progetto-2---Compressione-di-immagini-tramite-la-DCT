@@ -13,7 +13,7 @@ Le entrate di questa matrice sono generate in maniera casuale in un intervallo d
     caption = Generazione di matrici casuali,
 	firstline=188,
 	lastline=199
-]{../code/src/main/java/com/example/assignment/launcher/PartsLauncher.java}
+]{../code/src/main/java/com/unimib/assignment/backend/launcher/PartsLauncher.java}
 Per eseguire le misurazioni, abbiamo utilizzato la libreria \texttt{Java Microbenchmark Harness}(JMH)\cite{openjdk_jmh}, che ci ha permesso di eseguire i benchmark in modo affidabile e preciso,
 gestendo automaticamente le iterazioni di warmup e misurazione.
 Poiché Java esegue ottimizzazioni a runtime (JIT compilation),
@@ -30,7 +30,7 @@ Il codice di configurazione del benchmark è riportato nel listing \ref{ls:bench
 	firstline=123,
 	lastline=144,
 	label=ls:benchmark
-]{../code/src/main/java/com/example/assignment/benchmark/JmhBenchmarkExecutor.java}
+]{../code/src/main/java/com/unimib/assignment/backend/benchmark/JmhBenchmarkExecutor.java}
 \section{Risultati}
 I risultati del benchmark sono riportati nella figura \ref{fig:DCT2_benchamrk_results}
 \begin{figure}[hbt]

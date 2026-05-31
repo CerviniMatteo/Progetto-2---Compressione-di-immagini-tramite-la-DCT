@@ -16,8 +16,9 @@
      * Example usage:
      * <pre>
      *     DCT2 dct2 = new DCT2();
-     *     SimpleMatrix spatial = new SimpleMatrix(new double[][]{{ ... }}); // rows x cols
-     *     SimpleMatrix freq = dct2.DCT2(spatial);   // forward transform
+     *     double[][] signal = ...; // some 2D signal (e.g., an image block)
+     *     SimpleMatrix matrix = new SimpleMatrix(signal); // rows x cols
+     *     SimpleMatrix freq = dct2.DCT2(matrix);   // forward transform
      *     SimpleMatrix recon = dct2.IDCT2(freq);    // inverse transform (reconstruction)
      * </pre>
      *
@@ -67,8 +68,8 @@
          * Core transform helper that applies separable transformations to the input signal.
          * <p>Given matrices Dn and Dm, this method applies the transform in two passes:</p>
          * <ol>
-         *   <li>For each column: replace column c with (Dm * column_c)</li>
-         *   <li>For each row: replace row r with (Dn * (row_r)^T)^T</li>
+         *   <li>For each column: replace column c with (Dn * column_c)</li>
+         *   <li>For each row: replace row r with (Dm * (row_r)^T)^T</li>
          * </ol>
          *
          * @param signal the input matrix to transform (will not be modified directly; a copy is used)
@@ -80,10 +81,10 @@
             // Create a copy of the input signal to avoid modifying the caller's matrix
             SimpleMatrix result = signal.copy();
 
-            // First pass: Apply column-wise transformation (multiply each column by Dm)
+            // First pass: Apply column-wise transformation (multiply each column by Dn)
             // This corresponds to transforming along the column dimension
             for (int i = 0; i < result.getNumCols(); i++) {
-                // Extract the i-th column as a vector
+                // Extract the i-th column as a vector(false flag is used to extract column)
                 SimpleMatrix col = result.extractVector(false, i);
                 // Apply the transform: Dn * column
                 SimpleMatrix transformed = Dn.mult(col);
@@ -91,11 +92,10 @@
                 result.insertIntoThis(0, i, transformed);
             }
 
-            // Second pass: Apply row-wise transformation (multiply each row by Dn)
+            // Second pass: Apply row-wise transformation (multiply each row by Dm)
             // This corresponds to transforming along the row dimension
-            // After this pass, the overall effect is Dn * signal * Dm^T (or inverse variants)
             for (int i = 0; i < result.getNumRows(); i++) {
-                // Extract the i-th row as a vector
+                // Extract the i-th row as a vector(true flag is used to extract row)
                 SimpleMatrix row = result.extractVector(true, i);
                 // Apply the transform: (Dm * (row)^T)^T = row * Dm^T
                 SimpleMatrix transformed = Dm.mult(row.transpose()).transpose();

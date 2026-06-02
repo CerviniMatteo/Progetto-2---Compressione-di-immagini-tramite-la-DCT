@@ -17,7 +17,7 @@ Le entrate di questa matrice sono generate in maniera casuale in un intervallo d
 Per eseguire le misurazioni, abbiamo utilizzato la libreria \texttt{Java Microbenchmark Harness}(JMH)\cite{openjdk_jmh}, che ci ha permesso di eseguire i benchmark in modo affidabile e preciso,
 gestendo automaticamente le iterazioni di warmup e misurazione.
 Poiché Java esegue ottimizzazioni a runtime (JIT compilation),
-è necessario eseguire iterazioni di warmup prima delle misurazioni effettive.
+è necessario eseguire delle iterazioni di warmup prima delle misurazioni effettive.
 Durante la fase di warmup, il codice viene compilato e ottimizzato dalla JVM (Java Virtual Machine)\cite{ibm_jit_optimization}.
 Successivamente, eseguiamo molteplici run e calcoliamo la media dei tempi ottenuti da queste iterazioni,
 scartando i risultati della fase di warmup.
@@ -45,7 +45,7 @@ I risultati del benchmark sono riportati nella figura \ref{fig:DCT2_benchamrk_re
 Come si può evincere dal grafico, i tempi di esecuzione dell'implementazione fornita dalla libreria sono di gran lunga inferiori
 rispetto alla nostra implementazione. L'algoritmo implementato dalla libreria è nella versione fast (FFT) e implementa una variante
 dell'algoritmo dividi-et-impera per la FFT (split-radix e mixed-radix) ottimizzato per sistemi multiprocessore \cite{jtransforms_dct2d}.
-Ciò comporta un miglioramento significativo delle prestazioni dato sia dall'algoritmo utilizzato sia dalla capacità della libreria di sfruttare
+Ciò comporta un miglioramento significativo delle prestazioni dato sia dall'algoritmo utilizzato, sia dalla capacità della libreria di sfruttare
 le capacità di multithreading del processore.
 
 

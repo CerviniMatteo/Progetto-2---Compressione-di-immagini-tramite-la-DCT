@@ -1,6 +1,6 @@
 \section{Test su immagini}
 Per provare la nostra implementazione della compressione tramite DCT2, abbiamo scelto due immagini: una di Tony Pitony e una di Lena (immagine classica per l'image processing).
-Per entrambe le immagini, abbiamo applicato la DCT2 con diversi valori di $f$ (la dimensione del blocco) e $d$ (il numero di coefficienti da mantenere).
+Per entrambe le immagini, abbiamo applicato la DCT2 con diversi valori di $f$ (la dimensione del blocco) e $d$ (il coefficiente del taglio).
 Di seguito sono riportati i risultati ottenuti per ciascuna immagine, le quali sono anche disponibili in formato \texttt{.bmp} al \href{https://drive.google.com/drive/folders/1BKgunC00Pi3_k0nMBObjdeB1KHGHyaLH}{link}.
 \subsection{Tony Pitony}
 Per quanto riguarda l'immagine in figura \ref{fig:tony_pitony} abbiamo provato a modificare la dimensione dei blocchi $f$ e il coefficiente del taglio $d$.
@@ -13,21 +13,21 @@ Blocchi più grandi migliorano generalmente la compressione nelle zone lisce, ma
 	\caption{Immagine di Tony Pitony non compressa}
 	\label{fig:tony_pitony}
 \end{figure}
-\begin{figure}[hbt]
+\begin{figure}[H]
 	\centering
 	% limit graphic size to avoid "Dimension too large" errors
 	\includegraphics[width=0.8\textwidth]{figures/tonypitony_compressed_f8_d4.pdf}
 	\caption{Immagine di Tony Pitony compressa con DCT2, con $f=8$ e $d=4$}
 	\label{fig:tony_pitony_compressed_f8_d4}
 \end{figure}
-\begin{figure}[hbt]
+\begin{figure}[H]
 	\centering
 	% limit graphic size to avoid "Dimension too large" errors
 	\includegraphics[width=0.8\textwidth]{figures/tonypitony_compressed_f16_d8.pdf}
 	\caption{Immagine di Tony Pitony compressa con DCT2, con $f=16$ e $d=8$}
 	\label{fig:tony_pitony_compressed_f16_d8}
 \end{figure}
-\begin{figure}[hbt]
+\begin{figure}[H]
 	\centering
 	% limit graphic size to avoid "Dimension too large" errors
 	\includegraphics[width=0.8\textwidth]{figures/tonypitony_compressed_f32_d16.pdf}
@@ -35,7 +35,7 @@ Blocchi più grandi migliorano generalmente la compressione nelle zone lisce, ma
 	\label{fig:tony_pitony_compressed_f32_d16}
 \end{figure}
 
-\begin{figure}[hbt]
+\begin{figure}[H]
 	\centering
 	% limit graphic size to avoid "Dimension too large" errors
 	\includegraphics[width=0.8\textwidth]{figures/tonypitony_compressed_f64_d32.pdf}
@@ -56,14 +56,14 @@ L'effetto sulle nostre immagini è evidenziato in figura \ref{fig:tony_pitony_ri
 \begin{figure}[H]
 	\centering
 	% limit graphic size to avoid "Dimension too large" errors
-	\includegraphics[width=0.8\textwidth]{figures/ringing.png}
+	\includegraphics[width=0.7\textwidth]{figures/ringing.png}
 	\caption{Artefatti di tipo ringing}
 	\label{fig:ringing}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	% limit graphic size to avoid "Dimension too large" errors
-	\includegraphics[width=0.8\textwidth]{figures/ringingTonyPitony.png}
+	\includegraphics[width=0.7\textwidth]{figures/ringingTonyPitony.png}
 	\caption{Zoom sull'immagine di Tony Pitony compressa con DCT2, con $f=128$ e $d=64$, evidenziando gli artefatti di tipo ringing}
 	\label{fig:tony_pitony_ringing}
 \end{figure}
@@ -72,7 +72,6 @@ Per quanto riguarda l'immagine in figura \ref{fig:lena} abbiamo provato a manten
 In particolare, con $d=0$ abbiamo eliminato tutti i coefficienti, ottenendo così un'immagine completamente nera.
 Si può osservare che, come ci si aspetta, all'aumentare del numero di coefficienti mantenuti, la qualità dell'immagine compressa migliora, con una maggiore fedeltà all'immagine originale.
 In particolare, con $d=12$ e $d=8$ l'immagine compressa è molto simile all'originale, mentre con $d=4$ si notano perdite di dettagli e si manifesta il tipico effetto di jpeg dove sono ben visibili i blocchi di dimensione $8\times8$.
-\clearpage
 \begin{multicols}{2}
 \begin{figure}[H]
 	\centering

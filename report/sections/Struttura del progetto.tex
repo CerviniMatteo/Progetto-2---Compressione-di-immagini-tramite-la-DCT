@@ -1,9 +1,18 @@
-La struttura del progetto è organizzata in due macro package, il package \texttt{GUI}(Graphical User Interface) si occupa unicamente di gestire 
-l'interfaccia utente, mentre il package \texttt{backend} contiene l'implementazione della nostra DCT2, 
-la configurazione dei benchmark, la logica per la compressione delle immagini(con la DCT2 nel formato fast
-offerta dalla libreria esterna \texttt{JTransform}) e la generazione dei risultati in formato CSV per i 
-benchmark e immagini in formato BMP per la compressione delle immagini.
-\\
+La struttura del progetto è organizzata in due macro package:
+\begin{itemize}
+\item \texttt{GUI}(Graphical User Interface), il quale si occupa unicamente di gestire 
+l'interfaccia utente
+\item \texttt{backend}, che contiene :
+\begin{itemize}
+	\item l'implementazione della nostra DCT2
+	\item la configurazione dei benchmark
+	\item la logica per la compressione delle immagini (con la DCT2 nel formato fast
+			offerta dalla libreria esterna \texttt{JTransform})
+	\item la generazione dei risultati in formato CSV per i benchmark e immagini in formato BMP per la compressione delle immagini.
+\end{itemize}
+
+\end{itemize}
+\noindent
 La figura \ref{fig:project_structure} mostra la struttura del progetto. 
 \begin{figure}[hbt]
     \centering
@@ -13,8 +22,10 @@ La figura \ref{fig:project_structure} mostra la struttura del progetto.
 \end{figure}
 \clearpage
 \section{Implementazione della DCT2}
-Il package \texttt{com.unimib.assignment.backend.lib} contiene l'implementazione della DCT2, questa classe 
-implementa un metodo chiamato DCT-II che funge da algoritmo core per i due metodi offerti: 
+Il package \texttt{com.unimib.assignment.backend.lib} contiene il metodo \texttt{DCTII} che implementa la DCT2.
+Questo metodo è utilizzato sia per il calcolo della DCT2 (forward) che per la IDCT2 (inverse), in base al metodo che lo richiama.
+Dato che il calcolo della DCT2 e della IDCT2 differisce solo per la matrice dei coefficienti, abbiamo deciso di implementare un unico metodo che accetta come parametri le matrici dei coefficienti per la DCT2 e la IDCT2, evitando così la duplicazione del codice.
+L'implementazione della DCT2 è mostrato nel listing \ref{ls:DCT2}, mentre i metodi che calcolano la DCT2 e la sua inversa sono mostrati rispettivamente nei listing \ref{ls:forward} e \ref{ls:inverse}.
 \lstinputlisting[
 	language=Java,
 	style = Java,
@@ -23,125 +34,121 @@ implementa un metodo chiamato DCT-II che funge da algoritmo core per i due metod
 	lastline=107,
 	label=ls:DCT2
 ]{../code/src/main/java/com/unimib/assignment/backend/lib/DCT2.java}
-Questa implementazione è utilizzata sia per il metodo forward(DCT2):
- \lstinputlisting[
+\lstinputlisting[
 	language=Java,
 	style = Java,
 	caption = Algoritmo forward implementato nel package \texttt{lib},
 	firstline=38,
 	lastline=44,
-	label=ls:DCT2
+	label=ls:forward
 ]{../code/src/main/java/com/unimib/assignment/backend/lib/DCT2.java}
-che per il metodo inverse(IDCT2): 
 \lstinputlisting[
 	language=Java,
 	style = Java,
 	caption = Algoritmo inverse implementato nel package \texttt{lib},
 	firstline=57,
 	lastline=64,
-	label=ls:DCT2
+	label=ls:inverse
 ]{../code/src/main/java/com/unimib/assignment/backend/lib/DCT2.java}
-Questo approccio ci permette di avere un codice più pulito e leggibile, 
-evitando la duplicazione del codice per i due metodi.
-\footnote{L'implementazione della DCT2 si appoggia alla libreria EJML, questo permette di avere
-un codice più leggibile rispetto a un'implementazione basata su matrici}
-
 \section{Part1 e Part2}
 
-Il package \texttt{com.unimib.assignment.backend.launcher} offre la classe \texttt{PartsLauncher},
-che espone alla UI due metodi: \texttt{launchAndHandlePart1}, per l'avvio dei benchmark, e
-\texttt{launchPart2}, per la compressione delle immagini.
+Il package \texttt{com.unimib.assignment.backend.launcher} contiene la classe \texttt{PartsLauncher},
+che espone alla UI due metodi: 
 
-\paragraph{launchAndHandlePart1}
-si occupa di invocare la classe \texttt{Part1}, responsabile della gestione del processo di esecuzione dei 
+
+\subsubsection{launchAndHandlePart1}
+Si occupa di invocare la classe \texttt{Part1}, responsabile della gestione del processo di esecuzione dei 
 benchmark e della memorizzazione dei risultati.
-
+\\
 Come prima operazione, richiama il metodo \texttt{randomMatrix} per generare le matrici casuali da utilizzare
 nei benchmark. Tali matrici vengono create prima dell'esecuzione dei test e condivise tra il benchmark 
 della nostra implementazione della DCT2 e quello della libreria, così da garantire risultati confrontabili. 
 Le dimensioni delle matrici sono memorizzate nell'array di interi \texttt{BENCHMARK\_BLOCK\_SIZES}.
-
+\\
 Per l'esecuzione dei benchmark, la classe \texttt{Part1} si occupa di:
 \begin{enumerate}
-\item invocare la classe \texttt{JmhBenchmarkExecutor}, responsabile della configurazione e dell'esecuzione 
+\item Invocare la classe \texttt{JmhBenchmarkExecutor}, responsabile della configurazione e dell'esecuzione 
 dei benchmark tramite JMH. Tale classe gestisce le iterazioni di warmup 
 (\texttt{DEFAULT\_WARMUP\_ITERATIONS} = 3) e quelle di misurazione 
-(\texttt{DEFAULT\_MEASUREMENT\_ITERATIONS} = 5), salvando i risultati nel record 
-\textsl{BenchmarkMeasurement(size, meanTimeMine, meanTimeLib)}. I tempi sono memorizzati in secondi;
-\item salvare i risultati contenuti nel record \textsl{BenchmarkMeasurement} in un file CSV utilizzando la c
-lasse \texttt{OpenCsvUtils}, che si appoggia alla libreria opensource \texttt{OpenCSV} \cite{opencsv};
-\item gestire eventuali richieste di terminazione forzata del benchmark provenienti dalla UI, 
+(\texttt{DEFAULT\_MEASUREMENT\_ITERATIONS} = 5), salvando i risultati in una struttura dati apposita (record).
+I tempi sono memorizzati in secondi.
+\item Salvare i risultati contenuti nel record in un file CSV utilizzando la classe \texttt{OpenCsvUtils}, che si appoggia alla libreria opensource \texttt{OpenCSV} \cite{opencsv}.
+\item Gestire eventuali richieste di terminazione forzata del benchmark provenienti dalla UI, 
 interrompendone l'esecuzione.
 \end{enumerate}
 
-\paragraph{launchPart2}
+\subsubsection{launchPart2}
 Si occupa di eseguire la compressione delle immagini utilizzando la trasformata DCT2 fornita dalla libreria
 \texttt{JTransform}, di inviare l'immagine compressa alla UI e di salvare le immagini compresse in formato BMP.
-
+\\
 La classe \texttt{Part2} contiene i seguenti metodi:
-
 \begin{itemize}
     \item \texttt{BufferedImage compress(Pair<String, BufferedImage> imageInfo, int F, int d)}: esegue l'intera pipeline di compressione dell'immagine:
     \begin{enumerate}
-        \item converte l'immagine di input in una matrice di \texttt{double};
-        \item ritaglia la matrice in modo che le sue dimensioni siano multipli di \texttt{F};
-        \item per ogni blocco di dimensione \texttt{F} $\times$ \texttt{F}, richiama il metodo \texttt{compressBlock} per effettuare la compressione;
-        \item converte la matrice risultante in una \texttt{BufferedImage};
-        \item salva l'immagine compressa nella cartella \texttt{output} e successivamente la inoltra alla UI.
+        \item Converte l'immagine in input in una matrice di \texttt{double}.
+        \item Ritaglia la matrice in modo che le sue dimensioni siano multipli di \texttt{F}.
+        \item Per ogni blocco di dimensione \texttt{F} $\times$ \texttt{F}, richiama il metodo \texttt{compressBlock} per effettuare la compressione.
+        \item Converte la matrice risultante in una \texttt{BufferedImage}.
+        \item Salva l'immagine compressa nella cartella \texttt{output} e successivamente la inoltra alla UI.
     \end{enumerate}
 
     \item \texttt{void compressBlock(double[][] signal, int i, int j, int F, int d)}: comprime un blocco dell'immagine di dimensione \texttt{F} $\times$ \texttt{F}:
     \begin{enumerate}
-        \item copia il blocco in una matrice di \texttt{double};
-        \item applica la DCT2 al blocco utilizzando il metodo \texttt{forward(matrix, scale)} dell'oggetto \texttt{DoubleDCT\_2D} della libreria \texttt{JTransform}, impostando \texttt{scale = true}. In questo modo viene utilizzata una normalizzazione ortonormale, coerente con quella adottata nella nostra implementazione della DCT2;
-        \item elimina le componenti ad alta frequenza in base al parametro \texttt{d};
-        \item applica la trasformata inversa IDCT2 mediante il metodo \texttt{inverse(matrix, scale)}, con \texttt{scale = true};
-        \item richiama il metodo \texttt{shiftBlockBy255} per riportare i valori del blocco nell'intervallo \([0, 255]\);
-        \item copia il blocco compresso nella matrice dell'immagine risultante.
+        \item Copia il blocco in una matrice di \texttt{double}.
+        \item Applica la DCT2 al blocco utilizzando il metodo \texttt{forward(matrix, scale)} dell'oggetto \\ 
+		\texttt{DoubleDCT\_2D} della libreria \texttt{JTransform}, impostando \texttt{scale = true}.
+		In questo modo viene utilizzata una normalizzazione ortonormale, coerente con quella adottata nella nostra implementazione della DCT2.
+        \item Elimina le componenti ad alta frequenza in base al parametro \texttt{d}.
+        \item Applica la trasformata inversa IDCT2 mediante il metodo \texttt{inverse(matrix, scale)}, con \texttt{scale = true}.
+        \item Richiama il metodo \texttt{shiftBlockBy255} per riportare i valori del blocco nell'intervallo \([0, 255]\).
+        \item Copia il blocco compresso nella matrice dell'immagine risultante.
     \end{enumerate}
 
     \item \texttt{void shiftBlockBy255(double[][] matrix)}: effettua uno shift dei valori nell'intervallo \([0, 255]\), riportandoli nel dominio delle immagini BMP.
 \end{itemize}
-
+\noindent
 I metodi di conversione tra \texttt{BufferedImage} e matrici di \texttt{double} e il salvataggio
 in formato BMP sono implementati nella classe \texttt{ImageUtils}.
 
 \subsection{GUI}
-Il package \texttt{com.unimib.assignment.GUI} offre 3 schermate principali: due schermate iniziali per il lancio dei benchmark
-e per l'avvio della compressione delle immagini, una schermata dedicata alla compressione e una schermata per
-l'inserimento dei parametri di compressione. La Figura \ref{fig:main-screen-1} mostra la schermata iniziale per la scelta tra benchmark e compressione,
-la Figura \ref{fig:main-screen-2} la schermata iniziale una volta scelta l'opzione benchmark, la Figura \ref{fig:compression-screen}
-la schermata di compressione delle immagini e la Figura \ref{fig:parameters-screen} la schermata d'inserimento dei parametri di compressione.
-Per l'avvio dei benchmark e della compressione delle immagini, la UI si appoggia alla classe 
-\texttt{PartsLauncher} del package \texttt{backend.launcher}.
-\begin{figure}[hbt]
-    \centering
-    \begin{minipage}[t]{0.44\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/main-screen-1.png}
+Il package \texttt{com.unimib.assignment.GUI} offre 3 schermate principali: 
+\begin{itemize}
+	\item La scermata iniziale che presenta la scelta tra benchmark e compressione delle immagini, mostrata in figura \ref{fig:main-screen-1}
+	La figura \ref{fig:main-screen-2} mostra invece la schermata iniziale una volta scelta l'opzione di benchmark, che presenta un pulsante per interromperne l'esecuzione.
+	\item Una schermata per la selezione dell'immagine da comprimere, che mostra un'anteprima dell'immagine selezionata e, una volta effettuata, il risultato della compressione. Tale schermata è mostrata in figura \ref{fig:compression-screen}
+	\item Una schermata per la scelta dei parametri di compressione, mostrata in figura \ref{fig:parameters-screen}.
 
-        \small Schermata iniziale per la scelta tra benchmark e compressione delle immagini
-        \label{fig:main-screen-1}
-    \end{minipage}\hfill
-    \begin{minipage}[t]{0.44\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/main-screen-2.png}
+\end{itemize}
+\begin{multicols}{2}
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{figures/main-screen-1.png}
 
-        \small Schermata iniziale una volta scelta l'opzione di benchmark
-        \label{fig:main-screen-2}
-    \end{minipage}
-\end{figure}
+	\caption{Schermata iniziale per la scelta tra benchmark e compressione delle immagini}
+	\label{fig:main-screen-1}
+	\end{figure}
+	\vfill
+	\columnbreak
+	
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{figures/main-screen-2.png}
 
-\begin{figure}[hbt]
+	\caption{Schermata iniziale una volta scelta l'opzione di benchmark}
+	\label{fig:main-screen-2}
+	\end{figure}
+	\vfill
+\end{multicols}
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/compression-screen.png}
     \caption{Schermata di compressione delle immagini}
     \label{fig:compression-screen}
 \end{figure}
 
-\begin{figure}[hbt]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.35\textwidth]{figures/parameters-screen.png}
+    \includegraphics[width=0.38\textwidth]{figures/parameters-screen.png}
     \caption{Schermata d'inserimento dei parametri di compressione}
     \label{fig:parameters-screen}
 \end{figure}

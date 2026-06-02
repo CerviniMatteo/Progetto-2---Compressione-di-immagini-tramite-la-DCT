@@ -19,20 +19,8 @@ import com.unimib.assignment.GUI.UI.PartChooserWindow;
 public class Application {
 
     /**
-     * Main method that orchestrates the application workflow.
-     * <p>
-     * Execution flow:
-     * </p>
-     * <ol>
-     *   <li>Instantiates Part1 and runs a DCT benchmark on matrices of sizes
-     *       {@code [8, 16, 32, 64, 128, 256, 512, 1048, 2048]}.
-     *       Results are plotted to a PNG file and exported to {@code output/times_vs_size.csv}.</li>
-     *   <li>After the benchmark completes, displays an image picker UI allowing the user to select
-     *       an image file from the file system.</li>
-     *   <li>Upon image selection, instantiates Part2 and applies DCT-based compression with
-     *       user-selected compression parameters (block size and frequency cutoff).</li>
-     *   <li>The compressed image is saved to {@code output/} and displayed alongside the original image.</li>
-     * </ol>
+     * Main method that runs the main UI window.
+     *
      *
      * @param args command-line arguments (not used)
      */

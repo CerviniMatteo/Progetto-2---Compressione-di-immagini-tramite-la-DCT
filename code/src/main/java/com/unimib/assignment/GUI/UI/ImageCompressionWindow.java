@@ -120,7 +120,7 @@ public class ImageCompressionWindow extends JFrame {
 
                     originalViewer.setImage(
                             selectedImage,
-                            selectedImageName,
+                            selectedImageName.substring(0, selectedImageName.lastIndexOf(".")),
                             sizeKb
                     );
                 })

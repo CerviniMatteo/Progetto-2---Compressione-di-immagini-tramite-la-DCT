@@ -139,49 +139,48 @@ public class PartChooserWindow extends JFrame {
      *
      * @return configured button panel
      */
-     private JPanel createButtonPanel() {
+    private JPanel createButtonPanel() {
 
-         JPanel panel = new JPanel();
-         panel.setLayout(new GridLayout(1, 2, GAP_GRID_COL_BUTTONS, 0));
-         panel.setBackground(COLOR_DARK);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1, 2, GAP_GRID_COL_BUTTONS, 0));
+        panel.setBackground(COLOR_DARK);
 
-         part1Button        = getStyledButton(GUIConstants.PART1_BUTTON_HTML,          BUTTON_STYLE);
-         part2Button        = getStyledButton(GUIConstants.PART2_BUTTON_HTML,          BUTTON_STYLE);
-         endBenchmarkButton = getStyledButton(GUIConstants.STOP_BENCHMARK_BUTTON_HTML, RED_BUTTON_STYLE);
+        part1Button        = getStyledButton(GUIConstants.PART1_BUTTON_HTML,          BUTTON_STYLE);
+        part2Button        = getStyledButton(GUIConstants.PART2_BUTTON_HTML,          BUTTON_STYLE);
+        endBenchmarkButton = getStyledButton(GUIConstants.STOP_BENCHMARK_BUTTON_HTML, RED_BUTTON_STYLE);
 
-         Dimension buttonSize = new Dimension(BUTTON_WIDTH_PART_CHOOSER, BUTTON_HEIGHT_PART_CHOOSER);
-         part1Button.setPreferredSize(buttonSize);
-         part2Button.setPreferredSize(buttonSize);
-         endBenchmarkButton.setPreferredSize(buttonSize);
+        // Allow HTML text inside buttons to wrap when the button is small
+        part1Button.setHorizontalAlignment(SwingConstants.CENTER);
+        endBenchmarkButton.setHorizontalAlignment(SwingConstants.CENTER);
 
-         endBenchmarkButton.addActionListener(e -> {
-             log.info(GUIConstants.LOG_BENCHMARK_THREAD_CANCELED);
-             benchmarkCancelled.set(true);
-             if (benchmarkWorker != null && !benchmarkWorker.isDone()) {
-                 benchmarkWorker.cancel(true);
-             }
-         });
+        endBenchmarkButton.addActionListener(e -> {
+            log.info(GUIConstants.LOG_BENCHMARK_THREAD_CANCELED);
+            benchmarkCancelled.set(true);
+            if (benchmarkWorker != null && !benchmarkWorker.isDone()) {
+                benchmarkWorker.cancel(true);
+            }
+        });
 
-         part1Button.addActionListener(e -> {
-             try {
-                 handlePart1();
-             } catch (CancellationException ex) {
-                 log.error(BENCHMARK_ERROR, ex);
-             }
-         });
+        part1Button.addActionListener(e -> {
+            try {
+                handlePart1();
+            } catch (CancellationException ex) {
+                log.error(BENCHMARK_ERROR, ex);
+            }
+        });
 
-         part2Button.addActionListener(e -> handlePart2());
+        part2Button.addActionListener(e -> handlePart2());
 
-         leftPanel = new JPanel();
-         leftPanel.setLayout(new BorderLayout(0, 10));
-         leftPanel.setBackground(COLOR_DARK);
-         leftPanel.add(part1Button, BorderLayout.CENTER);
+        leftPanel = new JPanel();
+        leftPanel.setLayout(new GridLayout(1, 1, 0, GAP_GRID_COL_BUTTONS)); // starts as 1 row
+        leftPanel.setBackground(COLOR_DARK);
+        leftPanel.add(part1Button);
 
-         panel.add(leftPanel);
-         panel.add(part2Button);
+        panel.add(leftPanel);
+        panel.add(part2Button);
 
-         return panel;
-     }
+        return panel;
+    }
 
     /**
      * Handles the Part 1 button action.
@@ -191,7 +190,8 @@ public class PartChooserWindow extends JFrame {
         log.info(LOG_PART1_SELECTED);
         enableButtons(false);
 
-        leftPanel.add(endBenchmarkButton, BorderLayout.SOUTH);
+        leftPanel.setLayout(new GridLayout(2, 1, 0, scale(8)));
+        leftPanel.add(endBenchmarkButton);
         leftPanel.revalidate();
         leftPanel.repaint();
 
@@ -208,10 +208,10 @@ public class PartChooserWindow extends JFrame {
             protected void done() {
                 try {
                     get();
-                } catch (Exception ignored) {
-                    // Cancellation or other errors are expected
-                }
+                } catch (Exception ignored) {}
+
                 leftPanel.remove(endBenchmarkButton);
+                leftPanel.setLayout(new GridLayout(1, 1, 0, 0));
                 leftPanel.revalidate();
                 leftPanel.repaint();
 

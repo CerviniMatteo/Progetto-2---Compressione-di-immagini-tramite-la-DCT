@@ -4,7 +4,6 @@ import com.unimib.assignment.GUI.enums.ButtonStyle;
 import com.unimib.assignment.GUI.enums.PanelContrast;
 import com.unimib.assignment.GUI.constants.GUIConstants;
 import com.unimib.assignment.backend.launcher.PartsLauncher;
-import com.formdev.flatlaf.FlatDarkLaf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import javax.swing.*;
@@ -79,15 +78,11 @@ public class PartChooserWindow extends JFrame {
         setLayout(new BorderLayout(10, 10));
 
         styleFrame(this);
+        getContentPane().setBackground(COLOR_DARK);
 
         JPanel mainPanel = createMainPanel();
         add(mainPanel, BorderLayout.CENTER);
 
-        try {
-            UIManager.setLookAndFeel(new FlatDarkLaf());
-        } catch (Exception e) {
-            log.error(GUIConstants.LOG_THEME_APPLY_FAILED, e);
-        }
 
         setVisible(true);
     }

@@ -1,6 +1,9 @@
 package com.unimib.assignment;
 
 import com.unimib.assignment.GUI.UI.PartChooserWindow;
+import com.formdev.flatlaf.FlatDarkLaf;
+
+import javax.swing.*;
 
 /**
  * Main entry point for the DCT-based image processing application.
@@ -25,6 +28,11 @@ public class Application {
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
-        new PartChooserWindow();
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (Exception ignored) {
+        }
+
+        SwingUtilities.invokeLater(PartChooserWindow::new);
     }
 }

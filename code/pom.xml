@@ -58,14 +58,12 @@
                 <version>3.11.2</version>
 
                 <configuration>
-                    <!-- include more than just public API if you want -->
                     <show>private</show>
 
-                    <!-- optional but recommended for CI -->
-                    <failOnError>false</failOnError>
-
-                    <!-- ensures consistent encoding -->
-                    <encoding>UTF-8</encoding>
+                    <!-- IMPORTANT: forces full member visibility -->
+                    <additionalJOptions>
+                        <additionalJOption>-private</additionalJOption>
+                    </additionalJOptions>
                 </configuration>
 
                 <executions>

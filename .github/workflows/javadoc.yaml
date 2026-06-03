@@ -25,7 +25,7 @@ jobs:
           java-version: 25
 
       - name: Generate Javadoc
-        run: mvn -B javadoc:javadoc
+        run: cd code && mvn -B javadoc:javadoc
 
       - name: Verify Javadoc generation
         run: |

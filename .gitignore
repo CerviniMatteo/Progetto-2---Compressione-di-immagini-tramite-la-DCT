@@ -2,7 +2,7 @@
 target/
 build/
 out/
-
+code/doc
 # IDE
 .idea/
 *.iml

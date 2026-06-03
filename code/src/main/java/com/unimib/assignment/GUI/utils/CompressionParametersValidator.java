@@ -4,7 +4,6 @@ import static com.unimib.assignment.GUI.constants.PickerConstants.*;
 
 /**
  * Utility class for validating compression parameters.
- * <p>
  * This class provides business logic validation for DCT compression parameters,
  * ensuring that:
  * <ul>
@@ -12,21 +11,18 @@ import static com.unimib.assignment.GUI.constants.PickerConstants.*;
  *   <li>Truncation parameter d is within valid range relative to F</li>
  *   <li>Parameters are valid relative to image dimensions</li>
  * </ul>
- * </p>
  */
 public class CompressionParametersValidator {
 
 
     /**
      * Validates the input parameters against compression business rules.
-     * <p>
      * Validation checks:
      * <ul>
      *   <li>F must be non-negative (F >= 0)</li>
-     *   <li>d must satisfy: 0 <= d <= 2*F - 2</li>
+     *   <li>d must satisfy: 0 &lt;= d &lt;= 2*F - 2</li>
      *   <li>Both F and d must be less than or equal to image dimensions (rows and cols)</li>
      * </ul>
-     * </p>
      *
      * @param F compression factor (block size)
      * @param d truncation parameter (frequency cutoff)

@@ -7,27 +7,23 @@ import java.awt.*;
 
 /**
  * Utility class for creating consistently styled dialogs throughout the application.
- * <p>
  * This class centralizes dialog creation logic, ensuring all dialogs share:
  * <ul>
  *   <li>Dark theme colors and styling</li>
  *   <li>Consistent fonts and layouts</li>
  *   <li>Proper background and foreground colors</li>
  * </ul>
- * </p>
  */
 public class DialogCreator {
 
     /**
      * Creates a dark-themed error dialog.
-     * <p>
      * Configures the dialog with:
      * <ul>
      *   <li>Dark background for all components</li>
      *   <li>White text for readability</li>
      *   <li>ERROR_MESSAGE type for appropriate icon</li>
      * </ul>
-     * </p>
      *
      * @param parent the parent frame for the dialog
      * @param title the dialog title

@@ -15,14 +15,12 @@ import static com.unimib.assignment.GUI.constants.PickerConstants.*;
 
 /**
  * Utility class for file picker and directory resolution operations.
- * <p>
  * This class provides reusable methods for:
  * <ul>
  *   <li>Resolving initial directories for file choosers</li>
  *   <li>Copying files to output directories</li>
  *   <li>File system operations with proper logging and error handling</li>
  * </ul>
- * </p>
  */
 public class FilePickerUtils {
 
@@ -31,7 +29,6 @@ public class FilePickerUtils {
 
     /**
      * Resolves the initial directory for the file chooser.
-     * <p>
      * Attempts to locate the user's application-specific images directory by:
      * <ol>
      *   <li>Resolving the user's home directory</li>
@@ -39,12 +36,8 @@ public class FilePickerUtils {
      *   <li>Navigating to the project-specific images subdirectory</li>
      *   <li>Falling back to Downloads if the project directory doesn't exist</li>
      * </ol>
-     * </p>
-     * <p>
      * This method handles localization by supporting both English ("Downloads") and
      * Italian ("Scaricati") directory names.
-     * </p>
-     *
      * @return the resolved directory path for file chooser operations
      *
      * @see java.lang.System#getProperty
@@ -69,7 +62,6 @@ public class FilePickerUtils {
 
     /**
      * Copies the selected file to the application's output directory.
-     * <p>
      * This method:
      * <ol>
      *   <li>Logs the copy operation</li>
@@ -77,7 +69,6 @@ public class FilePickerUtils {
      *   <li>Copies the file to the output directory, replacing if it already exists</li>
      *   <li>Logs the completion of the copy</li>
      * </ol>
-     * </p>
      *
      * @param file the file to copy to the output directory
      *

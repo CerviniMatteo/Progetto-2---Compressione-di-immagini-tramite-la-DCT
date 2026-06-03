@@ -30,27 +30,27 @@ L'implementazione della DCT2 è mostrato nel listing \ref{ls:DCT2}, mentre i met
 	language=Java,
 	style = Java,
 	caption = Algoritmo DCTII(DCT2) implementato nel package \texttt{lib},
-	firstline=79,
-	lastline=107,
+	firstline=67,
+	lastline=94,
 	label=ls:DCT2
 ]{../code/src/main/java/com/unimib/assignment/backend/lib/DCT2.java}
 \lstinputlisting[
 	language=Java,
 	style = Java,
 	caption = Algoritmo forward implementato nel package \texttt{lib},
-	firstline=38,
-	lastline=44,
+	firstline=26,
+	lastline=32,
 	label=ls:forward
 ]{../code/src/main/java/com/unimib/assignment/backend/lib/DCT2.java}
 \lstinputlisting[
 	language=Java,
 	style = Java,
 	caption = Algoritmo inverse implementato nel package \texttt{lib},
-	firstline=57,
-	lastline=64,
+	firstline=45,
+	lastline=52,
 	label=ls:inverse
 ]{../code/src/main/java/com/unimib/assignment/backend/lib/DCT2.java}
-\section{Part1 e Part2}
+\section{Gestione dell'esecuzione}
 
 Il package \texttt{com.unimib.assignment.backend.launcher} contiene la classe \texttt{PartsLauncher},
 che espone alla UI due metodi: 
@@ -78,9 +78,10 @@ interrompendone l'esecuzione.
 \end{enumerate}
 
 \subsubsection{launchPart2}
-Si occupa di eseguire la compressione delle immagini utilizzando la trasformata DCT2 fornita dalla libreria
-\texttt{JTransform}, di inviare l'immagine compressa alla UI e di salvare le immagini compresse in formato BMP.
-\\
+Una volta scelta un'immagine, questa classe si occupa di inviare alla UI la sua versione compressa e di salvarla
+in formato BMP. La compressione dell'immagine avviene invocando la classe \texttt{Part2}, la quale si occupa di 
+eseguire la compressione delle immagini utilizzando la trasformata DCT2 fornita dalla libreria
+\texttt{JTransform}.
 La classe \texttt{Part2} contiene i seguenti metodi:
 \begin{itemize}
     \item \texttt{BufferedImage compress(Pair<String, BufferedImage> imageInfo, int F, int d)}: esegue l'intera pipeline di compressione dell'immagine:

@@ -103,7 +103,7 @@
          * <ul>
          *   <li>The first row contains: {@code D[0][j] = 1 / sqrt(size)}</li>
          *   <li>Subsequent rows contain cosine basis functions:
-         *       {@code D[i][j] = sqrt(2 / size) * cos(π * (j + 0.5) * i / size)} for {@code i >= 1}</li>
+         *       {@code D[i][j] = sqrt(2 / size) * cos(pi * (j + 0.5) * i / size)} for {@code i >= 1}</li>
          * </ul>
          * <p>
          * This matrix is orthonormal (with the chosen scaling) and is used to perform

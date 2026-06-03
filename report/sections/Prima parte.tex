@@ -11,8 +11,8 @@ Le entrate di questa matrice sono generate in maniera casuale in un intervallo d
     language=Java,
     style = Java,
     caption = Generazione di matrici casuali,
-	firstline=188,
-	lastline=199
+	firstline=181,
+	lastline=195
 ]{../code/src/main/java/com/unimib/assignment/backend/launcher/PartsLauncher.java}
 Per eseguire le misurazioni, abbiamo utilizzato la libreria \texttt{Java Microbenchmark Harness}(JMH)\cite{openjdk_jmh}, che ci ha permesso di eseguire i benchmark in modo affidabile e preciso,
 gestendo automaticamente le iterazioni di warmup e misurazione.
@@ -27,8 +27,8 @@ Il codice di configurazione del benchmark è riportato nel listing \ref{ls:bench
 	language=Java,
 	style = Java,
 	caption = Configurazione del benchmark con JMH,
-	firstline=123,
-	lastline=144,
+	firstline=101,
+	lastline=128,
 	label=ls:benchmark
 ]{../code/src/main/java/com/unimib/assignment/backend/benchmark/JmhBenchmarkExecutor.java}
 \section{Risultati}
@@ -36,8 +36,8 @@ I risultati del benchmark sono riportati nella figura \ref{fig:DCT2_benchamrk_re
 \begin{figure}[hbt]
     \centering
     \includegraphics[
-        width = \textwidth,
-        trim= 0cm 9.5cm 0cm 9cm
+        width = 0.95\textwidth,
+        trim= 0cm 11cm 0cm 10.5cm
         ]{../plots/results/figure_01_semilogy_benchmark.pdf}
     \caption{Risultati del benchmark tra la nostra implementazione della DCT2 e quella fornita da \texttt{JTransform}}
     \label{fig:DCT2_benchamrk_results}

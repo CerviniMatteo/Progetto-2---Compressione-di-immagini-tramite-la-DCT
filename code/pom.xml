@@ -52,6 +52,31 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.11.2</version>
+
+                <configuration>
+                    <!-- include more than just public API if you want -->
+                    <show>private</show>
+
+                    <!-- optional but recommended for CI -->
+                    <failOnError>false</failOnError>
+
+                    <!-- ensures consistent encoding -->
+                    <encoding>UTF-8</encoding>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

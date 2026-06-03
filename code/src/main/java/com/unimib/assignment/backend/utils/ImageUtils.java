@@ -7,17 +7,13 @@ import java.io.IOException;
 
 import static com.unimib.assignment.backend.constants.ImageConstants.*;
 
+/** Class containing images helpers methods*/
 public class ImageUtils {
     /**
-     * Converts a grayscale {@link BufferedImage} into a 2D integer array.
-     * <p>
-     * If image dimensions are not multiples of 8, the method pads the signal by
-     * replicating edge pixels. This avoids introducing artificial black borders and
-     * keeps boundary values coherent for block-based processing.
-     * </p>
+     * Converts a grayscale {@link BufferedImage} into a 2D double array.
      *
      * @param img source image (expected grayscale; channel 0 is read)
-     * @return padded matrix of pixel samples where {@code signal[y][x]} is the sample at {@code (x, y)}
+     * @return matrix of pixel samples where {@code signal[y][x]} is the sample at {@code (x, y)}
      */
     public static double[][] convertImageToArray(BufferedImage img){
         int width = img.getWidth();
@@ -27,7 +23,8 @@ public class ImageUtils {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                    signal[y][x] = img.getRaster().getSample(x, y, 0);
+                // Read the sample from the first channel (grayscale) and store it in the matrix.
+                signal[y][x] = img.getRaster().getSample(x, y, 0);
             }
         }
         return signal;
@@ -52,6 +49,7 @@ public class ImageUtils {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
+                // Write the sample value from the matrix into the first channel of the image.
                 img.getRaster().setSample(x, y, 0, signal[y][x]);
             }
         }
@@ -62,9 +60,9 @@ public class ImageUtils {
     /**
      * Saves a {@link BufferedImage} as a BMP file on disk.
      * <p>
-     * The method appends {@code ".bmp"} to the provided path, writes the file via
-     * and prints
-     * the absolute output path to standard output.
+     * The method appends {@code ".bmp"} to the provided path,
+     * writes the file via ImageIO write object into the output folder
+     * and prints the absolute output path to standard output.
      * </p>
      *
      * @param img image to persist

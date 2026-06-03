@@ -5,36 +5,23 @@
     import static org.apache.commons.math3.util.FastMath.*;
 
     /**
-     * Implements the Discrete Cosine Transform (DCT) and its inverse (IDCT) for 2D signals.
+     * Implements the Discrete Cosine Transform (DCT) and its inverse (IDCT).
      * <p>
-     * This class provides methods to transform 2D signals between spatial and frequency domains using
-     * the DCT-II variant. The transformation is performed by computing DCT basis matrices and applying
-     * them as matrix multiplications. This approach is useful for signal compression, since high-frequency
-     * components can be selectively zeroed to reduce data without significant perceptual loss.
+     * This class provides methods to transform 2D matrices between spatial and frequency domains using
+     * the DCT-II variant.
      * </p>
-     *
-     * Example usage:
-     * <pre>
-     *     DCT2 dct2 = new DCT2();
-     *     double[][] signal = ...; // some 2D signal (e.g., an image block)
-     *     SimpleMatrix matrix = new SimpleMatrix(signal); // rows x cols
-     *     SimpleMatrix freq = dct2.DCT2(matrix);   // forward transform
-     *     SimpleMatrix recon = dct2.IDCT2(freq);    // inverse transform (reconstruction)
-     * </pre>
-     *
      * @see org.ejml.simple.SimpleMatrix
      */
     public class DCT2 {
         // =========================================================
         // DCT 2D
         // =========================================================
-
         /**
          * Computes the forward 2D Discrete Cosine Transform of the input signal.
          *
          * @param signal the input 2D signal as a {@link SimpleMatrix}; shape: rows x cols
-         * @return a new {@link SimpleMatrix} containing the DCT coefficients; the matrix has the same
-         *         dimensions as the input signal
+         * @return a new {@link SimpleMatrix} containing the DCT coefficients;
+         * the matrix has the same dimensions as the input signal
          */
         public SimpleMatrix forward(SimpleMatrix signal) {
             // Compute DCT basis matrices for the row and column dimensions
@@ -73,8 +60,8 @@
          * </ol>
          *
          * @param signal the input matrix to transform (will not be modified directly; a copy is used)
-         * @param Dn     transform matrix to apply to rows (or its transpose depending on forward/inverse choice)
-         * @param Dm     transform matrix to apply to columns (or its transpose depending on forward/inverse choice)
+         * @param Dn     transform matrix to apply to columns (or its transpose depending on forward/inverse choice)
+         * @param Dm     transform matrix to apply to rows (or its transpose depending on forward/inverse choice)
          * @return the transformed matrix (same dimensions as {@code signal})
          */
         private SimpleMatrix DCTII(SimpleMatrix signal, SimpleMatrix Dn, SimpleMatrix Dm){
@@ -97,7 +84,7 @@
             for (int i = 0; i < result.getNumRows(); i++) {
                 // Extract the i-th row as a vector(true flag is used to extract row)
                 SimpleMatrix row = result.extractVector(true, i);
-                // Apply the transform: (Dm * (row)^T)^T = row * Dm^T
+                // Apply the transform: (Dm * (row)^T)^T
                 SimpleMatrix transformed = Dm.mult(row.transpose()).transpose();
                 // Insert the transformed row back into the result matrix
                 result.insertIntoThis(i, 0, transformed);
@@ -114,12 +101,12 @@
          * Computes the DCT-II basis matrix for the specified size.
          * <p>The basis matrix is constructed as follows:</p>
          * <ul>
-         *   <li>The first row contains the constant basis: {@code D[0][j] = 1 / sqrt(size)}</li>
+         *   <li>The first row contains: {@code D[0][j] = 1 / sqrt(size)}</li>
          *   <li>Subsequent rows contain cosine basis functions:
          *       {@code D[i][j] = sqrt(2 / size) * cos(π * (j + 0.5) * i / size)} for {@code i >= 1}</li>
          * </ul>
          * <p>
-         * This matrix is orthonormal (with the chosen scaling) and is used in matrix multiplications to perform
+         * This matrix is orthonormal (with the chosen scaling) and is used to perform
          * the forward and inverse transforms.
          * </p>
          *

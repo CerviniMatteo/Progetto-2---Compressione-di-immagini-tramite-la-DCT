@@ -7,13 +7,6 @@ import java.awt.image.BufferedImage;
 
 /**
  * Implements block-based grayscale image compression using the 2D Discrete Cosine Transform (DCT).
- * <p>Compression strategy:</p>
- * <ul>
- *   <li>Split the image into non-overlapping {@code F x F} blocks</li>
- *   <li>Apply forward DCT to each block</li>
- *   <li>Zero high-frequency coefficients according to threshold {@code d}</li>
- *   <li>Apply inverse DCT and write reconstructed pixels back</li>
- * </ul>
  * The compressed image is saved as BMP in {@code OUTPUT_PATH}.
  */
 public class Part2 {
@@ -40,24 +33,31 @@ public class Part2 {
      * @return the compressed {@link BufferedImage}
      */
     public BufferedImage compress(Pair<String, BufferedImage> imageInfo, int F, int d) {
+        //Extract the second pair element(the image)
         BufferedImage image = imageInfo.getSecond();
+        //Convert the image to a 2D array of doubles for processing
         double[][] signal = ImageUtils.convertImageToArray(image);
 
+        //Calculate the largest dimensions that are multiples of F to ensure we only process complete blocks
         int rows = signal.length - signal.length % F;
         int cols = signal[0].length - signal[0].length % F;
 
         double[][] compressedImage = new double[rows][cols];
-        // cut image
+        //Cut image using new rows and cols dimension
         for (int i = 0; i < rows; i ++) {
+            //Copying only the specified number of columns for each row to the compressedImage array
             System.arraycopy(signal[i], 0, compressedImage[i], 0, cols);
         }
-        //compress blocks
+
+        //Compress blocks
         for (int i = 0; i < rows; i += F) {
             for (int j = 0; j < cols; j += F) {
+                //Call the compress block method
                 compressBlock(compressedImage, i, j, F, d);
             }
         }
 
+        //Convert the compressed 2D array back to a BufferedImage and save it as BMP
         BufferedImage result = ImageUtils.convertArrayToImage(compressedImage);
         ImageUtils.saveAsBMP(result, OUTPUT_PATH + imageInfo.getFirst());
         return result;
@@ -65,14 +65,6 @@ public class Part2 {
 
     /**
      * Compresses a single {@code F x F} block of the image signal in place.
-     * <p>Steps:</p>
-     * <ol>
-     *   <li>Copy block from {@code signal} to a temporary matrix</li>
-     *   <li>Convert to {@code double[][]} and apply forward DCT</li>
-     *   <li>Discard high-frequency components using diagonal rule {@code k + l >= d}</li>
-     *   <li>Apply inverse DCT</li>
-     *   <li>Round to integers, shift values by 255 (project-specific normalization), and copy back</li>
-     * </ol>
      *
      * @param signal full image signal matrix (modified in place)
      * @param i      top row index of the block
@@ -85,23 +77,27 @@ public class Part2 {
         double[][] block = new double[F][F];
 
         DoubleDCT_2D dct = new DoubleDCT_2D(F, F);
-        // copy block
+        //Copy block
         for (int k = 0; k < F; k++) {
             System.arraycopy(signal[i + k], j, block[k], 0, F);
         }
-        // calculate DCT2
+        //Calculate DCT2
         dct.forward(block, true);
-        // cut frequencies
+        //Cut frequencies
         for (int k = 0; k < F; k++) {
             for (int l = 0; l < F; l++) {
+                //Check the frequency boundary
                 if (k + l >= d) {
+                    //Set to 0 the frequencies outside the boundary
                     block[k][l] = 0;
                 }
             }
         }
-        // calculate IDCT2
+
+        //Calculate IDCT2
         dct.inverse(block, true);
-        // shift into bitmap domain
+
+        // Shift into bitmap domain([0, 255])
         shiftBlockBy255(block);
 
         for (int k = 0; k < F; k++) {
@@ -111,16 +107,13 @@ public class Part2 {
 
     /**
      * Clamps all values in a 2D integer array to the range {@code [0, 255]}.
-     * <p>
-     * This method is typically used to ensure pixel values remain within the valid
-     * byte range after image processing operations.
-     * </p>
      *
      * @param block the 2D integer array to clamp; modified in-place
      */
     public static void shiftBlockBy255(double[][] block) {
         for (int y = 0; y < block.length; y++) {
             for (int x = 0; x < block[0].length; x++) {
+                //Clamp the array into [0, 255] domain and round to the nearest integer
                 block[y][x] = Math.round(Math.max(0, Math.min(255, block[y][x])));
             }
         }

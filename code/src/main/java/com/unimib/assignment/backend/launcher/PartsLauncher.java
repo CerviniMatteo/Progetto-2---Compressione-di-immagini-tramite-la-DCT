@@ -28,8 +28,7 @@ import static com.unimib.assignment.backend.constants.LogConstants.LOG_BENCHMARK
  *         {@link AtomicBoolean} cancellation flag.
  *     </li>
  *     <li>
- *         Another controller only launches Part 2 image compression and does
- *         not require benchmark cancellation support.
+ *         Another controller launches Part 2 image compression.
  *     </li>
  * </ul>
  *
@@ -50,7 +49,7 @@ public class PartsLauncher {
     /** Logger used to report benchmark lifecycle events. */
     private static final Logger log = LogManager.getLogger(PartsLauncher.class);
 
-    /** Block sizes to benchmark (powers of 2). */
+    /** Block sizes to benchmark (powers of 2 for i = 3...13). */
     private static final int[] BENCHMARK_BLOCK_SIZES = {
             8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192
     };
@@ -138,12 +137,15 @@ public class PartsLauncher {
 
         log.debug(GUIConstants.LOG_BENCHMARK_THREAD_START);
 
+        //Creates a list containing matrices with random entries of increasing size
+        // to be used as input for the benchmark
         List<Object> matrices = new ArrayList<>();
 
         for (int n : BENCHMARK_BLOCK_SIZES) {
             matrices.add(randomMatrix(n));
         }
 
+        //Launches the benchmark with the matrices size, the matrices list and the cancellation flag
         part1.benchmark(
                 BENCHMARK_BLOCK_SIZES,
                 matrices,
@@ -163,20 +165,11 @@ public class PartsLauncher {
      *
      * @param F compression parameter
      * @param d compression parameter
-     * @param imagePair image to compress
+     * @param imagePair: a pair containing the image name and the image to be compressed
      * @return compressed image
      */
-    public BufferedImage launchPart2(
-            int F,
-            int d,
-            Pair<String, BufferedImage> imagePair
-    ) {
-
-        return new Part2().compress(
-                imagePair,
-                F,
-                d
-        );
+    public BufferedImage launchPart2(int F, int d, Pair<String, BufferedImage> imagePair) {
+        return new Part2().compress(imagePair, F, d);
     }
 
     /**
@@ -187,10 +180,13 @@ public class PartsLauncher {
      */
     public static double[][] randomMatrix(int n) {
 
+        //Creates a square matrix(n x n)
         double[][] m = new double[n][n];
 
+        //Double loop to fill the matrix
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
+                //Fill the i,j-th entry with a random double value between 0 and 100
                 m[i][j] = Math.random()*100;
             }
         }

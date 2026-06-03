@@ -55,7 +55,7 @@ public class CompressionParametersValidator {
      *
      * @param F compression factor
      *
-     * @throws IllegalArgumentException if F <= 1 with details about the requirement
+     * @throws IllegalArgumentException if F &lt;= 1 with details about the requirement
      */
     private static void validateCompressionFactor(int F) {
         if (F <= MIN_COMPRESSION_FACTOR) {
@@ -75,13 +75,13 @@ public class CompressionParametersValidator {
     /**
      * Validates that the truncation parameter d is within the valid range for the given F.
      * <p>
-     * The truncation parameter must satisfy: 0 <= d <= 2*F - 2
+     * The truncation parameter must satisfy: 0 &lt;= d &lt;= 2*F - 2
      * This ensures that the frequency cutoff is within the valid DCT coefficient range.
      * </p>
      * <p>
      * <strong>Calculation example:</strong><br>
-     * If F=8, then valid range for d is: 0 <= d <= 2*8-2 = 14<br>
-     * If d=16, validation fails because: 16 > 14 (exceeds max coefficient count)
+     * If F=8, then valid range for d is: 0 &lt;= d &lt;= 2*8-2 = 14<br>
+     * If d=16, validation fails because: 16 &gt; 14 (exceeds max coefficient count)
      * </p>
      *
      * @param d truncation parameter

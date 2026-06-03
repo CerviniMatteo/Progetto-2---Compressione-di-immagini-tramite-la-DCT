@@ -48,7 +48,6 @@ public class DialogCreator {
 
     /**
      * Applies dark theme styling to a dialog and all its components.
-     * <p>
      * Recursively applies dark background colors and white text to:
      * <ul>
      *   <li>Dialog background</li>
@@ -56,7 +55,6 @@ public class DialogCreator {
      *   <li>All nested panels</li>
      *   <li>All text labels</li>
      * </ul>
-     * </p>
      *
      * @param dialog the dialog to style
      */

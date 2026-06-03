@@ -25,30 +25,32 @@ jobs:
           java-version: 25
 
       - name: Generate Javadoc
-        run: cd code && mvn -B javadoc:javadoc
+        run: |
+          cd code
+          mvn -B javadoc:javadoc
 
       - name: Verify Javadoc generation
         run: |
-          if [ ! -d "target/reports/apidocs" ]; then
+          if [ ! -d "code/target/reports/apidocs" ]; then
             echo "Error: Javadoc directory not found!"
-            ls -la target/
+            ls -la code/target/ || true
             exit 1
           fi
           echo "Javadoc generated successfully"
-          ls -la target/reports/apidocs/
+          ls -la code/target/reports/apidocs/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: target/reports/apidocs
+          path: code/target/reports/apidocs
 
   deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
-    needs: build
 
     steps:
       - name: Deploy to GitHub Pages

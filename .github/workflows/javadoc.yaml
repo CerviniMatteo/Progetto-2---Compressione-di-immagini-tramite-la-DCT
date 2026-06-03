@@ -31,18 +31,18 @@ jobs:
 
       - name: Verify Javadoc generation
         run: |
-          if [ ! -d "code/target/site/apidocs" ]; then
+          if [ ! -d "code/target/reports/apidocs" ]; then
             echo "Error: Javadoc directory not found!"
             ls -la code/target/ || true
             exit 1
           fi
           echo "Javadoc generated successfully"
-          ls -la code/target/site/apidocs/
+          ls -la code/target/reports/apidocs/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: code/target/site/apidocs
+          path: code/target/reports/apidocs
 
   deploy:
     runs-on: ubuntu-latest

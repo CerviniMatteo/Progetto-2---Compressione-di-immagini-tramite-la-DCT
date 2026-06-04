@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
 
+import static com.unimib.assignment.GUI.factory.StylingFactory.scale;
 import static com.unimib.assignment.GUI.constants.PickerConstants.*;
 import static com.unimib.assignment.GUI.constants.UIStyleConstants.*;
 
@@ -41,7 +42,10 @@ public class ImagePicker {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(currentDirectory.toFile());
         fileChooser.setPreferredSize(
-                new Dimension(DIALOG_WIDTH_FILE_CHOOSER, DIALOG_HEIGHT_FILE_CHOOSER)
+                new Dimension(
+                        scale(DIALOG_WIDTH_FILE_CHOOSER),
+                        scale(DIALOG_HEIGHT_FILE_CHOOSER)
+                )
         );
 
         int result = fileChooser.showOpenDialog(null);

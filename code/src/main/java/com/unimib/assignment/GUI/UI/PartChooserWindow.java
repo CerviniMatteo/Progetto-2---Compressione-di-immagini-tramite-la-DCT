@@ -73,9 +73,10 @@ public class PartChooserWindow extends JFrame {
         super(GUIConstants.PART_CHOOSER_TITLE);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        setSize(scale(WINDOW_WIDTH), scale(WINDOW_HEIGHT));
+        setMinimumSize(new Dimension(scale(WINDOW_WIDTH), scale(WINDOW_HEIGHT)));
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout(scale(10), scale(10)));
 
         styleFrame(this);
         getContentPane().setBackground(COLOR_DARK);
@@ -95,8 +96,8 @@ public class PartChooserWindow extends JFrame {
     private JPanel createMainPanel() {
 
         JPanel mainPanel = getStyledPanel(PanelContrast.HIGH);
-        mainPanel.setLayout(new BorderLayout(0, 20));
-        mainPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
+        mainPanel.setLayout(new BorderLayout(0, scale(20)));
+        mainPanel.setBorder(new EmptyBorder(scale(30), scale(40), scale(30), scale(40)));
         mainPanel.add(createTitleSection(), BorderLayout.NORTH);
         mainPanel.add(createButtonPanel(), BorderLayout.CENTER);
 
@@ -118,12 +119,12 @@ public class PartChooserWindow extends JFrame {
          titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
          JLabel descriptionLabel = getStyledLabel(GUIConstants.PART_CHOOSER_DESCRIPTION, SwingConstants.CENTER);
-         descriptionLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, FONT_SIZE_FORM_LABEL));
+         descriptionLabel.setFont(new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, scale(FONT_SIZE_FORM_LABEL)));
          descriptionLabel.setForeground(COLOR_GRAY_PLACEHOLDER);
          descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         panel.add(titleLabel);
-        panel.add(Box.createVerticalStrut(10));
+        panel.add(Box.createVerticalStrut(scale(10)));
         panel.add(descriptionLabel);
 
         return panel;
@@ -137,7 +138,7 @@ public class PartChooserWindow extends JFrame {
     private JPanel createButtonPanel() {
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(1, 2, GAP_GRID_COL_BUTTONS, 0));
+        panel.setLayout(new GridLayout(1, 2, scale(GAP_GRID_COL_BUTTONS), 0));
         panel.setBackground(COLOR_DARK);
 
         part1Button        = getStyledButton(GUIConstants.PART1_BUTTON_HTML,          BUTTON_STYLE);
@@ -167,7 +168,7 @@ public class PartChooserWindow extends JFrame {
         part2Button.addActionListener(e -> handlePart2());
 
         leftPanel = new JPanel();
-        leftPanel.setLayout(new GridLayout(1, 1, 0, GAP_GRID_COL_BUTTONS)); // starts as 1 row
+        leftPanel.setLayout(new GridLayout(1, 1, 0, scale(GAP_GRID_COL_BUTTONS))); // starts as 1 row
         leftPanel.setBackground(COLOR_DARK);
         leftPanel.add(part1Button);
 

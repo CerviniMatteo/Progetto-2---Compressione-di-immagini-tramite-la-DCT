@@ -1,6 +1,9 @@
 package com.unimib.assignment.GUI.UI;
 
 
+import com.unimib.assignment.GUI.constants.GUIConstants;
+import com.unimib.assignment.GUI.constants.UIStyleConstants;
+
 import javax.swing.*;
 
 import java.awt.*;
@@ -19,13 +22,13 @@ public class ImageViewerPanel extends JPanel {
         titleLabel = new JLabel(title, SwingConstants.CENTER);
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(
-                new Font("Arial", Font.BOLD, 18)
+                new Font(GUIConstants.FONT_ARIAL, Font.BOLD, com.unimib.assignment.GUI.factory.StylingFactory.scale(UIStyleConstants.FONT_SIZE_HEADING))
         );
 
         infoLabel = new JLabel(" ", SwingConstants.CENTER);
         infoLabel.setForeground(Color.LIGHT_GRAY);
         infoLabel.setFont(
-                new Font("Arial", Font.PLAIN, 12)
+                new Font(GUIConstants.FONT_ARIAL, Font.PLAIN, com.unimib.assignment.GUI.factory.StylingFactory.scale(UIStyleConstants.FONT_SIZE_SMALL))
         );
 
         imagePanel = new ScalableImagePanel();

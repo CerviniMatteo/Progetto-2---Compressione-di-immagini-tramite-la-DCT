@@ -26,7 +26,6 @@ public class ImageCompressionWindow extends JFrame {
 
     private BufferedImage selectedImage;
     private String selectedImageName;
-    private File selectedImageFile;
 
     private ImageViewerPanel originalViewer;
     private ImageViewerPanel compressedViewer;
@@ -37,6 +36,7 @@ public class ImageCompressionWindow extends JFrame {
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setMinimumSize(new Dimension(scale(960), scale(540)));
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -48,12 +48,17 @@ public class ImageCompressionWindow extends JFrame {
 
     private JPanel createTopPanel() {
         JPanel topButtonsPanel = getStyledPanel(PanelContrast.HIGH);
-        topButtonsPanel.setLayout(new BorderLayout(GAP_HORIZONTAL_STANDARD, GAP_VERTICAL_STANDARD));
-        topButtonsPanel.setBorder(new EmptyBorder(BORDER_TOP_TOP_CONTROLS, BORDER_LEFT_TOP_CONTROLS, BORDER_BOTTOM_TOP_CONTROLS, BORDER_RIGHT_TOP_CONTROLS));
+        topButtonsPanel.setLayout(new BorderLayout(scale(GAP_HORIZONTAL_STANDARD), scale(GAP_VERTICAL_STANDARD)));
+        topButtonsPanel.setBorder(new EmptyBorder(
+                scale(BORDER_TOP_TOP_CONTROLS),
+                scale(BORDER_LEFT_TOP_CONTROLS),
+                scale(BORDER_BOTTOM_TOP_CONTROLS),
+                scale(BORDER_RIGHT_TOP_CONTROLS)
+        ));
         JLabel titleLabel = getStyledHeadingLabel(GUIConstants.DCT_IMAGE_COMPRESSION_TITLE);
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBackground(COLOR_DARK);
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, GAP_HORIZONTAL_STANDARD, 0));
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, scale(GAP_HORIZONTAL_STANDARD), 0));
         JButton chooseImageButton = getStyledButton(GUIConstants.BUTTON_CHOOSE_IMAGE, ButtonStyle.STYLE2);
         JButton compressButton = getStyledButton(GUIConstants.BUTTON_COMPRESS_IMAGE, ButtonStyle.STYLE3);
         buttonsPanel.add(chooseImageButton);
@@ -73,10 +78,10 @@ public class ImageCompressionWindow extends JFrame {
 
         imagesPanel.setBorder(
                 new EmptyBorder(
-                        BORDER_TOP_PANEL,
-                        BORDER_LEFT_PANEL,
-                        BORDER_BOTTOM_PANEL,
-                        BORDER_RIGHT_PANEL
+                        scale(BORDER_TOP_PANEL),
+                        scale(BORDER_LEFT_PANEL),
+                        scale(BORDER_BOTTOM_PANEL),
+                        scale(BORDER_RIGHT_PANEL)
                 )
         );
 
@@ -113,7 +118,6 @@ public class ImageCompressionWindow extends JFrame {
 
             new SwingWorkerHelper<>(() -> ImageUtils.copyBufferedImage(img))
                 .onSuccess(copiedImage -> {
-                    selectedImageFile = file;
                     selectedImageName = file.getName();
                     selectedImage = copiedImage;
                     double sizeKb = file.length() / 1024.0;

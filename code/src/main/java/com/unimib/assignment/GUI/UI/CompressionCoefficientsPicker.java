@@ -77,8 +77,9 @@ public class CompressionCoefficientsPicker extends JFrame {
         super(COMPRESSION_FACTOR_PICKER);
 
          setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-         setSize(WINDOW_WIDTH_PICKER, WINDOW_HEIGHT_PICKER);
-         setLayout(new BorderLayout(10, 10));
+         setSize(scale(WINDOW_WIDTH_PICKER), scale(WINDOW_HEIGHT_PICKER));
+         setMinimumSize(new Dimension(scale(WINDOW_WIDTH_PICKER), scale(WINDOW_HEIGHT_PICKER)));
+         setLayout(new BorderLayout(scale(10), scale(10)));
          // Apply dark theme styling
          styleFrame(this);
          getContentPane().setBackground(COLOR_DARK);

@@ -1,5 +1,5 @@
 \section{Test su immagini}
-Per provare la nostra implementazione della compressione tramite DCT2, abbiamo scelto due immagini: una di Tony Pitony e una di Lena (immagine classica per l'image processing).
+Per provare la nostra implementazione della compressione tramite DCT2, abbiamo scelto due immagini: una di Tony Pitony, una di Lena (immagine classica per l'image processing) e una scacchiera di $40 \times 40$ pixel.
 Per entrambe le immagini, abbiamo applicato la DCT2 con diversi valori di $f$ (la dimensione del blocco) e $d$ (il coefficiente del taglio).
 Di seguito sono riportati i risultati ottenuti per ciascuna immagine, le quali sono anche disponibili in formato \texttt{.bmp} al \href{https://drive.google.com/drive/folders/1BKgunC00Pi3_k0nMBObjdeB1KHGHyaLH}{link}.
 \subsection{Tony Pitony}
@@ -56,14 +56,14 @@ L'effetto sulle nostre immagini è evidenziato in figura \ref{fig:tony_pitony_ri
 \begin{figure}[H]
 	\centering
 	% limit graphic size to avoid "Dimension too large" errors
-	\includegraphics[width=0.7\textwidth]{figures/ringing.png}
+	\includegraphics[width=0.77\textwidth]{figures/ringing.png}
 	\caption{Artefatti di tipo ringing}
 	\label{fig:ringing}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	% limit graphic size to avoid "Dimension too large" errors
-	\includegraphics[width=0.7\textwidth]{figures/ringingTonyPitony.png}
+	\includegraphics[width=0.75\textwidth]{figures/ringingTonyPitony.png}
 	\caption{Zoom sull'immagine di Tony Pitony compressa con DCT2, con $f=128$ e $d=64$, evidenziando gli artefatti di tipo ringing}
 	\label{fig:tony_pitony_ringing}
 \end{figure}
@@ -118,5 +118,61 @@ In particolare, con $d=12$ e $d=8$ l'immagine compressa è molto simile all'orig
 	\includegraphics[width=0.5\textwidth]{figures/lena_compressed_f8_d0.pdf}
 	\caption{Immagine di Lena compressa con DCT2, con $f=8$ e $d=0$}
 	\label{fig:lena_compressed_f8_d0}
+\end{figure}
+\end{multicols}
+\subsection{Scacchiera}
+L'analisi dell'immagine in figura \ref{fig:scacchiera} è interessante in quanto permette di osservare il contributo del coefficiente della componente continua nella trasformata coseno di immagini.
+Dato che l'immagine è composta da aree uniformi di colore bianco e nero, la componente a frequenza $0$ (ovvero il coefficiente della componente continua) è particolarmente importante per mantenere la struttura dell'immagine.
+Ogni quadrato della scacchiera è di dimensione $10 \times 10$ pixel.
+Scegliendo il parametro $f$ in modo da far corrispondere i blocchi con i quadrati della scacchiera, ad esempio $f=10$ e $f=5$, e mantenendo solo il coefficiente della componente continua (ovvero $d=1$), otteniamo un'immagine compressa che mantiene la struttura della scacchiera, in quanto essendo i quadrati uniformi, la componente continua è sufficiente per rappresentarli.
+L'effetto della compressione eseguita con questi parametri è mostrato in figura \ref{fig:scacchiera_compressed_f10_d1} e in figura \ref{fig:scacchiera_compressed_f5_d1}.
+Scegliendo invece $f=20$, quindi prendendo un quadrato che contiene due quadrati neri e due quadrati bianchi, e mantenendo solo il coefficiente della componente continua, otteniamo un'immagine compressa che perde completamente la struttura della scacchiera, risultando in un'immagine grigia uniforme, come mostrato in figura \ref{fig:scacchiera_compressed_f20_d1}.
+Aumentando invece il numero di coefficienti mantenuti, ad esempio con $d=10$ o $d=20$, otteniamo un'immagine compressa che recupera parzialmente la struttura della scacchiera, ma con una qualità visiva inferiore rispetto ai casi con $f=10$ o $f=5$, come mostrato in figura \ref{fig:scacchiera_compressed_f20_d10} e in figura \ref{fig:scacchiera_compressed_f20_d20}.
+\begin{multicols}{2}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/40x40.png}
+	\caption{Scacchiera non compressa}
+	\label{fig:scacchiera}
+\end{figure}
+\columnbreak
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/40x40_compressed_f10_d1.png}
+	\caption{Scacchiera compressa con DCT2, con $f=10$ e $d=1$}
+	\label{fig:scacchiera_compressed_f10_d1}
+\end{figure}
+\end{multicols}
+
+\clearpage
+
+\begin{multicols}{2}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/40x40_compressed_f5_d1.png}
+	\caption{Scacchiera compressa con DCT2, con $f=5$ e $d=1$}
+	\label{fig:scacchiera_compressed_f5_d1}
+\end{figure}
+\columnbreak
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/40x40_compressed_f20_d1.png}
+	\caption{Scacchiera compressa con DCT2, con $f=20$ e $d=1$}
+	\label{fig:scacchiera_compressed_f20_d1}
+\end{figure}
+\end{multicols}
+\begin{multicols}{2}
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/40x40_compressed_f20_d10.png}
+	\caption{Scacchiera compressa con DCT2, con $f=20$ e $d=10$}
+	\label{fig:scacchiera_compressed_f20_d10}
+\end{figure}
+\columnbreak
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/40x40_compressed_f20_d20.png}
+	\caption{Scacchiera compressa con DCT2, con $f=20$ e $d=20$}
+	\label{fig:scacchiera_compressed_f20_d20}
 \end{figure}
 \end{multicols}
